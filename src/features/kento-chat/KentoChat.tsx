@@ -24,14 +24,15 @@ import {
 import excelLogo from '@/assets/brand/mcp-excel.svg'
 import terminalAppIcon from '@/assets/terminal-app-icon.png'
 
-const chips: { label: string; icon: ReactNode }[] = [
+const chips: { label: string; icon: ReactNode; iconOnlyInChat?: boolean }[] = [
   { label: 'Criar', icon: <ChipCriarIcon className="size-4 shrink-0" aria-hidden /> },
   { label: 'Analisar', icon: <ChipAnalisarIcon className="size-4 shrink-0" aria-hidden /> },
   { label: 'Notícias', icon: <ChipNoticiasIcon className="size-4 shrink-0" aria-hidden /> },
   { label: 'Sentimento', icon: <ChipSentimentoIcon className="size-4 shrink-0" aria-hidden /> },
   { label: 'Sugestões do Kento', icon: <ChipSugestoesIcon className="size-4 shrink-0" aria-hidden /> },
-  { label: 'Kento no Excel', icon: <img src={excelLogo} alt="" className="size-4 shrink-0 object-contain" /> },
-  { label: 'Kento no Terminal', icon: <img src={terminalAppIcon} alt="" className="size-4 shrink-0 rounded-[3px] object-cover" /> },
+  // Externos: durante a conversa viram chips só de ícone para caber em uma linha
+  { label: 'Kento no Excel', icon: <img src={excelLogo} alt="" className="size-4 shrink-0 object-contain" />, iconOnlyInChat: true },
+  { label: 'Kento no Terminal', icon: <img src={terminalAppIcon} alt="" className="size-4 shrink-0 rounded-[3px] object-cover" />, iconOnlyInChat: true },
 ]
 
 /* ------------------------------- Composer ------------------------------- */
@@ -153,17 +154,22 @@ function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarPr
         align === 'center' ? 'justify-center' : 'justify-start',
       )}
     >
-      {chips.map(({ label, icon }) => (
-        <button
-          key={label}
-          type="button"
-          onClick={() => setOpenChip(label)}
-          className="flex items-center gap-1.5 rounded-[8px] bg-elevated p-[9px] text-sm leading-5 text-muted transition duration-150 hover:bg-neutral-300 active:scale-[0.97]"
-        >
-          {icon}
-          <span className="whitespace-nowrap">{label}</span>
-        </button>
-      ))}
+      {chips.map(({ label, icon, iconOnlyInChat }) => {
+        const iconOnly = align === 'start' && iconOnlyInChat
+        return (
+          <button
+            key={label}
+            type="button"
+            onClick={() => setOpenChip(label)}
+            title={iconOnly ? label : undefined}
+            aria-label={iconOnly ? label : undefined}
+            className="flex items-center gap-1.5 rounded-[8px] bg-elevated p-[9px] text-sm leading-5 text-muted transition duration-150 hover:bg-neutral-300 active:scale-[0.97]"
+          >
+            {icon}
+            {!iconOnly && <span className="whitespace-nowrap">{label}</span>}
+          </button>
+        )
+      })}
     </div>
   )
 }
