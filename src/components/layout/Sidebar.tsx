@@ -37,7 +37,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       {/* Logo — fixo no topo */}
       <div className={cn('shrink-0 border-b px-2.5 pb-3', HAIRLINE)}>
         <div className="flex items-center gap-2">
-          <LogoIcon className="size-10 shrink-0" aria-hidden />
+          <LogoIcon className="size-8 shrink-0" aria-hidden />
           <span className="text-base font-semibold tracking-[1px] text-neutral-500">
             CENTRAL
           </span>

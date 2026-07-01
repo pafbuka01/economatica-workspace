@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { X, ChevronRight } from 'lucide-react'
-import type { IconComponent } from '@/lib/types'
 import { cn } from '@/lib/cn'
 import { BarChart } from './BarChart'
 import {
@@ -22,13 +21,17 @@ import {
   ChipSentimentoIcon,
   ChipSugestoesIcon,
 } from '@/lib/icons'
+import excelLogo from '@/assets/brand/mcp-excel.svg'
+import terminalAppIcon from '@/assets/terminal-app-icon.png'
 
-const chips: { label: string; Icon: IconComponent }[] = [
-  { label: 'Criar', Icon: ChipCriarIcon },
-  { label: 'Analisar', Icon: ChipAnalisarIcon },
-  { label: 'Notícias', Icon: ChipNoticiasIcon },
-  { label: 'Sentimento', Icon: ChipSentimentoIcon },
-  { label: 'Sugestões do Kento', Icon: ChipSugestoesIcon },
+const chips: { label: string; icon: ReactNode }[] = [
+  { label: 'Criar', icon: <ChipCriarIcon className="size-4 shrink-0" aria-hidden /> },
+  { label: 'Analisar', icon: <ChipAnalisarIcon className="size-4 shrink-0" aria-hidden /> },
+  { label: 'Notícias', icon: <ChipNoticiasIcon className="size-4 shrink-0" aria-hidden /> },
+  { label: 'Sentimento', icon: <ChipSentimentoIcon className="size-4 shrink-0" aria-hidden /> },
+  { label: 'Sugestões do Kento', icon: <ChipSugestoesIcon className="size-4 shrink-0" aria-hidden /> },
+  { label: 'Kento no Excel', icon: <img src={excelLogo} alt="" className="size-4 shrink-0 object-contain" /> },
+  { label: 'Kento no Terminal', icon: <img src={terminalAppIcon} alt="" className="size-4 shrink-0 rounded-[3px] object-cover" /> },
 ]
 
 /* ------------------------------- Composer ------------------------------- */
@@ -107,12 +110,11 @@ interface ChipsBarProps {
 function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarProps) {
   if (openChip) {
     const chip = chips.find((c) => c.label === openChip) ?? chips[0]
-    const ChipIcon = chip.Icon
     return (
       <div className="w-full animate-pop overflow-hidden rounded-[12px] border border-line bg-white shadow-card-xl">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <span className="flex items-center gap-2 text-sm font-medium text-ink">
-            <ChipIcon className="size-4 shrink-0" aria-hidden />
+            {chip.icon}
             {chip.label}
           </span>
           <button
@@ -151,14 +153,14 @@ function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarPr
         align === 'center' ? 'justify-center' : 'justify-start',
       )}
     >
-      {chips.map(({ label, Icon }) => (
+      {chips.map(({ label, icon }) => (
         <button
           key={label}
           type="button"
           onClick={() => setOpenChip(label)}
           className="flex items-center gap-1.5 rounded-[8px] bg-elevated p-[9px] text-sm leading-5 text-muted transition duration-150 hover:bg-neutral-300 active:scale-[0.97]"
         >
-          <Icon className="size-4 shrink-0" aria-hidden />
+          {icon}
           <span className="whitespace-nowrap">{label}</span>
         </button>
       ))}
