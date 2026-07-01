@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ *
+ * Design tokens — Eco Workspace (Figma: Eco Worskspace • B2B • Admin)
+ * Mapeados 1:1 das variáveis do Figma.
+ * ------------------------------------------------------------------ */
+@theme {
+  /* Tipografia */
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Brand — teal */
+  --color-teal-100: #d6e5e8;
+  --color-teal-200: #aeccd1;
+  --color-teal-400: #4e8a95;
+  --color-teal-500: #2a6b77;
+  --color-teal-950: #022128;
+
+  /* Brand — cyan */
+  --color-cyan-400: #33bcb7;
+  --color-cyan-500: #13a8a8;
+
+  /* Neutros */
+  --color-neutral-0: #ffffff;
+  --color-neutral-100: #edeff0;
+  --color-neutral-200: #dde1e3;
+  --color-neutral-300: #c2c8cb;
+  --color-neutral-400: #9aa3a7;
+  --color-neutral-500: #6e777b;
+
+  /* Status */
+  --color-positive-500: #1e9e6a;
+  --color-success-500: #17b26a;
+  --color-success-bg: #dcfae6;
+
+  /* Marca atualizada (rebrand) — petróleo + verde-limão */
+  --color-brand: #082e37; /* brand/primary */
+  --color-accent: #cede33; /* brand/secondary, botão primário */
+  --color-sel-bg: #e9f3e7; /* nav ativo / card selecionado */
+  --color-sel-border: #84bb98;
+  --color-disabled: #c2c8cb; /* text/disabled */
+  --color-shade: #141414; /* fundo thumbnail de vídeo */
+  --color-elevated: #e5e8e9; /* background/elevated — botões e chips do chat */
+  --color-positive-text: #13935a; /* text/positive — badges e status "Conectado" */
+
+  /* Semânticos */
+  --color-ink: #14181a; /* text/primary */
+  --color-ink-strong: #0c1c18; /* nome do perfil */
+  --color-muted: #6e777b; /* text/muted */
+  --color-subdued: #acacac; /* text/subdued */
+  --color-nav: #465450; /* texto nav idle */
+  --color-nav-label: #889089; /* rótulos de seção */
+  --color-line: #dde1e3; /* border/default */
+  --color-canvas: #edeff0; /* fundo da página (sunken) */
+
+  /* Sombra do card de input do hero — Figma "Shadow / Bottom / Xlarge" */
+  --shadow-card-xl:
+    0 0 0.5px rgba(15, 23, 42, 0.06), 0 20px 12.5px rgba(15, 23, 42, 0.1),
+    0 10px 5px rgba(15, 23, 42, 0.04);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+  }
+}
