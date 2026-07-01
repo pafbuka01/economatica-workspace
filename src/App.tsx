@@ -4,11 +4,12 @@ import { HomePage } from '@/pages/HomePage'
 import { KentoChatPage } from '@/pages/KentoChatPage'
 import { KentoMcpPage } from '@/pages/KentoMcpPage'
 import { TerminalPage } from '@/pages/TerminalPage'
+import { ApisPage } from '@/pages/ApisPage'
 import { PlaceholderPage } from '@/pages/PlaceholderPage'
 import { navGroups } from '@/data/navigation'
 
 // Rotas com página própria — excluídas do gerador de stubs.
-const explicitPaths = new Set(['/', '/kento-chat', '/kento-mcp', '/terminal'])
+const explicitPaths = new Set(['/', '/kento-chat', '/kento-mcp', '/terminal', '/apis'])
 const stubRoutes = navGroups
   .flatMap((group) => group.items)
   .filter((item) => !explicitPaths.has(item.to))
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="kento-chat" element={<KentoChatPage />} />
         <Route path="kento-mcp" element={<KentoMcpPage />} />
         <Route path="terminal" element={<TerminalPage />} />
+        <Route path="apis" element={<ApisPage />} />
         {stubRoutes.map((item) => (
           <Route
             key={item.to}
