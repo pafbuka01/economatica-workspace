@@ -60,7 +60,7 @@ function Composer({ value, onChange, onSend }: ComposerProps) {
           <button
             type="button"
             aria-label="Adicionar anexo"
-            className="flex size-8 shrink-0 items-center justify-center rounded-[4px] bg-elevated text-muted transition-colors hover:bg-neutral-300"
+            className="flex size-8 shrink-0 items-center justify-center rounded-[4px] bg-elevated text-muted transition duration-150 hover:bg-neutral-300 active:scale-95"
           >
             <InputPlusIcon className="size-4" aria-hidden />
           </button>
@@ -85,7 +85,7 @@ function Composer({ value, onChange, onSend }: ComposerProps) {
             type="button"
             onClick={onSend}
             aria-label="Enviar"
-            className="flex size-8 shrink-0 items-center justify-center rounded-[4px] bg-accent text-ink transition-colors hover:bg-accent/85"
+            className="flex size-8 shrink-0 items-center justify-center rounded-[4px] bg-accent text-ink transition duration-150 hover:bg-accent/85 active:scale-95"
           >
             <InputSendIcon className="size-4" aria-hidden />
           </button>
@@ -109,7 +109,7 @@ function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarPr
     const chip = chips.find((c) => c.label === openChip) ?? chips[0]
     const ChipIcon = chip.Icon
     return (
-      <div className="w-full overflow-hidden rounded-[12px] border border-line bg-white shadow-card-xl">
+      <div className="w-full animate-pop overflow-hidden rounded-[12px] border border-line bg-white shadow-card-xl">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <span className="flex items-center gap-2 text-sm font-medium text-ink">
             <ChipIcon className="size-4 shrink-0" aria-hidden />
@@ -156,7 +156,7 @@ function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarPr
           key={label}
           type="button"
           onClick={() => setOpenChip(label)}
-          className="flex items-center gap-1.5 rounded-[8px] bg-elevated p-[9px] text-sm leading-5 text-muted transition-colors hover:bg-neutral-300"
+          className="flex items-center gap-1.5 rounded-[8px] bg-elevated p-[9px] text-sm leading-5 text-muted transition duration-150 hover:bg-neutral-300 active:scale-[0.97]"
         >
           <Icon className="size-4 shrink-0" aria-hidden />
           <span className="whitespace-nowrap">{label}</span>
@@ -192,7 +192,7 @@ function DataBlock({ chart }: { chart: ChartData }) {
 function Message({ message }: { message: ChatMessage }) {
   if (message.role === 'user') {
     return (
-      <div className="flex justify-end">
+      <div className="flex animate-rise justify-end">
         <div className="max-w-[85%] rounded-[12px] bg-elevated px-4 py-2.5 text-sm leading-6 text-ink">
           {message.paragraphs.join(' ')}
         </div>
@@ -200,7 +200,7 @@ function Message({ message }: { message: ChatMessage }) {
     )
   }
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex animate-rise flex-col gap-4">
       {message.paragraphs.map((p, i) => (
         <p key={i} className="text-sm leading-6 text-ink">
           {p}

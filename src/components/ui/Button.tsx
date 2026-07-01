@@ -42,7 +42,7 @@ export function Button({
   to,
 }: ButtonProps) {
   const classes = cn(
-    'inline-flex min-w-[112px] items-center justify-center gap-2 px-3 text-sm font-medium transition-colors',
+    'group inline-flex min-w-[112px] items-center justify-center gap-2 px-3 text-sm font-medium transition duration-150 active:scale-[0.98]',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
     sizeStyles[size],
     variantStyles[variant],
@@ -53,7 +53,10 @@ export function Button({
       {leadingIcon}
       <span className="whitespace-nowrap">{children}</span>
       {withArrow && (
-        <ArrowRightIcon className="size-4 shrink-0 -scale-x-100" aria-hidden />
+        <ArrowRightIcon
+          className="size-4 shrink-0 -scale-x-100 transition-transform duration-150 group-hover:-translate-x-0.5"
+          aria-hidden
+        />
       )}
     </>
   )

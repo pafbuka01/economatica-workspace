@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/cn'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
@@ -11,6 +11,7 @@ import { Topbar } from './Topbar'
  */
 export function AppShell() {
   const [navOpen, setNavOpen] = useState(false)
+  const { pathname } = useLocation()
 
   // Fecha o drawer com Esc.
   useEffect(() => {
@@ -56,7 +57,10 @@ export function AppShell() {
         <div className="relative z-10 flex min-h-0 flex-1 flex-col">
           <Topbar onMenuClick={() => setNavOpen(true)} />
           <main className="min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
-            <Outlet />
+            {/* key por rota: re-monta com um fade+rise curto a cada navegação */}
+            <div key={pathname} className="h-full animate-page">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

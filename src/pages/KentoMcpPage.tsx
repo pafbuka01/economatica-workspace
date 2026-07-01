@@ -63,17 +63,20 @@ function ConnectorView({ connector }: { connector: Connector }) {
           <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-[6px] bg-neutral-200 px-3 text-sm font-medium text-ink transition-colors hover:bg-neutral-300"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-[6px] bg-neutral-200 px-3 text-sm font-medium text-ink transition duration-150 hover:bg-neutral-300 active:scale-[0.98]"
             >
               <Settings className="size-4" aria-hidden />
               Configurar
             </button>
             <button
               type="button"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-[6px] bg-accent px-3 text-sm font-medium text-ink transition-colors hover:bg-accent/85"
+              className="group inline-flex h-10 items-center justify-center gap-2 rounded-[6px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
             >
               {connector.openLabel}
-              <ArrowUpRight className="size-4" aria-hidden />
+              <ArrowUpRight
+                className="size-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                aria-hidden
+              />
             </button>
           </div>
         </div>
@@ -103,7 +106,7 @@ function Overview({ onOpenConnector }: { onOpenConnector: (id: string) => void }
           {connectors.map((c) => (
             <div
               key={c.id}
-              className="flex flex-col gap-4 rounded-[8px] border border-line bg-elevated p-4"
+              className="flex flex-col gap-4 rounded-[8px] border border-line bg-elevated p-4 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300"
             >
               <div className="flex flex-col gap-2">
                 <img src={c.logo} alt="" className="size-10 shrink-0" />
@@ -116,7 +119,7 @@ function Overview({ onOpenConnector }: { onOpenConnector: (id: string) => void }
                 type="button"
                 onClick={() => onOpenConnector(c.id)}
                 className={cn(
-                  'inline-flex h-10 min-w-[112px] items-center justify-center rounded-[6px] px-3 text-sm font-medium text-ink transition-colors',
+                  'inline-flex h-10 min-w-[112px] items-center justify-center rounded-[6px] px-3 text-sm font-medium text-ink transition duration-150 active:scale-[0.98]',
                   c.connected ? 'bg-neutral-200 hover:bg-neutral-300' : 'bg-accent hover:bg-accent/85',
                 )}
               >
@@ -174,11 +177,14 @@ export function KentoMcpPage() {
         </div>
       </div>
 
-      {activeConnector ? (
-        <ConnectorView connector={activeConnector} />
-      ) : (
-        <Overview onOpenConnector={setActiveTab} />
-      )}
+      {/* key por aba: conteúdo entra com um fade curto ao alternar */}
+      <div key={activeTab} className="animate-page">
+        {activeConnector ? (
+          <ConnectorView connector={activeConnector} />
+        ) : (
+          <Overview onOpenConnector={setActiveTab} />
+        )}
+      </div>
     </PageContainer>
   )
 }

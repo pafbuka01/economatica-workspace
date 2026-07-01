@@ -29,10 +29,13 @@ function Banner() {
         </div>
         <button
           type="button"
-          className="inline-flex h-10 min-w-[112px] shrink-0 items-center justify-center gap-2 self-start rounded-[6px] bg-accent px-3 text-sm font-medium text-ink transition-colors hover:bg-accent/85 sm:self-auto"
+          className="group inline-flex h-10 min-w-[112px] shrink-0 items-center justify-center gap-2 self-start rounded-[6px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98] sm:self-auto"
         >
           Acessar
-          <ArrowUpRight className="size-4" aria-hidden />
+          <ArrowUpRight
+            className="size-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            aria-hidden
+          />
         </button>
       </div>
     </section>

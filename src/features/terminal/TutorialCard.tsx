@@ -3,12 +3,16 @@ import { PlayCircleIcon, ClockIcon } from '@/lib/icons'
 
 export function TutorialCard({ tutorial }: { tutorial: Tutorial }) {
   return (
-    <article className="flex flex-col gap-3 rounded-[16px] border border-line px-3 pb-4 pt-3">
+    <article className="group flex cursor-pointer flex-col gap-3 rounded-[16px] border border-line px-3 pb-4 pt-3 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300">
       <div className="relative h-[157px] overflow-hidden rounded-[12px] bg-shade">
-        <img src={tutorial.thumb} alt="" className="size-full object-cover" />
-        <div className="absolute inset-0 bg-black/30" />
+        <img
+          src={tutorial.thumb}
+          alt=""
+          className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+        />
+        <div className="absolute inset-0 bg-black/30 transition-opacity duration-300 group-hover:opacity-60" />
         <PlayCircleIcon
-          className="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-105"
           aria-hidden
         />
       </div>

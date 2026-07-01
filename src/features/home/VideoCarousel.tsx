@@ -9,12 +9,16 @@ import {
 
 function VideoCard({ video }: { video: VideoItem }) {
   return (
-    <article className="flex w-[291px] shrink-0 snap-start flex-col gap-3 rounded-[16px] border border-line bg-white px-3 pb-4 pt-3">
+    <article className="group flex w-[291px] shrink-0 cursor-pointer snap-start flex-col gap-3 rounded-[16px] border border-line bg-white px-3 pb-4 pt-3 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300">
       <div className="relative h-[157px] overflow-hidden rounded-[12px] bg-shade">
-        <img src={video.thumb} alt="" className="size-full object-cover" />
-        <div className="absolute inset-0 bg-black/30" />
+        <img
+          src={video.thumb}
+          alt=""
+          className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+        />
+        <div className="absolute inset-0 bg-black/30 transition-opacity duration-300 group-hover:opacity-60" />
         <PlayCircleIcon
-          className="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-1/2 size-12 -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-105"
           aria-hidden
         />
       </div>
@@ -44,7 +48,7 @@ function ArrowButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="flex size-8 items-center justify-center rounded-[4px] bg-neutral-200 text-ink transition-colors hover:bg-neutral-300"
+      className="flex size-8 items-center justify-center rounded-[4px] bg-neutral-200 text-ink transition duration-150 hover:bg-neutral-300 active:scale-95"
     >
       {children}
     </button>
