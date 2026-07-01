@@ -36,6 +36,7 @@ export { default as CarouselLeftIcon } from '@/assets/icons/carousel-left.svg?re
 export { default as CarouselRightIcon } from '@/assets/icons/carousel-right.svg?react'
 export { default as PlayCircleIcon } from '@/assets/icons/play-circle.svg?react'
 export { default as TabGridIcon } from '@/assets/icons/tab-grid.svg?react'
+export { default as TeMarkIcon } from '@/assets/icons/te-mark.svg?react'
 
 // Kento Chat — input rico + chips
 export { default as InputPlusIcon } from '@/assets/icons/input-plus.svg?react'
