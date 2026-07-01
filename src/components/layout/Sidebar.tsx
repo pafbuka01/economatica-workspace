@@ -34,8 +34,8 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       aria-label="Navegação do workspace"
       className="flex h-full w-[246px] max-w-[85vw] flex-col gap-3 rounded-[12px] border border-line bg-white px-[15px] pb-[15px] pt-[21px]"
     >
-      {/* Logo */}
-      <div className={cn('border-b px-2.5 pb-3', HAIRLINE)}>
+      {/* Logo — fixo no topo */}
+      <div className={cn('shrink-0 border-b px-2.5 pb-3', HAIRLINE)}>
         <div className="flex items-center gap-2">
           <LogoIcon className="size-10 shrink-0" aria-hidden />
           <span className="text-base font-semibold tracking-[1px] text-neutral-500">
@@ -44,18 +44,20 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      {/* Grupos de navegação */}
-      {navGroups.map((group, i) => (
-        <div key={group.label ?? `group-${i}`} className="flex flex-col gap-0.5">
-          {group.label && <SectionLabel className="mb-0.5">{group.label}</SectionLabel>}
-          {group.items.map((item) => (
-            <NavItem key={item.to} {...item} onClick={onNavigate} />
-          ))}
-        </div>
-      ))}
+      {/* Grupos de navegação — rolam quando faltar altura */}
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pb-1 [scrollbar-width:thin]">
+        {navGroups.map((group, i) => (
+          <div key={group.label ?? `group-${i}`} className="flex shrink-0 flex-col gap-0.5">
+            {group.label && <SectionLabel className="mb-0.5">{group.label}</SectionLabel>}
+            {group.items.map((item) => (
+              <NavItem key={item.to} {...item} onClick={onNavigate} />
+            ))}
+          </div>
+        ))}
+      </div>
 
-      {/* Perfil (empurrado para a base) */}
-      <div className="mt-auto pt-2">
+      {/* Perfil — sempre visível no rodapé */}
+      <div className="shrink-0 pt-1">
         <ProfileCard />
       </div>
     </nav>
