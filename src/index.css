@@ -40,7 +40,7 @@
   --color-sel-border: #84bb98;
   --color-disabled: #c2c8cb; /* text/disabled */
   --color-shade: #141414; /* fundo thumbnail de vídeo */
-  --color-elevated: #e5e8e9; /* background/elevated — botões e chips do chat */
+  --color-elevated: #eff1f2; /* background/elevated — cards, chips e botões neutros (clareado junto com o canvas) */
   --color-positive-text: #13935a; /* text/positive — badges e status "Conectado" */
 
   /* Semânticos */
