@@ -9,13 +9,11 @@ import bannerImg from '@/assets/terminal-banner.png'
 function Banner() {
   return (
     <section className="flex flex-col gap-4">
-      <div className="overflow-hidden rounded-[16px]">
-        <img
-          src={bannerImg}
-          alt="Interface do Terminal Economatica"
-          className="mx-auto aspect-[778/106] w-full max-w-[778px] rounded-[12px] object-cover object-top sm:mt-[17px]"
-        />
-      </div>
+      <img
+        src={bannerImg}
+        alt="Interface do Terminal Economatica"
+        className="aspect-[1106/123] w-full rounded-[16px] object-cover"
+      />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-3 sm:items-center">
           <div className="flex size-[55px] shrink-0 items-center justify-center rounded-[12px] bg-accent">
