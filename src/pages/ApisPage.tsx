@@ -26,8 +26,8 @@ function Banner() {
           <div className="min-w-0">
             <h1 className="text-[22px] font-bold leading-6 text-ink">APIs Economatica</h1>
             <p className="mt-0.5 text-sm leading-6 text-muted">
-              Camada mais recente de consumo e navegação da base Economatica, com recursos
-              de IA incorporados ao fluxo de análise.
+              Integre a base da Economatica em plataformas, modelos quantitativos,
+              aplicações corporativas e agentes de IA.
             </p>
           </div>
         </div>
