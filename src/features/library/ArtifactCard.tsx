@@ -12,7 +12,7 @@ export function ArtifactCard({ artifact }: { artifact: LibraryArtifact }) {
   }
 
   return (
-    <article className="flex flex-col gap-3 rounded-[8px] border border-line bg-elevated p-4 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300">
+    <article className="flex h-full flex-col gap-3 rounded-[8px] border border-line bg-elevated p-4 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300">
       <img
         src={artifact.image}
         alt=""
@@ -34,7 +34,7 @@ export function ArtifactCard({ artifact }: { artifact: LibraryArtifact }) {
       <button
         type="button"
         onClick={copy}
-        className="inline-flex h-8 items-center justify-center gap-2 self-start rounded-[4px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
+        className="mt-auto inline-flex h-8 items-center justify-center gap-2 self-start rounded-[4px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
       >
         {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
         {copied ? 'Copiado!' : 'Copiar prompt'}

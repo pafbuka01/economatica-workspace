@@ -47,7 +47,8 @@ export function CarouselSection({ title, children }: { title: string; children: 
 
       <div
         ref={scroller}
-        className="-mr-4 flex snap-x gap-3 overflow-x-auto pb-1 pr-4 sm:-mr-10 sm:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        // pt-1/-mt-1: folga para o lift do hover não ser clipado pelo scroller
+        className="-mr-4 -mt-1 flex snap-x gap-3 overflow-x-auto pb-1 pr-4 pt-1 sm:-mr-10 sm:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {children}
       </div>

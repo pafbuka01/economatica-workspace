@@ -9,7 +9,7 @@ import {
 
 function VideoCard({ video }: { video: VideoItem }) {
   return (
-    <article className="group flex w-[291px] shrink-0 cursor-pointer snap-start flex-col gap-3 rounded-[16px] border border-line bg-white px-3 pb-4 pt-3 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300">
+    <article className="group flex h-full w-[291px] shrink-0 cursor-pointer snap-start flex-col gap-3 rounded-[16px] border border-line bg-white px-3 pb-4 pt-3 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300">
       <div className="relative h-[157px] overflow-hidden rounded-[12px] bg-shade">
         <img
           src={video.thumb}
@@ -76,7 +76,8 @@ export function VideoCarousel() {
 
       <div
         ref={scroller}
-        className="-mr-4 flex snap-x gap-2 overflow-x-auto pb-1 pr-4 sm:-mr-10 sm:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        // pt-1/-mt-1: folga para o lift do hover não ser clipado pelo scroller
+        className="-mr-4 -mt-1 flex snap-x gap-2 overflow-x-auto pb-1 pr-4 pt-1 sm:-mr-10 sm:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {videos.map((video) => (
           <VideoCard key={video.title} video={video} />
