@@ -73,50 +73,7 @@ export const connectSteps: ConnectStep[] = [
   },
 ]
 
-export interface LibraryPrompt {
-  tags: string[]
-  title: string
-  description: string
-  prompt: string
-}
-
-export const libraryPrompts: LibraryPrompt[] = [
-  {
-    tags: ['Prompt', 'Workflow'],
-    title: 'Análise de carteira do cliente',
-    description: 'Primeira consulta para o assessor entender concentração, riscos, eventos e pontos de conversa com o cliente.',
-    prompt: 'Analise a carteira do meu cliente e destaque concentração, riscos e eventos relevantes.',
-  },
-  {
-    tags: ['Prompt'],
-    title: 'Resumo de resultados trimestrais',
-    description: 'Sintetiza o balanço mais recente de um ativo com os destaques que importam para o cliente.',
-    prompt: 'Resuma os resultados do último trimestre da PETR4 em 5 pontos.',
-  },
-  {
-    tags: ['Prompt', 'Workflow'],
-    title: 'Screener de ações defensivas',
-    description: 'Monta uma lista de ações da B3 com perfil defensivo e boa liquidez.',
-    prompt: 'Monte um screener de ações B3 defensivas com boa liquidez e dividend yield acima de 6%.',
-  },
-  {
-    tags: ['Prompt'],
-    title: 'Comparação de múltiplos',
-    description: 'Compara valuation entre pares do mesmo setor para embasar uma recomendação.',
-    prompt: 'Compare P/L, EV/EBITDA e dividend yield de PETR4, PRIO3 e RECV3.',
-  },
-  {
-    tags: ['Prompt', 'Workflow'],
-    title: 'Sentimento de notícias',
-    description: 'Avalia o tom das notícias recentes de um ativo nos últimos 30 dias.',
-    prompt: 'Qual o sentimento das notícias recentes sobre VALE3 nos últimos 30 dias?',
-  },
-  {
-    tags: ['Prompt'],
-    title: 'Calendário de eventos',
-    description: 'Lista os próximos eventos corporativos e macroeconômicos da semana.',
-    prompt: 'Quais eventos corporativos e resultados saem nesta semana na B3?',
-  },
-]
+// Prompts da Biblioteca agora vivem em data/library.ts (compartilhados com Skills e Prompts).
+export { libraryPrompts, type LibraryPrompt } from './library'
 
 export const libraryTabs = ['Pra você', 'Prompts', 'Skills', 'Artefatos']
