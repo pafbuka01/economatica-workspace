@@ -12,7 +12,7 @@ function barHeight(i: number): number {
   return 24 + Math.round(wave * 20 + tail * 34)
 }
 
-function ActivityChart() {
+export function ActivityChart() {
   return (
     <div className="flex h-[47px] items-end justify-between" aria-hidden>
       {Array.from({ length: BAR_COUNT }, (_, i) => (

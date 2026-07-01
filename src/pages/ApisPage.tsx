@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { TutorialCard } from '@/features/terminal/TutorialCard'
 import { ApiCard } from '@/features/apis/ApiCard'
+import { ApiDetail } from '@/features/apis/ApiDetail'
 import { apiServices, apiTutorials } from '@/data/apis'
 import { ApisIcon } from '@/lib/icons'
 import bannerImg from '@/assets/apis-banner.png'
@@ -78,31 +79,28 @@ export function ApisPage() {
       {/* key por aba: conteúdo entra com um fade curto ao alternar */}
       <div key={activeTab} className="flex animate-page flex-col gap-10">
         {activeApi ? (
-          <section className="flex flex-col gap-4">
-            <h2 className="text-base font-bold leading-6 text-ink">{activeApi.name}</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-              <ApiCard api={activeApi} />
-            </div>
-          </section>
+          <ApiDetail api={activeApi} />
         ) : (
-          <section className="flex flex-col gap-4">
-            <h2 className="text-base font-bold leading-6 text-ink">APIs disponíveis</h2>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {apiServices.map((api) => (
-                <ApiCard key={api.id} api={api} onDetails={setActiveTab} />
-              ))}
-            </div>
-          </section>
-        )}
+          <>
+            <section className="flex flex-col gap-4">
+              <h2 className="text-base font-bold leading-6 text-ink">APIs disponíveis</h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {apiServices.map((api) => (
+                  <ApiCard key={api.id} api={api} onDetails={setActiveTab} />
+                ))}
+              </div>
+            </section>
 
-        <section className="flex flex-col gap-4">
-          <h2 className="text-base font-bold leading-6 text-ink">Tutoriais</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {apiTutorials.map((t, i) => (
-              <TutorialCard key={`${t.title}-${i}`} tutorial={t} />
-            ))}
-          </div>
-        </section>
+            <section className="flex flex-col gap-4">
+              <h2 className="text-base font-bold leading-6 text-ink">Tutoriais</h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {apiTutorials.map((t, i) => (
+                  <TutorialCard key={`${t.title}-${i}`} tutorial={t} />
+                ))}
+              </div>
+            </section>
+          </>
+        )}
       </div>
     </PageContainer>
   )
