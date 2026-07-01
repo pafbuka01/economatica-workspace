@@ -51,7 +51,7 @@
   --color-nav: #465450; /* texto nav idle */
   --color-nav-label: #889089; /* rótulos de seção */
   --color-line: #dde1e3; /* border/default */
-  --color-canvas: #edeff0; /* fundo da página (sunken) */
+  --color-canvas: #f6f7f8; /* fundo da página — quase branco, menos acinzentado */
 
   /* Sombra do card de input do hero — Figma "Shadow / Bottom / Xlarge" */
   --shadow-card-xl:
