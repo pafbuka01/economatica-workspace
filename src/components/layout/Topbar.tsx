@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import { Menu } from 'lucide-react'
+import { cn } from '@/lib/cn'
 import { navGroups } from '@/data/navigation'
 import { BreadcrumbHomeIcon } from '@/lib/icons'
 import { ProgressBar } from '@/components/ui/ProgressBar'
@@ -24,13 +25,20 @@ function TrialStatus() {
   )
 }
 
-export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
+export function Topbar({ onMenuClick, scrolled }: { onMenuClick?: () => void; scrolled?: boolean }) {
   const { pathname } = useLocation()
   const title = titleByPath.get(pathname) ?? 'Home'
 
-  // Flutua sobre o conteúdo: vidro fosco mantém o contraste sobre o glow da Home
+  // Flutua sobre o conteúdo. No topo é transparente (o glow da Home corre
+  // uniforme, sem degrau contra a sidebar); o vidro só aparece quando o
+  // conteúdo rola por baixo, para manter o texto do header legível.
   return (
-    <header className="absolute inset-x-0 top-0 z-20 h-[60px] bg-canvas/70 backdrop-blur-md backdrop-saturate-150 dark:bg-canvas/40">
+    <header
+      className={cn(
+        'absolute inset-x-0 top-0 z-20 h-[60px] backdrop-blur-md transition-colors duration-300',
+        scrolled ? 'bg-canvas/85 dark:bg-canvas/70' : 'bg-transparent',
+      )}
+    >
       <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-2 px-4 sm:px-10">
         <div className="flex min-w-0 items-center gap-1.5">
           <button

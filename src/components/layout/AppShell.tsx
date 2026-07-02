@@ -12,6 +12,7 @@ import { HeroGlow } from './HeroGlow'
  */
 export function AppShell() {
   const [navOpen, setNavOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const { pathname } = useLocation()
 
   // Fecha o drawer com Esc.
@@ -59,8 +60,11 @@ export function AppShell() {
       {/* Conteúdo */}
       <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
         <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-          <Topbar onMenuClick={() => setNavOpen(true)} />
-          <main className="min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+          <Topbar onMenuClick={() => setNavOpen(true)} scrolled={scrolled} />
+          <main
+            onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 8)}
+            className="min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]"
+          >
             {/* pt compensa o header flutuante; key por rota re-monta com fade+rise */}
             <div key={pathname} className="h-full animate-page pt-[60px]">
               <Outlet />
