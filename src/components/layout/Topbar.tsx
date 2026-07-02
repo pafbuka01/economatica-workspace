@@ -3,8 +3,7 @@ import { Menu } from 'lucide-react'
 import { navGroups } from '@/data/navigation'
 import { BreadcrumbHomeIcon } from '@/lib/icons'
 import { ProgressBar } from '@/components/ui/ProgressBar'
-import avatarPhoto from '@/assets/avatar.png'
-import faviconBadge from '@/assets/favicon-badge.png'
+import { UserMenu } from './UserMenu'
 
 const titleByPath = new Map(
   navGroups.flatMap((g) => g.items).map((i) => [i.to, i.label]),
@@ -20,16 +19,7 @@ function TrialStatus() {
         </span>
         <ProgressBar value={71} className="w-[116px]" />
       </div>
-      <button type="button" className="relative shrink-0" aria-label="Conta">
-        <img
-          src={avatarPhoto}
-          alt="Pedro Albuquerque"
-          className="size-10 rounded-full object-cover"
-        />
-        <span className="absolute -bottom-px -right-px flex size-4 items-center justify-center overflow-hidden rounded-[4px] bg-white">
-          <img src={faviconBadge} alt="" className="size-4" />
-        </span>
-      </button>
+      <UserMenu />
     </div>
   )
 }
