@@ -126,7 +126,7 @@ function Dropdown() {
         <div className="flex items-center gap-3 border-b border-line p-4">
           <Avatar />
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold leading-5 text-ink">Pedro Albuquerque</p>
+            <p className="truncate text-sm font-semibold leading-5 text-ink">Gustavo Figueira</p>
             <p className="truncate text-sm leading-5 text-muted">Economatica</p>
           </div>
         </div>

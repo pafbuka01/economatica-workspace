@@ -1,4 +1,4 @@
-import avatarPedro from '@/assets/avatar.png'
+import avatarGustavo from '@/assets/avatar.png'
 import avatarRafael from '@/assets/avatars/rafael.png'
 import avatarCamila from '@/assets/avatars/camila.png'
 import avatarBruno from '@/assets/avatars/bruno.png'
@@ -23,11 +23,11 @@ export const PLAN_SEATS = 6
 
 export const teamMembers: TeamRow[] = [
   {
-    id: 'pedro',
-    name: 'Pedro Albuquerque',
-    email: 'pedro@economatica.com.br',
+    id: 'gustavo',
+    name: 'Gustavo Figueira',
+    email: 'gustavo.figueira@economatica.com.br',
     role: 'Admin',
-    avatar: avatarPedro,
+    avatar: avatarGustavo,
     since: '14/10/2022',
     isYou: true,
   },

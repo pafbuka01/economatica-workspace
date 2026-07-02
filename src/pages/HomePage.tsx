@@ -42,7 +42,7 @@ function KentoHero() {
   return (
     <section className="flex flex-col items-center gap-6 pt-12">
       <div className="flex flex-col items-center gap-2">
-        <p className="text-sm leading-5 text-muted">Bem vindo, Pedro!</p>
+        <p className="text-sm leading-5 text-muted">Bem vindo, Gustavo!</p>
         <h1 className="flex flex-wrap items-center justify-center gap-x-1.5 text-[28px] leading-9 font-bold sm:text-[34px] sm:leading-10">
           <span className="text-ink">Converse com</span>
           <SparkleIcon className="size-7 shrink-0" aria-hidden />
