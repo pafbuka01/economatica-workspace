@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, Ellipsis, Plus, Search, X } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { PageContainer } from '@/components/layout/PageContainer'
+import { Modal } from '@/components/ui/Modal'
 import {
   PLAN_LABEL,
   PLAN_SEATS,
@@ -166,14 +167,6 @@ function InviteModal({
 }) {
   const [emails, setEmails] = useState([''])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
-
   function send() {
     // Aceita tanto "ana.souza" quanto o e-mail completo colado
     const locals = emails.map((e) => e.trim().replace(/@.*$/, '')).filter(Boolean)
@@ -182,15 +175,8 @@ function InviteModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 dark:bg-black/60" onClick={onClose} />
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Convidar novo membro"
-        className="relative flex w-full max-w-[600px] animate-pop flex-col gap-6 rounded-[6px] border border-line bg-canvas p-6 shadow-card-xl dark:bg-surface"
-      >
-        <button
+    <Modal onClose={onClose} ariaLabel="Convidar novo membro" className="flex flex-col gap-6">
+      <button
           type="button"
           onClick={onClose}
           aria-label="Fechar"
@@ -255,8 +241,7 @@ function InviteModal({
             Enviar convite
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   )
 }
 
