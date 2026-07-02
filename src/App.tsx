@@ -6,11 +6,12 @@ import { KentoMcpPage } from '@/pages/KentoMcpPage'
 import { TerminalPage } from '@/pages/TerminalPage'
 import { ApisPage } from '@/pages/ApisPage'
 import { SkillsPage } from '@/pages/SkillsPage'
+import { UsersPage } from '@/pages/UsersPage'
 import { PlaceholderPage } from '@/pages/PlaceholderPage'
 import { navGroups } from '@/data/navigation'
 
 // Rotas com página própria — excluídas do gerador de stubs.
-const explicitPaths = new Set(['/', '/kento-chat', '/kento-mcp', '/terminal', '/apis', '/skills'])
+const explicitPaths = new Set(['/', '/kento-chat', '/kento-mcp', '/terminal', '/apis', '/skills', '/usuarios'])
 const stubRoutes = navGroups
   .flatMap((group) => group.items)
   .filter((item) => !explicitPaths.has(item.to))
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="terminal" element={<TerminalPage />} />
         <Route path="apis" element={<ApisPage />} />
         <Route path="skills" element={<SkillsPage />} />
+        <Route path="usuarios" element={<UsersPage />} />
         {stubRoutes.map((item) => (
           <Route
             key={item.to}
