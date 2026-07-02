@@ -52,7 +52,7 @@ function ConnectorView({ connector }: { connector: Connector }) {
       <div className="flex flex-col gap-4 rounded-[8px] border border-line bg-elevated p-4 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <img src={connector.logo} alt="" className="size-10 shrink-0" />
+            <img src={connector.logo} alt="" className={cn('size-10 shrink-0', connector.id === 'chatgpt' && 'dark:invert')} />
             <div className="min-w-0">
               <h2 className="text-[22px] font-bold leading-6 text-ink">{connector.name}</h2>
               <div className="mt-1">
@@ -70,7 +70,7 @@ function ConnectorView({ connector }: { connector: Connector }) {
             </button>
             <button
               type="button"
-              className="group inline-flex h-10 items-center justify-center gap-2 rounded-[6px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
+              className="group inline-flex h-10 items-center justify-center gap-2 rounded-[6px] bg-accent px-3 text-sm font-medium text-on-accent transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
             >
               {connector.openLabel}
               <ArrowUpRight
@@ -82,7 +82,7 @@ function ConnectorView({ connector }: { connector: Connector }) {
         </div>
         <MetricsRow
           metrics={connector.connected ? usageMetrics : zeroMetrics}
-          className="bg-white/40"
+          className="bg-surface/40"
         />
       </div>
 
@@ -109,7 +109,7 @@ function Overview({ onOpenConnector }: { onOpenConnector: (id: string) => void }
               className="flex flex-col gap-4 rounded-[8px] border border-line bg-elevated p-4 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300"
             >
               <div className="flex flex-col gap-2">
-                <img src={c.logo} alt="" className="size-10 shrink-0" />
+                <img src={c.logo} alt="" className={cn('size-10 shrink-0', c.id === 'chatgpt' && 'dark:invert')} />
                 <div className="flex flex-col gap-1">
                   <p className="text-base font-bold leading-6 text-ink">{c.name}</p>
                   <Status connected={c.connected} />
@@ -119,8 +119,10 @@ function Overview({ onOpenConnector }: { onOpenConnector: (id: string) => void }
                 type="button"
                 onClick={() => onOpenConnector(c.id)}
                 className={cn(
-                  'inline-flex h-10 min-w-[112px] items-center justify-center rounded-[6px] px-3 text-sm font-medium text-ink transition duration-150 active:scale-[0.98]',
-                  c.connected ? 'bg-neutral-200 hover:bg-neutral-300' : 'bg-accent hover:bg-accent/85',
+                  'inline-flex h-10 min-w-[112px] items-center justify-center rounded-[6px] px-3 text-sm font-medium transition duration-150 active:scale-[0.98]',
+                  c.connected
+                    ? 'bg-neutral-200 text-ink hover:bg-neutral-300'
+                    : 'bg-accent text-on-accent hover:bg-accent/85',
                 )}
               >
                 {c.connected ? 'Detalhes' : 'Conectar'}
@@ -142,7 +144,7 @@ export function KentoMcpPage() {
     ...connectors.map((c) => ({
       id: c.id,
       label: c.tabLabel,
-      icon: <img src={c.logo} alt="" className="size-4 shrink-0 object-contain" />,
+      icon: <img src={c.logo} alt="" className={cn('size-4 shrink-0 object-contain', c.id === 'chatgpt' && 'dark:invert')} />,
     })),
   ]
 
@@ -164,10 +166,10 @@ export function KentoMcpPage() {
                 onClick={() => setActiveTab(t.id)}
                 className={cn(
                   'flex shrink-0 items-center gap-1.5 border-b pb-2 pt-3 text-sm font-medium transition-colors',
-                  active ? 'border-brand text-brand' : 'border-transparent text-neutral-400 hover:text-muted',
+                  active ? 'border-brand-border text-brand-text' : 'border-transparent text-neutral-400 hover:text-muted',
                 )}
               >
-                <span className={cn('flex size-4 items-center justify-center', active ? 'text-brand' : 'text-neutral-400')}>
+                <span className={cn('flex size-4 items-center justify-center', active ? 'text-brand-text' : 'text-neutral-400')}>
                   {t.icon}
                 </span>
                 {t.label}

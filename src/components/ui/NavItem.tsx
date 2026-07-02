@@ -69,7 +69,7 @@ export function NavItem({
           <span
             className={cn(
               'flex size-4 shrink-0 items-center justify-center',
-              isActive ? 'text-brand' : 'text-muted',
+              isActive ? 'text-sel-text' : 'text-muted',
             )}
           >
             <Icon className="size-full" aria-hidden />
@@ -77,7 +77,7 @@ export function NavItem({
           <span
             className={cn(
               'flex-1 truncate text-sm font-medium leading-[21px]',
-              isActive ? 'text-brand' : 'text-muted',
+              isActive ? 'text-sel-text' : 'text-muted',
             )}
           >
             {label}

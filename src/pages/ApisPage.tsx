@@ -34,7 +34,7 @@ function Banner() {
         </div>
         <button
           type="button"
-          className="group inline-flex h-10 min-w-[112px] shrink-0 items-center justify-center gap-2 self-start rounded-[6px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98] sm:self-auto"
+          className="group inline-flex h-10 min-w-[112px] shrink-0 items-center justify-center gap-2 self-start rounded-[6px] bg-accent px-3 text-sm font-medium text-on-accent transition duration-150 hover:bg-accent/85 active:scale-[0.98] sm:self-auto"
         >
           Documentação
           <ArrowUpRight
@@ -66,7 +66,7 @@ export function ApisPage() {
                 onClick={() => setActiveTab(t.id)}
                 className={cn(
                   'shrink-0 border-b px-1 pb-2 pt-3 text-sm font-medium transition-colors',
-                  active ? 'border-brand text-brand' : 'border-transparent text-neutral-400 hover:text-muted',
+                  active ? 'border-brand-border text-brand-text' : 'border-transparent text-neutral-400 hover:text-muted',
                 )}
               >
                 {t.label}

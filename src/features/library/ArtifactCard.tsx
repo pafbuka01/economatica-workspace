@@ -34,7 +34,7 @@ export function ArtifactCard({ artifact }: { artifact: LibraryArtifact }) {
       <button
         type="button"
         onClick={copy}
-        className="mt-auto inline-flex h-8 items-center justify-center gap-2 self-start rounded-[4px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
+        className="mt-auto inline-flex h-8 items-center justify-center gap-2 self-start rounded-[4px] bg-accent px-3 text-sm font-medium text-on-accent transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
       >
         {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
         {copied ? 'Copiado!' : 'Copiar prompt'}

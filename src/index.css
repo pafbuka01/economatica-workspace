@@ -1,8 +1,12 @@
 @import 'tailwindcss';
 
+/* Tema escuro por classe (.dark no <html>), aplicada pelo toggle do usuário */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ------------------------------------------------------------------ *
  * Design tokens — Eco Workspace (Figma: Eco Worskspace • B2B • Admin)
- * Mapeados 1:1 das variáveis do Figma.
+ * Mapeados 1:1 das variáveis do Figma (coleção "Eco • Tokens",
+ * modos Light/Dark — o bloco .dark abaixo sobrescreve os valores).
  * ------------------------------------------------------------------ */
 @theme {
   /* Tipografia */
@@ -52,6 +56,19 @@
   --color-nav-label: #889089; /* rótulos de seção */
   --color-line: #dde1e3; /* border/default */
   --color-canvas: #f6f7f8; /* fundo da página — quase branco, menos acinzentado */
+  --color-surface: #ffffff; /* background/surface — sidebar, cards, popovers */
+  --color-on-accent: #082e37; /* button/primary/text — fixo nos dois temas */
+  --color-sel-text: #082e37; /* card/selected/text — nav ativo */
+  --color-brand-text: #082e37; /* text/brand — tabs ativas */
+  --color-brand-border: #082e37; /* border/brand — sublinhado de tab ativa */
+  --color-hairline: rgba(12, 28, 24, 0.12); /* divisores sutis da sidebar */
+  --color-zebra: #f9fafb; /* linhas pares de tabelas */
+  --color-code-bg: #f3f4f6; /* campos de código (config das APIs) */
+  --color-badge-pos-bg: #dcfce7; /* badge Sucesso */
+  --color-badge-pos-text: #16a34a;
+  --color-badge-neg-bg: #fee2e2; /* badge Erro */
+  --color-badge-neg-text: #dc2626;
+  --color-danger-text: #dc2626; /* ações destrutivas (Sair) */
 
   /* Sombra do card de input do hero — Figma "Shadow / Bottom / Xlarge" */
   --shadow-card-xl:
@@ -95,6 +112,55 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* ------------------------------------------------------------------ *
+ * Tema escuro — valores do modo "Dark" da coleção "Eco • Tokens".
+ * As utilities (bg-canvas, text-ink, …) leem estas variáveis, então
+ * sobrescrevê-las aqui aplica o tema ao sistema inteiro.
+ * ------------------------------------------------------------------ */
+.dark {
+  color-scheme: dark;
+
+  --color-canvas: #0b0e0f; /* background/canvas */
+  --color-surface: #14181a; /* background/surface */
+  --color-elevated: #262b2e; /* background/elevated */
+  --color-line: #3a4145; /* border/default */
+  --color-hairline: rgba(246, 247, 248, 0.12);
+
+  --color-ink: #f6f7f8; /* text/primary */
+  --color-ink-strong: #f6f7f8;
+  --color-muted: #9aa3a7; /* text/muted */
+  --color-subdued: #6e777b; /* text/subdued */
+  --color-nav: #c2c8cb; /* text/secondary */
+  --color-nav-label: #6e777b;
+  --color-disabled: #4e575b; /* text/disabled */
+
+  --color-sel-bg: #1c3528; /* card/selected/bg */
+  --color-sel-border: #5fa37c; /* card/selected/border */
+  --color-sel-text: #e9f3e7; /* card/selected/text */
+  --color-brand-text: #d6e5e8; /* text/brand */
+  --color-brand-border: #cede33; /* border/brand */
+
+  --color-cyan-500: #33bcb7; /* brand/accent */
+  --color-teal-500: #4e8a95; /* teal legível sobre fundo escuro */
+  --color-positive-text: #17b26a; /* text/positive */
+  --color-success-bg: #0f7444; /* background/success-subtle */
+
+  /* Neutros funcionais (hovers, botões cinza, tracks) */
+  --color-neutral-100: #262b2e;
+  --color-neutral-200: #3a4145;
+  --color-neutral-300: #4e575b;
+  --color-neutral-400: #6e777b;
+  --color-neutral-500: #9aa3a7;
+
+  --color-zebra: #1a1f22;
+  --color-code-bg: #262b2e;
+  --color-badge-pos-bg: #0f7444; /* background/success-subtle */
+  --color-badge-pos-text: #dcfae6;
+  --color-badge-neg-bg: #8f2a23; /* background/danger-subtle */
+  --color-badge-neg-text: #fbeae8;
+  --color-danger-text: #d1453b; /* text/negative */
 }
 
 @layer base {

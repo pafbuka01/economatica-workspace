@@ -6,7 +6,7 @@ import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 
 /** Borda sutil usada no header do logo. */
-const HAIRLINE = 'border-[rgba(12,28,24,0.12)]'
+const HAIRLINE = 'border-hairline'
 
 function TrialCard() {
   return (
@@ -27,12 +27,12 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav
       aria-label="Navegação do workspace"
-      className="flex h-full w-[246px] max-w-[85vw] flex-col gap-3 rounded-[12px] border border-line bg-white px-[15px] pb-[15px] pt-[21px]"
+      className="flex h-full w-[246px] max-w-[85vw] flex-col gap-3 rounded-[12px] border border-line bg-surface px-[15px] pb-[15px] pt-[21px]"
     >
       {/* Logo — fixo no topo */}
       <div className={cn('shrink-0 border-b px-2.5 pb-3', HAIRLINE)}>
         <div className="flex items-center gap-2">
-          <LogoIcon className="size-8 shrink-0" aria-hidden />
+          <LogoIcon className="size-8 shrink-0 text-[#072026] dark:text-ink" aria-hidden />
           <span className="text-base font-semibold tracking-[1px] text-neutral-500">
             CENTRAL
           </span>

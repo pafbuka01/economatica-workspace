@@ -45,7 +45,7 @@ interface ComposerProps {
 
 function Composer({ value, onChange, onSend }: ComposerProps) {
   return (
-    <div className="flex w-full flex-col gap-4 rounded-[12px] border border-line bg-white p-4 shadow-card-xl">
+    <div className="flex w-full flex-col gap-4 rounded-[12px] border border-line bg-surface p-4 shadow-card-xl">
       <div className="flex items-center gap-2">
         <SparkleIcon className="size-5 shrink-0" aria-hidden />
         <input
@@ -89,7 +89,7 @@ function Composer({ value, onChange, onSend }: ComposerProps) {
             type="button"
             onClick={onSend}
             aria-label="Enviar"
-            className="flex size-8 shrink-0 items-center justify-center rounded-[4px] bg-accent text-ink transition duration-150 hover:bg-accent/85 active:scale-95"
+            className="flex size-8 shrink-0 items-center justify-center rounded-[4px] bg-accent text-on-accent transition duration-150 hover:bg-accent/85 active:scale-95"
           >
             <InputSendIcon className="size-4" aria-hidden />
           </button>
@@ -112,7 +112,7 @@ function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarPr
   if (openChip) {
     const chip = chips.find((c) => c.label === openChip) ?? chips[0]
     return (
-      <div className="w-full animate-pop overflow-hidden rounded-[12px] border border-line bg-white shadow-card-xl">
+      <div className="w-full animate-pop overflow-hidden rounded-[12px] border border-line bg-surface shadow-card-xl">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <span className="flex items-center gap-2 text-sm font-medium text-ink">
             {chip.icon}
@@ -244,7 +244,7 @@ export function KentoChat() {
       <div className="flex min-h-full flex-col items-center justify-center px-4 py-12 sm:px-8">
         <div className="flex w-full max-w-[681px] flex-col items-center gap-6">
           <h1 className="flex flex-wrap items-center justify-center gap-x-1.5 text-[28px] leading-9 font-bold sm:text-[34px] sm:leading-10">
-            <span className="text-teal-950">Converse com</span>
+            <span className="text-ink">Converse com</span>
             <SparkleIcon className="size-7 shrink-0" aria-hidden />
             <span className="bg-gradient-to-r from-cyan-500 via-[#92d7cf] to-cyan-500 bg-clip-text text-transparent">
               Kento

@@ -70,7 +70,7 @@ export function SkillsPage() {
                 onClick={() => setActiveTab(t)}
                 className={cn(
                   'shrink-0 border-b px-1 pb-2 pt-3 text-sm font-medium transition-colors',
-                  active ? 'border-brand text-brand' : 'border-transparent text-neutral-400 hover:text-muted',
+                  active ? 'border-brand-border text-brand-text' : 'border-transparent text-neutral-400 hover:text-muted',
                 )}
               >
                 {t}

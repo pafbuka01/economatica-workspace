@@ -15,7 +15,7 @@ import avatarImg from '@/assets/avatar.png'
 function MetaItem({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2 px-6 first:pl-0 sm:first:pl-6">
-      <p className="text-[12.25px] font-medium leading-5 text-[#6b7280]">{label}</p>
+      <p className="text-[12.25px] font-medium leading-5 text-muted">{label}</p>
       <div className="flex h-6 items-center gap-2">{children}</div>
     </div>
   )
@@ -73,7 +73,7 @@ function StatusBadge({ status }: { status: 'success' | 'error' }) {
     <span
       className={cn(
         'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium leading-4',
-        status === 'success' ? 'bg-[#dcfce7] text-[#16a34a]' : 'bg-[#fee2e2] text-[#dc2626]',
+        status === 'success' ? 'bg-badge-pos-bg text-badge-pos-text' : 'bg-badge-neg-bg text-badge-neg-text',
       )}
     >
       {status === 'success' ? 'Sucesso' : 'Erro'}
@@ -97,7 +97,7 @@ export function CallHistory({ apiId }: { apiId: string }) {
           </thead>
           <tbody>
             {apiCallHistory.map((call) => (
-              <tr key={call.id} className="border-t border-line even:bg-[#f9fafb]">
+              <tr key={call.id} className="border-t border-line even:bg-zebra">
                 <td className="w-[34%] px-4 py-3.5 text-sm leading-5 text-ink">{apiId}</td>
                 <td className="w-[15%] px-4 py-3">
                   <StatusBadge status={call.status} />
@@ -126,9 +126,9 @@ function ConfigField({
 }) {
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-2">
-      <p className="flex items-center gap-1.5 text-xs font-semibold uppercase text-[#6b7280]">
+      <p className="flex items-center gap-1.5 text-xs font-semibold uppercase text-muted">
         {label}
-        {hint && <HelpCircle className="size-3.5 text-[#6b7280]" aria-hidden />}
+        {hint && <HelpCircle className="size-3.5 text-muted" aria-hidden />}
       </p>
       {children}
     </div>
@@ -137,7 +137,7 @@ function ConfigField({
 
 function CodeValue({ children }: { children: string }) {
   return (
-    <p className="w-full break-all rounded-[4px] bg-[#f3f4f6] px-2 py-1 font-mono text-sm text-ink">
+    <p className="w-full break-all rounded-[4px] bg-code-bg px-2 py-1 font-mono text-sm text-ink">
       {children}
     </p>
   )
@@ -147,7 +147,7 @@ function Configuration() {
   return (
     <section className="flex flex-col gap-4">
       <h2 className="text-base font-bold leading-6 text-ink">Configuração</h2>
-      <div className="flex flex-col gap-8 rounded-[12px] border border-line bg-white p-6">
+      <div className="flex flex-col gap-8 rounded-[12px] border border-line bg-surface p-6">
         <div className="flex flex-col gap-8 sm:flex-row sm:gap-12">
           <ConfigField label="Endpoint URL">
             <CodeValue>{apiConfig.endpoint}</CodeValue>

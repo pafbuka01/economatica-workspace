@@ -26,7 +26,7 @@ const sizeStyles: Record<ButtonSize, string> = {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-ink hover:bg-accent/85', // verde-limão
+  primary: 'bg-accent text-on-accent hover:bg-accent/85', // verde-limão
   secondary: 'bg-neutral-200 text-ink hover:bg-neutral-300',
 }
 

@@ -18,7 +18,7 @@ export function McpLibrary() {
             className={cn(
               'shrink-0 border-b pb-2 pt-1 text-sm font-medium transition-colors',
               tab === t
-                ? 'border-brand text-brand'
+                ? 'border-brand-border text-brand-text'
                 : 'border-transparent text-neutral-400 hover:text-muted',
             )}
           >

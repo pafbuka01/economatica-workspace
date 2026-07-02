@@ -26,7 +26,7 @@ function SetupIcon({ kind }: { kind: SetupIconKind }) {
     return (
       <div className="flex shrink-0 items-center">
         <IconBox className="-mr-2">
-          <img src={chatgptLogo} alt="" className="size-4" />
+          <img src={chatgptLogo} alt="" className="size-4 dark:invert" />
         </IconBox>
         <IconBox className="-mr-2">
           <img src={claudeLogo} alt="" className="size-4" />
@@ -47,13 +47,13 @@ function SetupIcon({ kind }: { kind: SetupIconKind }) {
   if (kind === 'terminal') {
     return (
       <IconBox>
-        <SetupTerminalIcon className="size-4 text-brand" aria-hidden />
+        <SetupTerminalIcon className="size-4 text-brand-text" aria-hidden />
       </IconBox>
     )
   }
   return (
     <IconBox>
-      <SetupCodeIcon className="size-4 text-brand" aria-hidden />
+      <SetupCodeIcon className="size-4 text-brand-text" aria-hidden />
     </IconBox>
   )
 }
@@ -63,7 +63,7 @@ export function SetupChecklist() {
     <section className="flex flex-col gap-4">
       <h2 className="text-base font-bold leading-6 text-ink">Setup inicial</h2>
 
-      <div className="rounded-[16px] border border-line bg-white p-4">
+      <div className="rounded-[16px] border border-line bg-surface p-4">
         {setupItems.map((item, i) => (
           <div key={item.to}>
             {i > 0 && <div className="my-4 border-t border-line" />}

@@ -18,7 +18,7 @@ export function PromptCard({ prompt }: { prompt: LibraryPrompt }) {
           {prompt.tags.map((t) => (
             <span
               key={t}
-              className="rounded-[6px] bg-white px-1.5 py-1 text-[12px] font-medium leading-4 text-muted"
+              className="rounded-[6px] bg-surface px-1.5 py-1 text-[12px] font-medium leading-4 text-muted"
             >
               {t}
             </span>
@@ -28,7 +28,7 @@ export function PromptCard({ prompt }: { prompt: LibraryPrompt }) {
         <p className="text-sm leading-5 text-muted">{prompt.description}</p>
       </div>
 
-      <div className="rounded-[6px] border border-line border-l-2 border-l-cyan-500 bg-white px-3 py-2.5">
+      <div className="rounded-[6px] border border-line border-l-2 border-l-cyan-500 bg-surface px-3 py-2.5">
         <p className="line-clamp-2 font-mono text-[12.25px] leading-5 text-muted">
           {prompt.prompt}
         </p>
@@ -37,7 +37,7 @@ export function PromptCard({ prompt }: { prompt: LibraryPrompt }) {
       <button
         type="button"
         onClick={copy}
-        className="mt-auto inline-flex h-8 items-center justify-center gap-2 self-start rounded-[4px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
+        className="mt-auto inline-flex h-8 items-center justify-center gap-2 self-start rounded-[4px] bg-accent px-3 text-sm font-medium text-on-accent transition duration-150 hover:bg-accent/85 active:scale-[0.98]"
       >
         {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
         {copied ? 'Copiado!' : 'Copiar prompt'}

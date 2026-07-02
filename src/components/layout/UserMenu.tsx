@@ -19,24 +19,39 @@ function Avatar({ size = 40 }: { size?: number }) {
   )
 }
 
+function applyTheme(value: 'light' | 'dark') {
+  document.documentElement.classList.toggle('dark', value === 'dark')
+  try {
+    localStorage.setItem('theme', value)
+  } catch {
+    /* armazenamento indisponível (modo privado etc.) — só não persiste */
+  }
+}
+
 function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+  )
+  const select = (value: 'light' | 'dark') => {
+    setTheme(value)
+    applyTheme(value)
+  }
   const option = (value: 'light' | 'dark', Icon: typeof Sun, label: string) => (
     <button
       type="button"
       aria-label={label}
       aria-pressed={theme === value}
-      onClick={() => setTheme(value)}
+      onClick={() => select(value)}
       className={cn(
         'flex h-7 items-center justify-center rounded-full px-2 transition duration-150',
-        theme === value ? 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]' : 'hover:bg-white/50',
+        theme === value ? 'bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.1)]' : 'hover:bg-surface/50',
       )}
     >
       <Icon className="size-4 text-ink" aria-hidden />
     </button>
   )
   return (
-    <div className="flex h-8 shrink-0 items-center rounded-full bg-[#edeff2] p-0.5">
+    <div className="flex h-8 shrink-0 items-center rounded-full bg-elevated p-0.5">
       {option('light', Sun, 'Tema claro')}
       {option('dark', Moon, 'Tema escuro')}
     </div>
@@ -52,7 +67,7 @@ function MenuRow({ label, onClick, danger }: { label: string; onClick?: () => vo
     >
       <span className="text-sm font-semibold leading-6 text-ink">{label}</span>
       {danger ? (
-        <LogOut className="size-5 text-[#dc2626]" aria-hidden />
+        <LogOut className="size-5 text-danger-text" aria-hidden />
       ) : (
         <ChevronRight className="size-5 text-ink" aria-hidden />
       )}
@@ -105,7 +120,7 @@ function SecondaryButton({ children }: { children: string }) {
 
 function Dropdown() {
   return (
-    <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-[370px] max-w-[calc(100vw-32px)] animate-pop overflow-hidden rounded-[12px] border border-line bg-white shadow-[0px_2.7px_9px_rgba(0,0,0,0.13),0px_9.4px_24px_rgba(0,0,0,0.09),0px_21.8px_43px_rgba(0,0,0,0.08)]">
+    <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-[370px] max-w-[calc(100vw-32px)] animate-pop overflow-hidden rounded-[12px] border border-line bg-surface shadow-[0px_2.7px_9px_rgba(0,0,0,0.13),0px_9.4px_24px_rgba(0,0,0,0.09),0px_21.8px_43px_rgba(0,0,0,0.08)]">
       <div className="max-h-[calc(100dvh-96px)] overflow-y-auto [scrollbar-width:thin]">
         {/* Usuário */}
         <div className="flex items-center gap-3 border-b border-line p-4">

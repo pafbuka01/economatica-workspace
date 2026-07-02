@@ -17,7 +17,7 @@ function Banner() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-3 sm:items-center">
           <div className="flex size-[55px] shrink-0 items-center justify-center rounded-[12px] bg-accent">
-            <TeMarkIcon className="h-[22px] w-[30px] text-ink" aria-hidden />
+            <TeMarkIcon className="h-[22px] w-[30px] text-on-accent" aria-hidden />
           </div>
           <div className="min-w-0">
             <h1 className="text-[22px] font-bold leading-6 text-ink">Terminal</h1>
@@ -29,7 +29,7 @@ function Banner() {
         </div>
         <button
           type="button"
-          className="group inline-flex h-10 min-w-[112px] shrink-0 items-center justify-center gap-2 self-start rounded-[6px] bg-accent px-3 text-sm font-medium text-ink transition duration-150 hover:bg-accent/85 active:scale-[0.98] sm:self-auto"
+          className="group inline-flex h-10 min-w-[112px] shrink-0 items-center justify-center gap-2 self-start rounded-[6px] bg-accent px-3 text-sm font-medium text-on-accent transition duration-150 hover:bg-accent/85 active:scale-[0.98] sm:self-auto"
         >
           Acessar
           <ArrowUpRight
