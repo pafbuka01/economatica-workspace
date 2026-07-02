@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { TutorialCard } from '@/features/terminal/TutorialCard'
@@ -5,8 +6,17 @@ import { UpdatesPanel } from '@/features/terminal/UpdatesPanel'
 import { terminalStats, tutorials } from '@/data/terminal'
 import { TeMarkIcon } from '@/lib/icons'
 import bannerImg from '@/assets/terminal-banner.png'
+import { AccessSheet } from '@/features/product-access/AccessSheet'
+import { requestDirectAccess } from '@/features/product-access/access'
 
 function Banner() {
+  // Desktop abre o Terminal web em nova aba; mobile abre o sheet app/loja.
+  const [accessSheet, setAccessSheet] = useState(false)
+
+  const access = () => {
+    if (!requestDirectAccess('terminal')) setAccessSheet(true)
+  }
+
   return (
     <section className="flex flex-col gap-4">
       <img
@@ -29,6 +39,7 @@ function Banner() {
         </div>
         <button
           type="button"
+          onClick={access}
           className="group inline-flex h-10 min-w-[112px] shrink-0 items-center justify-center gap-2 self-start rounded-[6px] bg-accent px-3 text-sm font-medium text-on-accent transition duration-150 hover:bg-accent/85 active:scale-[0.98] sm:self-auto"
         >
           Acessar
@@ -38,6 +49,8 @@ function Banner() {
           />
         </button>
       </div>
+
+      {accessSheet && <AccessSheet product="terminal" onClose={() => setAccessSheet(false)} />}
     </section>
   )
 }

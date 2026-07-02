@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { ArrowUpRight } from 'lucide-react'
 import type { IconComponent } from '@/lib/types'
 import { cn } from '@/lib/cn'
 import { DotStatusIcon, LockIcon } from '@/lib/icons'
@@ -17,6 +18,11 @@ export interface NavItemProps {
   indent?: boolean
   /** Disparado ao clicar (ex.: fechar o drawer mobile). */
   onClick?: () => void
+  /**
+   * Atalho externo: em vez de navegar, dispara esta ação (ex.: abrir o
+   * login de um produto). Renderiza com a seta de link externo à direita.
+   */
+  onActivate?: () => void
 }
 
 /** Item de navegação da sidebar, com estados ativo / idle / desabilitado. */
@@ -29,11 +35,31 @@ export function NavItem({
   disabled,
   indent,
   onClick,
+  onActivate,
 }: NavItemProps) {
   const row = cn(
     'flex items-center gap-2 rounded-lg border',
     indent ? 'py-[7px] pl-[33px] pr-[9px]' : 'px-[9px] py-[11px]',
   )
+
+  if (onActivate) {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          onActivate()
+          onClick?.()
+        }}
+        className={cn(row, 'w-full border-transparent text-left transition-colors hover:bg-neutral-100')}
+      >
+        <span className="flex size-4 shrink-0 items-center justify-center text-muted">
+          <Icon className="size-full" aria-hidden />
+        </span>
+        <span className="flex-1 truncate text-sm font-medium leading-[21px] text-muted">{label}</span>
+        <ArrowUpRight className="size-4 shrink-0 text-subdued" aria-hidden />
+      </button>
+    )
+  }
 
   if (disabled) {
     return (
