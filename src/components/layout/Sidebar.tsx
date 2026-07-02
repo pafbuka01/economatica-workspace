@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { cn } from '@/lib/cn'
 import { LogoIcon, DotStatusIcon } from '@/lib/icons'
 import { navGroups } from '@/data/navigation'
 import { NavItem } from '@/components/ui/NavItem'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ProgressBar } from '@/components/ui/ProgressBar'
+import { AccessSheet } from '@/features/product-access/AccessSheet'
+import { requestDirectAccess, type ProductAccess } from '@/features/product-access/access'
 
 /** Borda sutil usada no header do logo. */
 const HAIRLINE = 'border-hairline'
@@ -24,6 +27,13 @@ function TrialCard() {
 }
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  // Sheet mobile dos atalhos de acesso (Plataforma desktop-only, Terminal app/loja)
+  const [accessSheet, setAccessSheet] = useState<ProductAccess | null>(null)
+
+  const openAccess = (product: ProductAccess) => {
+    if (!requestDirectAccess(product)) setAccessSheet(product)
+  }
+
   return (
     <nav
       aria-label="Navegação do workspace"
@@ -44,8 +54,13 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         {navGroups.map((group, i) => (
           <div key={group.label ?? `group-${i}`} className="flex shrink-0 flex-col gap-0.5">
             {group.label && <SectionLabel className="mb-0.5">{group.label}</SectionLabel>}
-            {group.items.map((item) => (
-              <NavItem key={item.to} {...item} onClick={onNavigate} />
+            {group.items.map(({ external, ...item }) => (
+              <NavItem
+                key={item.to}
+                {...item}
+                onClick={onNavigate}
+                onActivate={external ? () => openAccess(external) : undefined}
+              />
             ))}
           </div>
         ))}
@@ -55,6 +70,8 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       <div className="shrink-0 pt-1">
         <TrialCard />
       </div>
+
+      {accessSheet && <AccessSheet product={accessSheet} onClose={() => setAccessSheet(null)} />}
     </nav>
   )
 }

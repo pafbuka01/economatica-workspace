@@ -24,6 +24,8 @@ export interface NavEntry {
   disabled?: boolean
   /** Sub-item indentado sob o item anterior. */
   indent?: boolean
+  /** Atalho externo: abre o login do produto em vez de navegar. */
+  external?: 'plataforma' | 'terminal'
 }
 
 export interface NavGroup {
@@ -47,7 +49,7 @@ export const navGroups: NavGroup[] = [
       { to: '/kento-mcp', label: 'Conexões', icon: KentoMcpIcon, indent: true },
       { to: '/terminal', label: 'Terminal Economatica', icon: TerminalIcon, showDot: true },
       { to: '/apis', label: 'APIs Economatica', icon: ApisIcon, showDot: true },
-      { to: '/plataforma', label: 'Plataforma', icon: PlataformaIcon, disabled: true },
+      { to: '/plataforma', label: 'Plataforma', icon: PlataformaIcon, external: 'plataforma' },
       { to: '/excel', label: 'Excel Add-in', icon: ExcelIcon, disabled: true, indent: true },
     ],
   },
