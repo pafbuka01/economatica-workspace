@@ -119,8 +119,14 @@
  * As utilities (bg-canvas, text-ink, …) leem estas variáveis, então
  * sobrescrevê-las aqui aplica o tema ao sistema inteiro.
  * ------------------------------------------------------------------ */
+:root {
+  /* Halo dos dots de status (lido pelos SVGs dot-status/dot-connected) */
+  --dot-ring: #dcfae6;
+}
+
 .dark {
   color-scheme: dark;
+  --dot-ring: rgba(23, 178, 106, 0.3); /* halo discreto sobre superfícies escuras */
 
   --color-canvas: #0b0e0f; /* background/canvas */
   --color-surface: #14181a; /* background/surface */

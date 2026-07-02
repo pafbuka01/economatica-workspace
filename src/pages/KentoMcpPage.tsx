@@ -34,7 +34,7 @@ function MetricsRow({ metrics, className }: { metrics: Metric[]; className?: str
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-[22px] font-bold leading-6 text-ink">{m.value}</p>
             {m.trend && (
-              <span className="flex items-center gap-1 rounded-full bg-success-bg px-1.5 py-1 text-xs font-medium leading-4 text-positive-text">
+              <span className="flex items-center gap-1 rounded-full bg-badge-pos-bg px-1.5 py-1 text-xs font-medium leading-4 text-badge-pos-text">
                 {m.trend !== 'Excelente' && <ArrowUp className="size-3" aria-hidden />}
                 {m.trend}
               </span>
