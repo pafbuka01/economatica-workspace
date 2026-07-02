@@ -57,8 +57,8 @@ export function AppShell() {
         <div className="relative z-10 flex min-h-0 flex-1 flex-col">
           <Topbar onMenuClick={() => setNavOpen(true)} />
           <main className="min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
-            {/* key por rota: re-monta com um fade+rise curto a cada navegação */}
-            <div key={pathname} className="h-full animate-page">
+            {/* pt compensa o header flutuante; key por rota re-monta com fade+rise */}
+            <div key={pathname} className="h-full animate-page pt-[60px]">
               <Outlet />
             </div>
           </main>

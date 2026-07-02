@@ -11,12 +11,14 @@ import { SparkleIcon } from '@/lib/icons'
  * (fill SHADER, opacidade 30%): teal dominante, lime no canto superior
  * direito e verde-água à esquerda, desvanecendo para baixo. Os blobs
  * derivam lentamente (animação desligada em prefers-reduced-motion).
+ * O -top-[60px] anula o pt do header flutuante: o glow nasce no topo
+ * real da viewport e passa por trás do vidro do Topbar.
  */
 function HeroGlow() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 h-[363px] overflow-hidden opacity-30 dark:opacity-20 [mask-image:linear-gradient(to_bottom,black_30%,transparent_100%)]"
+      className="pointer-events-none absolute inset-x-0 -top-[60px] h-[363px] overflow-hidden opacity-30 dark:opacity-20 [mask-image:linear-gradient(to_bottom,black_30%,transparent_100%)]"
     >
       <div className="absolute -top-40 left-[-12%] h-[430px] w-[70%] animate-blob-1 rounded-full bg-[#33bcb7] blur-[100px]" />
       <div className="absolute -top-44 right-[-8%] h-[400px] w-[42%] animate-blob-2 rounded-full bg-[#cede33] blur-[110px]" />

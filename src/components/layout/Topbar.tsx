@@ -28,8 +28,9 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { pathname } = useLocation()
   const title = titleByPath.get(pathname) ?? 'Home'
 
+  // Flutua sobre o conteúdo: vidro fosco mantém o contraste sobre o glow da Home
   return (
-    <header className="h-[60px] shrink-0">
+    <header className="absolute inset-x-0 top-0 z-20 h-[60px] bg-canvas/70 backdrop-blur-md backdrop-saturate-150 dark:bg-canvas/40">
       <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-2 px-4 sm:px-10">
         <div className="flex min-w-0 items-center gap-1.5">
           <button
