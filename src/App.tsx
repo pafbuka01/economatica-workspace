@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import type { ReactNode } from 'react'
 import { AppShell } from '@/components/layout/AppShell'
 import { HomePage } from '@/pages/HomePage'
 import { KentoChatPage } from '@/pages/KentoChatPage'
@@ -8,6 +9,8 @@ import { ApisPage } from '@/pages/ApisPage'
 import { SkillsPage } from '@/pages/SkillsPage'
 import { UsersPage } from '@/pages/UsersPage'
 import { PlaceholderPage } from '@/pages/PlaceholderPage'
+import { OnboardingPage } from '@/pages/OnboardingPage'
+import { isOnboardingComplete } from '@/features/onboarding/profile-store'
 import { navGroups } from '@/data/navigation'
 
 // Rotas com página própria — excluídas do gerador de stubs.
@@ -16,10 +19,30 @@ const stubRoutes = navGroups
   .flatMap((group) => group.items)
   .filter((item) => !explicitPaths.has(item.to))
 
+/**
+ * Todo acesso ao link entra pelo onboarding (mock, sem persistência entre
+ * visitas): enquanto a qualificação não for concluída na sessão, qualquer
+ * rota do shell redireciona para /onboarding. "Avançar" leva à Home.
+ */
+function OnboardingGate({ children }: { children: ReactNode }) {
+  const location = useLocation()
+  if (!isOnboardingComplete()) {
+    return <Navigate to="/onboarding" replace state={{ from: location.pathname }} />
+  }
+  return children
+}
+
 export default function App() {
   return (
     <Routes>
-      <Route element={<AppShell />}>
+      <Route path="onboarding" element={<OnboardingPage />} />
+      <Route
+        element={
+          <OnboardingGate>
+            <AppShell />
+          </OnboardingGate>
+        }
+      >
         <Route index element={<HomePage />} />
         <Route path="kento-chat" element={<KentoChatPage />} />
         <Route path="kento-mcp" element={<KentoMcpPage />} />
