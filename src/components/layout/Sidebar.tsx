@@ -1,30 +1,25 @@
-import { ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/cn'
-import { LogoIcon } from '@/lib/icons'
+import { LogoIcon, DotStatusIcon } from '@/lib/icons'
 import { navGroups } from '@/data/navigation'
 import { NavItem } from '@/components/ui/NavItem'
 import { SectionLabel } from '@/components/ui/SectionLabel'
+import { ProgressBar } from '@/components/ui/ProgressBar'
 
 /** Borda sutil usada no header do logo. */
 const HAIRLINE = 'border-[rgba(12,28,24,0.12)]'
 
-function ProfileCard() {
+function TrialCard() {
   return (
-    <button
-      type="button"
-      className="flex w-full items-center gap-1.5 rounded-[8px] border border-line bg-elevated p-[9px] text-left transition-colors hover:bg-neutral-200/60"
-    >
-      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent">
-        <span className="text-sm font-semibold text-ink">PA</span>
+    <div className="flex w-full flex-col gap-1.5 rounded-[8px] border border-line bg-elevated p-[9px]">
+      <div className="flex flex-col gap-0.5">
+        <div className="flex items-center justify-between">
+          <p className="text-xs leading-4 text-muted">Trial de 7 dias</p>
+          <DotStatusIcon className="size-2 shrink-0" aria-hidden />
+        </div>
+        <p className="text-sm font-medium leading-[21px] text-ink">5 dias restantes</p>
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium leading-[21px] text-ink">
-          Pedro Albuquerque
-        </p>
-        <p className="truncate text-xs leading-4 text-muted">Plano Kento Pro</p>
-      </div>
-      <ChevronsUpDown className="size-4 shrink-0 text-muted" aria-hidden />
-    </button>
+      <ProgressBar value={71} className="w-full" />
+    </div>
   )
 }
 
@@ -56,9 +51,9 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </div>
 
-      {/* Perfil — sempre visível no rodapé */}
+      {/* Trial — sempre visível no rodapé */}
       <div className="shrink-0 pt-1">
-        <ProfileCard />
+        <TrialCard />
       </div>
     </nav>
   )

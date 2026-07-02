@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { TutorialCard } from '@/features/terminal/TutorialCard'
 import { ApiCard } from '@/features/apis/ApiCard'
-import { ApiDetail } from '@/features/apis/ApiDetail'
+import { ApiDetail, CallHistory } from '@/features/apis/ApiDetail'
 import { apiServices, apiTutorials } from '@/data/apis'
 import { ApisIcon } from '@/lib/icons'
 import bannerImg from '@/assets/apis-banner.png'
@@ -83,13 +83,15 @@ export function ApisPage() {
         ) : (
           <>
             <section className="flex flex-col gap-4">
-              <h2 className="text-base font-bold leading-6 text-ink">APIs disponíveis</h2>
+              <h2 className="text-base font-bold leading-6 text-ink">Status</h2>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {apiServices.map((api) => (
                   <ApiCard key={api.id} api={api} onDetails={setActiveTab} />
                 ))}
               </div>
             </section>
+
+            <CallHistory apiId="api/news" />
 
             <section className="flex flex-col gap-4">
               <h2 className="text-base font-bold leading-6 text-ink">Tutoriais</h2>

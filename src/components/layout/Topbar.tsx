@@ -3,6 +3,8 @@ import { Menu } from 'lucide-react'
 import { navGroups } from '@/data/navigation'
 import { BreadcrumbHomeIcon } from '@/lib/icons'
 import { ProgressBar } from '@/components/ui/ProgressBar'
+import avatarPhoto from '@/assets/avatar.png'
+import faviconBadge from '@/assets/favicon-badge.png'
 
 const titleByPath = new Map(
   navGroups.flatMap((g) => g.items).map((i) => [i.to, i.label]),
@@ -10,10 +12,24 @@ const titleByPath = new Map(
 
 function TrialStatus() {
   return (
-    <div className="hidden shrink-0 items-center gap-2 sm:flex">
-      <span className="text-sm font-semibold leading-5 text-teal-500">Trial ativo</span>
-      <span className="text-sm leading-5 text-subdued">7 dias</span>
-      <ProgressBar value={60} className="w-[116px]" />
+    <div className="flex shrink-0 items-center gap-2">
+      <div className="hidden items-center gap-2 sm:flex">
+        <span className="text-sm font-semibold leading-5 text-teal-500">Trial</span>
+        <span className="whitespace-nowrap text-sm leading-5 text-subdued">
+          5 dias restantes
+        </span>
+        <ProgressBar value={71} className="w-[116px]" />
+      </div>
+      <button type="button" className="relative shrink-0" aria-label="Conta">
+        <img
+          src={avatarPhoto}
+          alt="Pedro Albuquerque"
+          className="size-10 rounded-full object-cover"
+        />
+        <span className="absolute -bottom-px -right-px flex size-4 items-center justify-center overflow-hidden rounded-[4px] bg-white">
+          <img src={faviconBadge} alt="" className="size-4" />
+        </span>
+      </button>
     </div>
   )
 }

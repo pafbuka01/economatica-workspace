@@ -81,7 +81,7 @@ function StatusBadge({ status }: { status: 'success' | 'error' }) {
   )
 }
 
-function CallHistory({ apiId }: { apiId: string }) {
+export function CallHistory({ apiId }: { apiId: string }) {
   return (
     <section className="flex flex-col gap-4">
       <h2 className="text-base font-bold leading-6 text-ink">Histórico de chamadas</h2>
