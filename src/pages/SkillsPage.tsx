@@ -5,16 +5,85 @@ import { CarouselSection } from '@/features/library/CarouselSection'
 import { PromptCard } from '@/features/library/PromptCard'
 import { SkillCard } from '@/features/library/SkillCard'
 import { ArtifactCard } from '@/features/library/ArtifactCard'
-import { libraryPrompts, librarySkills, libraryArtifacts } from '@/data/library'
+import { RecommendationCard } from '@/features/library/RecommendationCard'
+import { ToolCard } from '@/features/library/ToolCard'
+import { useLibraryRecommendations } from '@/features/library/useLibraryRecommendations'
+import { libraryPrompts, librarySkills, libraryArtifacts, libraryTools } from '@/data/library'
+import { qualificationChannels, qualificationRoles } from '@/features/onboarding/catalogs'
+import { getDeclaredProfile, preferredChannelOf } from '@/features/onboarding/profile-store'
 
 const tabs = ['Pra você', 'Prompts', 'Skills', 'Artefatos', 'Ferramentas']
 
 /** Largura fixa dos cards nos carrosséis (comp: 360px). */
 const CARD = 'w-[360px] shrink-0 snap-start'
 
+const filterSelectClasses =
+  'h-8 rounded-[6px] border border-line bg-surface px-2 text-[12.5px] font-medium text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent'
+
+/**
+ * Recomendações filtradas pelo perfil declarado no primeiro acesso.
+ * O filtro consulta o BFF (userbffapi v4) e cai no motor local com o
+ * mesmo catálogo quando o BFF não está disponível.
+ */
+function RecommendedForProfile() {
+  const declared = getDeclaredProfile()
+  const [role, setRole] = useState(declared.role)
+  const [channel, setChannel] = useState(preferredChannelOf(declared))
+  const { data, loading, error, recordEvent } = useLibraryRecommendations({
+    role,
+    preferredChannel: channel,
+    isCurrentCustomer: true,
+  })
+
+  return (
+    <section className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-base font-bold leading-6 text-ink">Recomendados para seu perfil</h2>
+          <p className="mt-0.5 text-[12px] leading-4 text-subdued">
+            {loading ? 'Atualizando recomendações…' : `Fonte: ${data.source === 'bff' ? 'BFF' : 'local'} · ${data.recommendationVersion}`}
+            {error ? ' · fallback local ativo' : ''}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-1.5 text-[12px] font-medium text-muted">
+            Perfil
+            <select className={filterSelectClasses} value={role} onChange={(e) => setRole(e.target.value)}>
+              {qualificationRoles.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-1.5 text-[12px] font-medium text-muted">
+            Canal
+            <select className={filterSelectClasses} value={channel} onChange={(e) => setChannel(e.target.value)}>
+              {qualificationChannels.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div className="-mr-4 -mt-1 flex snap-x gap-3 overflow-x-auto pb-1 pr-4 pt-1 sm:-mr-10 sm:pr-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {data.recommendedObjects.map((rec) => (
+          <div key={rec.id} className={CARD}>
+            <RecommendationCard
+              recommendation={rec}
+              onOpen={(r) => void recordEvent({ objectId: r.id, channel: r.channels[0] ?? 'Biblioteca', eventType: 'recommendation_clicked' })}
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function ForYou() {
   return (
     <>
+      <RecommendedForProfile />
+
       <CarouselSection title="Prompts mais usados">
         {libraryPrompts.map((p) => (
           <div key={p.title} className={CARD}>
@@ -105,9 +174,11 @@ export function SkillsPage() {
           </Grid>
         )}
         {activeTab === 'Ferramentas' && (
-          <p className="text-sm leading-6 text-muted">
-            Nenhuma ferramenta disponível ainda.
-          </p>
+          <Grid>
+            {libraryTools.map((t) => (
+              <ToolCard key={t.name} tool={t} />
+            ))}
+          </Grid>
         )}
       </div>
     </PageContainer>

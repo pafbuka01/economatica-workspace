@@ -58,6 +58,24 @@ export const libraryPrompts: LibraryPrompt[] = [
     description: 'Acompanha proventos anunciados e projeta o fluxo de recebimentos da carteira.',
     prompt: 'Liste os próximos dividendos anunciados das ações da minha carteira e o yield projetado.',
   },
+  {
+    tags: ['Prompt'],
+    title: 'Debêntures em atenção',
+    description: 'Radar de crédito privado: emissores com piora recente de notícias e prêmio acima do CDI.',
+    prompt: 'Liste debêntures de emissores com piora recente de notícias e prêmio acima do CDI, com emissor, vencimento, duration, garantia e risco.',
+  },
+  {
+    tags: ['Prompt', 'Workflow'],
+    title: 'Fundos com sobreposição',
+    description: 'Compara fundos por performance, risco e sobreposição de carteira antes de alocar.',
+    prompt: 'Compare estes fundos por performance, risco, drawdown e sobreposição de carteira, destacando concentração e liquidez.',
+  },
+  {
+    tags: ['Prompt'],
+    title: 'Prévia de resultado',
+    description: 'What to watch antes do balanço: consenso, histórico recente, sentimento e riscos.',
+    prompt: 'Prepare uma prévia de resultado para a empresa, com o que observar, consenso quando disponível, histórico recente, sentimento e riscos principais.',
+  },
 ]
 
 export interface LibrarySkill {
@@ -107,6 +125,21 @@ export const librarySkills: LibrarySkill[] = [
     category: 'Rotina e cobertura',
     name: 'macro-briefing',
     description: 'Briefing macro com Selic, IPCA, câmbio e agenda da semana em 5 minutos.',
+  },
+  {
+    category: 'Rotina e cobertura',
+    name: 'thesis-tracker',
+    description: 'Acompanha uma tese com notícias, tendência de sentimento e eventos relevantes.',
+  },
+  {
+    category: 'Análise e valuation',
+    name: 'earnings-preview',
+    description: 'What to watch antes do resultado, com consenso quando disponível e histórico recente.',
+  },
+  {
+    category: 'Análise e valuation',
+    name: 'fundamental-snapshot',
+    description: 'Resumo fundamentalista de uma ação com indicadores, balanço, retornos e liquidez.',
   },
 ]
 
@@ -166,5 +199,91 @@ export const libraryArtifacts: LibraryArtifact[] = [
     description: 'Selic, IPCA, câmbio e atividade em um painel único e atualizado.',
     prompt: 'Crie um artefato HTML self-contained em PT-BR com dashboard macro do Brasil (juros, inflação, câmbio).',
     image: artifact1,
+  },
+  {
+    title: 'Backtest de carteira',
+    description: 'Carteira vs IBOV e CDI com retorno, volatilidade, drawdown, Sharpe e contribuição por ativo.',
+    prompt: 'Monte um painel de backtest da carteira contra IBOV e CDI, com base 100, cards de métricas e tabela de contribuição.',
+    image: artifact2,
+  },
+  {
+    title: 'Otimizador de carteira',
+    description: 'Otimização de carteira com restrições por ativo, risco, retorno esperado e benchmark.',
+    prompt: 'Crie um otimizador de carteira com restrições por ativo, comparação contra benchmark e fronteira eficiente.',
+    image: artifact1,
+  },
+  {
+    title: 'Screener de notícias',
+    description: 'Sentimento, urgência, relevância, clusters e tickers mais citados no noticiário.',
+    prompt: 'Mostre distribuição de sentimento, urgência e clusters de notícias dos tickers monitorados nos últimos 30 dias.',
+    image: artifact2,
+  },
+]
+
+export interface LibraryTool {
+  category: string
+  name: string
+  description: string
+  prompt: string
+  required: string
+}
+
+/** Ferramentas de dados do conector MCP — mesmo catálogo do protótipo. */
+export const libraryTools: LibraryTool[] = [
+  {
+    category: 'Notícias',
+    name: 'news_search',
+    description: 'Busca notícias por ticker, setor, fonte, período ou texto livre.',
+    prompt: 'Quais notícias da Petrobras na última semana sobre dividendos?',
+    required: 'Notícias',
+  },
+  {
+    category: 'Notícias',
+    name: 'news_sentiment_overview',
+    description: 'Resume sentimento positivo, neutro e negativo por ticker, fonte ou tema.',
+    prompt: 'Como está o sentimento de PETR4 vs PRIO3 nos últimos 30 dias?',
+    required: 'Notícias',
+  },
+  {
+    category: 'Calendário',
+    name: 'calendar_search',
+    description: 'Calendário econômico e corporativo, incluindo earnings, COPOM, IPCA, Fed, CPI e NFP.',
+    prompt: 'Quais resultados saem essa semana? E o próximo COPOM?',
+    required: 'Calendário',
+  },
+  {
+    category: 'IR',
+    name: 'news_ir_transcripts_search',
+    description: 'Busca trechos verbatim em calls de resultado com locutor e seção.',
+    prompt: 'O que o CFO da Vale falou sobre capex no 1T26?',
+    required: 'IR, Notícias',
+  },
+  {
+    category: 'Ações',
+    name: 'stocks_snapshot',
+    description: 'Snapshot fundamentalista, múltiplos, retornos, risco, momentum e liquidez.',
+    prompt: 'Mostre o snapshot fundamentalista de ITUB4.',
+    required: 'Ações',
+  },
+  {
+    category: 'Carteira',
+    name: 'portfolio_backtest',
+    description: 'Backtest de carteira contra benchmarks, com métricas e contribuição por ativo.',
+    prompt: 'Faça backtest desta carteira contra IBOV e CDI.',
+    required: 'Ações, Benchmarks',
+  },
+  {
+    category: 'Fundos',
+    name: 'funds_compare',
+    description: 'Compara fundos por performance, risco, carteira e sobreposição.',
+    prompt: 'Compare estes fundos por retorno, risco e sobreposição.',
+    required: 'Fundos',
+  },
+  {
+    category: 'Crédito',
+    name: 'credit_issuer_risk',
+    description: 'Cruza balanço, emissões, notícias, covenants e risco do emissor.',
+    prompt: 'Quais emissores tiveram piora de risco e notícias negativas?',
+    required: 'Crédito, Debêntures',
   },
 ]
