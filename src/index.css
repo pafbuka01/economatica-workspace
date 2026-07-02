@@ -201,6 +201,53 @@
   --color-danger-text: #d1453b; /* text/negative */
 }
 
+/* ------------------------------------------------------------------ *
+ * Tema "Areia" — variação experimental do light para teste A/B:
+ * canvas creme, superfícies brancas e verde esmeralda no lugar do
+ * lime (paleta amostrada do mock de referência). Terceira opção no
+ * toggle de tema do menu do usuário.
+ * ------------------------------------------------------------------ */
+.sand {
+  --color-canvas: #f2f0e5; /* creme */
+  --color-surface: #ffffff;
+  --color-elevated: #ece9dc;
+  --color-line: #e0dccb;
+  --color-hairline: rgba(18, 27, 22, 0.12);
+
+  --color-ink: #14201a; /* preto esverdeado */
+  --color-ink-strong: #0f1b14;
+  --color-muted: #6b7266;
+  --color-subdued: #a5a496;
+  --color-nav: #465046;
+  --color-nav-label: #8b9082;
+  --color-disabled: #c5c1b0;
+
+  --color-accent: #12905e; /* botão primário: verde esmeralda */
+  --color-on-accent: #ffffff; /* texto branco sobre o verde */
+  --color-brand: #162520; /* verde-preto (tiles/botões escuros) */
+  --color-brand-text: #0d6e46;
+  --color-brand-border: #12905e;
+
+  --color-sel-bg: #e7f2ea; /* nav ativo */
+  --color-sel-border: #9ecbaf;
+  --color-sel-text: #14532d;
+
+  --color-teal-400: #3faf7f; /* Trial e progress viram verdes */
+  --color-teal-500: #12905e;
+  --color-cyan-400: #34a97b; /* gradiente do Kento e gráficos */
+  --color-cyan-500: #12905e;
+  --color-positive-text: #12905e;
+
+  --color-neutral-100: #edeadd; /* hovers e botões neutros aquecidos */
+  --color-neutral-200: #e0dccb;
+  --color-neutral-300: #c9c5b2;
+  --color-neutral-400: #9b9a89;
+  --color-neutral-500: #6f6e5f;
+
+  --color-zebra: #f8f6ec;
+  --color-code-bg: #edeadd;
+}
+
 @layer base {
   html,
   body,

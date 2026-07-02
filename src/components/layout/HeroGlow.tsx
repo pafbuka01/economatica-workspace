@@ -19,7 +19,8 @@ export function HeroGlow({ show }: { show: boolean }) {
       )}
     >
       <div className="absolute -top-40 left-[-12%] h-[430px] w-[70%] animate-blob-1 rounded-full bg-[#33bcb7] blur-[100px]" />
-      <div className="absolute -top-44 right-[-8%] h-[400px] w-[42%] animate-blob-2 rounded-full bg-[#cede33] blur-[110px]" />
+      {/* bg-accent: lime no light/dark, verde esmeralda no tema areia */}
+      <div className="absolute -top-44 right-[-8%] h-[400px] w-[42%] animate-blob-2 rounded-full bg-accent blur-[110px]" />
       <div className="absolute top-2 left-[22%] h-[280px] w-[42%] animate-blob-3 rounded-full bg-[#77ccc9] blur-[90px]" />
     </div>
   )

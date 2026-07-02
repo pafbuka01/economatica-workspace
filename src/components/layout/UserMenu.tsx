@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChevronRight, Sun, Moon, LogOut } from 'lucide-react'
+import { ChevronRight, Sun, Moon, Leaf, LogOut } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import avatarPhoto from '@/assets/avatar.png'
 import faviconBadge from '@/assets/favicon-badge.png'
@@ -19,8 +19,11 @@ function Avatar({ size = 40 }: { size?: number }) {
   )
 }
 
-function applyTheme(value: 'light' | 'dark') {
+type Theme = 'light' | 'sand' | 'dark'
+
+function applyTheme(value: Theme) {
   document.documentElement.classList.toggle('dark', value === 'dark')
+  document.documentElement.classList.toggle('sand', value === 'sand')
   try {
     localStorage.setItem('theme', value)
   } catch {
@@ -29,14 +32,15 @@ function applyTheme(value: 'light' | 'dark') {
 }
 
 function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
-    document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-  )
-  const select = (value: 'light' | 'dark') => {
+  const [theme, setTheme] = useState<Theme>(() => {
+    const cl = document.documentElement.classList
+    return cl.contains('dark') ? 'dark' : cl.contains('sand') ? 'sand' : 'light'
+  })
+  const select = (value: Theme) => {
     setTheme(value)
     applyTheme(value)
   }
-  const option = (value: 'light' | 'dark', Icon: typeof Sun, label: string) => (
+  const option = (value: Theme, Icon: typeof Sun, label: string) => (
     <button
       type="button"
       aria-label={label}
@@ -53,6 +57,7 @@ function ThemeToggle() {
   return (
     <div className="flex h-8 shrink-0 items-center rounded-full bg-elevated p-0.5">
       {option('light', Sun, 'Tema claro')}
+      {option('sand', Leaf, 'Tema areia (experimental)')}
       {option('dark', Moon, 'Tema escuro')}
     </div>
   )
