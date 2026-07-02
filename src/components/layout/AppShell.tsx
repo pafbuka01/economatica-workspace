@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/cn'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
+import { HeroGlow } from './HeroGlow'
 
 /**
  * Casca da aplicação.
@@ -24,9 +25,12 @@ export function AppShell() {
   }, [navOpen])
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-canvas">
+    <div className="relative flex h-dvh overflow-hidden bg-canvas">
+      {/* Efeito de fundo da Home: cobre a viewport inteira, atrás dos painéis de vidro */}
+      <HeroGlow show={pathname === '/'} />
+
       {/* Sidebar fixa (desktop) */}
-      <div className="hidden shrink-0 py-1 pl-1 lg:block">
+      <div className="relative hidden shrink-0 py-1 pl-1 lg:block">
         <Sidebar />
       </div>
 
@@ -37,7 +41,7 @@ export function AppShell() {
       >
         <div
           className={cn(
-            'absolute inset-0 bg-ink-strong/40 transition-opacity duration-200',
+            'absolute inset-0 bg-black/40 transition-opacity duration-200 dark:bg-black/60',
             navOpen ? 'opacity-100' : 'opacity-0',
           )}
           onClick={() => setNavOpen(false)}

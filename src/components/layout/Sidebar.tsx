@@ -27,7 +27,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav
       aria-label="Navegação do workspace"
-      className="flex h-full w-[246px] max-w-[85vw] flex-col gap-3 rounded-[12px] border border-line bg-surface px-[15px] pb-[15px] pt-[21px]"
+      className="flex h-full w-[246px] max-w-[85vw] flex-col gap-3 rounded-[12px] border border-line bg-surface/70 px-[15px] pb-[15px] pt-[21px] backdrop-blur-md backdrop-saturate-150 dark:bg-surface/40"
     >
       {/* Logo — fixo no topo */}
       <div className={cn('shrink-0 border-b px-2.5 pb-3', HAIRLINE)}>
