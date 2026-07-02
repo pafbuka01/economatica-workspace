@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 import { X, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { BarChart } from './BarChart'
@@ -43,7 +44,7 @@ interface ComposerProps {
   onSend: () => void
 }
 
-function Composer({ value, onChange, onSend }: ComposerProps) {
+export function Composer({ value, onChange, onSend }: ComposerProps) {
   return (
     <div className="flex w-full flex-col gap-4 rounded-[12px] border border-line bg-surface p-4 shadow-card-xl">
       <div className="flex items-center gap-2">
@@ -108,7 +109,7 @@ interface ChipsBarProps {
   align: 'center' | 'start'
 }
 
-function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarProps) {
+export function ChipsBar({ openChip, setOpenChip, onPickSuggestion, align }: ChipsBarProps) {
   if (openChip) {
     const chip = chips.find((c) => c.label === openChip) ?? chips[0]
     return (
@@ -225,16 +226,33 @@ export function KentoChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [openChip, setOpenChip] = useState<string | null>(null)
+  const location = useLocation()
+  const consumedInitial = useRef(false)
 
   const isEmpty = messages.length === 0
 
-  function send() {
-    const text = input.trim()
+  function sendText(raw: string) {
+    const text = raw.trim()
     if (!text) return
     setMessages((prev) => [...prev, { role: 'user', paragraphs: [text] }, buildMockReply()])
     setInput('')
     setOpenChip(null)
   }
+
+  function send() {
+    sendText(input)
+  }
+
+  // Mensagem encaminhada pelo hero da Home (navigate state)
+  useEffect(() => {
+    const initial = (location.state as { initialMessage?: string } | null)?.initialMessage
+    if (initial && !consumedInitial.current) {
+      consumedInitial.current = true
+      sendText(initial)
+      window.history.replaceState({}, '') // não reenvia em refresh/voltar
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const composer = <Composer value={input} onChange={setInput} onSend={send} />
 

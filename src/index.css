@@ -79,6 +79,38 @@
   --animate-page: page-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-rise: rise-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-pop: pop-in 0.18s ease-out both;
+
+  /* Deriva lenta dos blobs do fundo do hero (Home) */
+  --animate-blob-1: blob-drift-1 26s ease-in-out infinite alternate;
+  --animate-blob-2: blob-drift-2 32s ease-in-out infinite alternate;
+  --animate-blob-3: blob-drift-3 22s ease-in-out infinite alternate;
+}
+
+@keyframes blob-drift-1 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(5%, 10%) scale(1.12);
+  }
+}
+
+@keyframes blob-drift-2 {
+  from {
+    transform: translate(0, 0) scale(1.05);
+  }
+  to {
+    transform: translate(-7%, 6%) scale(0.95);
+  }
+}
+
+@keyframes blob-drift-3 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(8%, -6%) scale(1.15);
+  }
 }
 
 @keyframes page-in {
