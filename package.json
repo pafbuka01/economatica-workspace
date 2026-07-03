@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "lucide-react": "^0.469.0",
+    "posthog-js": "^1.396.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0"

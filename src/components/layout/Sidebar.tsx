@@ -6,6 +6,7 @@ import { NavItem } from '@/components/ui/NavItem'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { AccessSheet } from '@/features/product-access/AccessSheet'
+import { track } from '@/lib/telemetry'
 import { requestDirectAccess, type ProductAccess } from '@/features/product-access/access'
 
 /** Borda sutil usada no header do logo. */
@@ -31,7 +32,9 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const [accessSheet, setAccessSheet] = useState<ProductAccess | null>(null)
 
   const openAccess = (product: ProductAccess) => {
-    if (!requestDirectAccess(product)) setAccessSheet(product)
+    const direct = requestDirectAccess(product)
+    track('shortcut_click', { target: product, surface: 'sidebar', direct })
+    if (!direct) setAccessSheet(product)
   }
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/cn'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { CarouselSection } from '@/features/library/CarouselSection'
@@ -11,6 +11,7 @@ import { useLibraryRecommendations } from '@/features/library/useLibraryRecommen
 import { libraryPrompts, librarySkills, libraryArtifacts, libraryTools } from '@/data/library'
 import { labelFor, qualificationChannels, qualificationRoles } from '@/features/onboarding/catalogs'
 import { getDeclaredProfile, preferredChannelOf } from '@/features/onboarding/profile-store'
+import { track } from '@/lib/telemetry'
 
 const tabs = ['Pra você', 'Prompts', 'Skills', 'Artefatos', 'Ferramentas']
 
@@ -31,6 +32,11 @@ function RecommendedForProfile() {
   const declared = getDeclaredProfile()
   const [role, setRole] = useState(labelFor(qualificationRoles, declared.role))
   const [channel, setChannel] = useState(labelFor(qualificationChannels, preferredChannelOf(declared)))
+  useEffect(() => {
+    track('library_open', { role, channel })
+    // Só na abertura: mudança de filtro tem evento próprio abaixo.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const { data, loading, error, recordEvent } = useLibraryRecommendations({
     role,
     preferredChannel: channel,
@@ -50,7 +56,7 @@ function RecommendedForProfile() {
         <div className="flex flex-wrap items-center gap-2">
           <label className="flex items-center gap-1.5 text-[12px] font-medium text-muted">
             Perfil
-            <select className={filterSelectClasses} value={role} onChange={(e) => setRole(e.target.value)}>
+            <select className={filterSelectClasses} value={role} onChange={(e) => { setRole(e.target.value); track('library_filter_profile', { role: e.target.value, channel }) }}>
               {qualificationRoles.map((r) => (
                 <option key={r.code} value={r.label}>{r.label}</option>
               ))}
@@ -58,7 +64,7 @@ function RecommendedForProfile() {
           </label>
           <label className="flex items-center gap-1.5 text-[12px] font-medium text-muted">
             Canal
-            <select className={filterSelectClasses} value={channel} onChange={(e) => setChannel(e.target.value)}>
+            <select className={filterSelectClasses} value={channel} onChange={(e) => { setChannel(e.target.value); track('library_filter_profile', { role, channel: e.target.value }) }}>
               {qualificationChannels.map((c) => (
                 <option key={c.code} value={c.label}>{c.label}</option>
               ))}

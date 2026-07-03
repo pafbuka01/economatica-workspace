@@ -7,6 +7,7 @@ import { terminalStats, tutorials } from '@/data/terminal'
 import { TeMarkIcon } from '@/lib/icons'
 import bannerImg from '@/assets/terminal-banner.png'
 import { AccessSheet } from '@/features/product-access/AccessSheet'
+import { track } from '@/lib/telemetry'
 import { requestDirectAccess } from '@/features/product-access/access'
 
 function Banner() {
@@ -14,7 +15,9 @@ function Banner() {
   const [accessSheet, setAccessSheet] = useState(false)
 
   const access = () => {
-    if (!requestDirectAccess('terminal')) setAccessSheet(true)
+    const direct = requestDirectAccess('terminal')
+    track('shortcut_click', { target: 'terminal', surface: 'terminal-page', direct })
+    if (!direct) setAccessSheet(true)
   }
 
   return (

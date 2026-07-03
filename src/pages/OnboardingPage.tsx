@@ -25,6 +25,7 @@ import {
   type QualificationUsageType,
 } from '@/features/onboarding/catalogs'
 import { completeOnboarding, defaultDeclaredProfile, type DeclaredProfile } from '@/features/onboarding/profile-store'
+import { track } from '@/lib/telemetry'
 
 function Field({ label, children, wide }: { label: string; children: ReactNode; wide?: boolean }) {
   return (
@@ -124,6 +125,7 @@ export function OnboardingPage() {
 
   const advance = () => {
     completeOnboarding(profile)
+    track('onboarding_completed', { role: profile.role, usageType: profile.usageType })
     navigate('/', { replace: true })
   }
 
