@@ -31,28 +31,29 @@ export interface DeclaredProfile {
   objectives: string[]
 }
 
+// Defaults em CÓDIGOS canônicos (contrato workspace-onboarding-v1).
 export const defaultDeclaredProfile: DeclaredProfile = {
-  role: 'Assessor de Investimentos',
-  institution: 'Fintech',
-  country: 'Brasil',
-  state: 'SP',
-  employees: '51 a 200',
-  usageType: 'B2B2C',
-  clientCompaniesMonth1: '6 a 20',
-  clientCompaniesYear1: '21 a 100',
-  endUsersMonth1: '1.001 a 10.000',
-  endUsersYear1: '10.000+',
-  accessModel: 'Área logada',
-  commercialModel: 'Pago',
-  payer: 'Empresas clientes',
+  role: 'assessor-de-investimentos',
+  institution: 'fintech',
+  country: 'brasil',
+  state: 'sp',
+  employees: '51-200',
+  usageType: 'b2b2c',
+  clientCompaniesMonth1: '6-20',
+  clientCompaniesYear1: '21-100',
+  endUsersMonth1: '1001-10000',
+  endUsersYear1: '10000-plus',
+  accessModel: 'area-logada',
+  commercialModel: 'pago',
+  payer: 'empresas-clientes',
   projectDescription: 'Área logada para clientes acompanharem dados e análises com IA usando notícias, fundamentos e renda fixa.',
-  deliverySurfaces: ['Área logada', 'Dashboard', 'Chatbot'],
-  redistribution: 'Sim, dados derivados',
-  exportNeeds: 'API',
-  bases: ['Notícias', 'Fundamentos', 'Renda Fixa'],
-  markets: ['Brasil', 'Estados Unidos'],
-  channels: ['MCP', 'API', 'Data Feed'],
-  objectives: ['Quantitative trading', 'Renda fixa', 'Análise de crédito', 'Dados e integração'],
+  deliverySurfaces: ['area-logada', 'dashboard', 'chatbot'],
+  redistribution: 'sim-derivados',
+  exportNeeds: 'api',
+  bases: ['noticias', 'fundamentos', 'renda-fixa'],
+  markets: ['brasil', 'estados-unidos'],
+  channels: ['mcp', 'api', 'data-feed'],
+  objectives: ['quantitative-trading', 'renda-fixa', 'analise-credito', 'dados-integracao'],
 }
 
 let declaredProfile: DeclaredProfile = { ...defaultDeclaredProfile }
@@ -71,21 +72,21 @@ export function getDeclaredProfile(): DeclaredProfile {
   return declaredProfile
 }
 
-/** Canal preferido para o filtro de recomendação: primeiro canal técnico marcado. */
+/** Canal preferido (código) para o filtro de recomendação: primeiro canal marcado. */
 export function preferredChannelOf(profile: DeclaredProfile) {
-  return profile.channels[0] ?? 'Workspace'
+  return profile.channels[0] ?? 'workspace'
 }
 
 /** Mesma lógica do protótipo: rota sugerida e risco derivados do tipo de uso. */
 export function accessRouteFor(usageType: QualificationUsageType) {
-  if (usageType === 'USO_INTERNO') return 'MCP + Terminal + Biblioteca por perfil'
-  if (usageType === 'B2B') return 'MCP + API sandbox + avaliação comercial'
-  if (usageType === 'B2C') return 'MCP + API sandbox + revisão de redistribuição'
+  if (usageType === 'uso-interno') return 'MCP + Terminal + Biblioteca por perfil'
+  if (usageType === 'b2b') return 'MCP + API sandbox + avaliação comercial'
+  if (usageType === 'b2c') return 'MCP + API sandbox + revisão de redistribuição'
   return 'MCP + API sandbox + avaliação técnica e comercial'
 }
 
 export function accessRiskFor(usageType: QualificationUsageType) {
-  if (usageType === 'USO_INTERNO') return 'Baixo'
-  if (usageType === 'B2B') return 'Médio'
+  if (usageType === 'uso-interno') return 'Baixo'
+  if (usageType === 'b2b') return 'Médio'
   return 'Alto'
 }

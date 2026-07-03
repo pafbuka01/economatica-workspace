@@ -21,6 +21,7 @@ import {
   qualificationStates,
   qualificationUsageTypes,
   qualificationUserRanges,
+  type CatalogOption,
   type QualificationUsageType,
 } from '@/features/onboarding/catalogs'
 import { completeOnboarding, defaultDeclaredProfile, type DeclaredProfile } from '@/features/onboarding/profile-store'
@@ -37,11 +38,11 @@ function Field({ label, children, wide }: { label: string; children: ReactNode; 
 const selectClasses =
   'h-10 w-full rounded-[6px] border border-line bg-surface px-3 text-sm text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent'
 
-function Select({ value, onChange, options }: { value: string; onChange: (value: string) => void; options: string[] }) {
+function Select({ value, onChange, options }: { value: string; onChange: (value: string) => void; options: CatalogOption[] }) {
   return (
     <select className={selectClasses} value={value} onChange={(e) => onChange(e.target.value)}>
       {options.map((option) => (
-        <option key={option} value={option}>{option}</option>
+        <option key={option.code} value={option.code}>{option.label}</option>
       ))}
     </select>
   )
@@ -51,19 +52,19 @@ function toggle(list: string[], item: string) {
   return list.includes(item) ? list.filter((i) => i !== item) : [...list, item]
 }
 
-function ChipGroup({ label, options, selected, onToggle }: { label: string; options: string[]; selected: string[]; onToggle: (item: string) => void }) {
+function ChipGroup({ label, options, selected, onToggle }: { label: string; options: CatalogOption[]; selected: string[]; onToggle: (item: string) => void }) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5 sm:col-span-2">
       <span className="text-xs font-bold leading-4 text-muted">{label}</span>
       <div className="flex flex-wrap gap-1.5">
         {options.map((option) => {
-          const active = selected.includes(option)
+          const active = selected.includes(option.code)
           return (
             <button
-              key={option}
+              key={option.code}
               type="button"
               aria-pressed={active}
-              onClick={() => onToggle(option)}
+              onClick={() => onToggle(option.code)}
               className={cn(
                 'rounded-full border px-3 py-1.5 text-[12.5px] font-medium transition-colors',
                 active
@@ -71,7 +72,7 @@ function ChipGroup({ label, options, selected, onToggle }: { label: string; opti
                   : 'border-line bg-surface text-muted hover:border-neutral-300 hover:text-ink',
               )}
             >
-              {option}
+              {option.label}
             </button>
           )
         })}
@@ -111,15 +112,15 @@ export function OnboardingPage() {
     setProfile((current) => ({
       ...current,
       usageType,
-      deliverySurfaces: usageType === 'USO_INTERNO' ? ['Workspace interno', 'Planilha', 'Dashboard'] : ['Área logada', 'Dashboard', 'Chatbot'],
-      redistribution: usageType === 'USO_INTERNO' ? 'Não' : 'Sim, dados derivados',
-      exportNeeds: usageType === 'USO_INTERNO' ? 'CSV/Excel' : 'API',
+      deliverySurfaces: usageType === 'uso-interno' ? ['workspace-interno', 'planilha', 'dashboard'] : ['area-logada', 'dashboard', 'chatbot'],
+      redistribution: usageType === 'uso-interno' ? 'nao' : 'sim-derivados',
+      exportNeeds: usageType === 'uso-interno' ? 'csv-excel' : 'api',
     }))
 
-  const isBusinessProject = profile.usageType !== 'USO_INTERNO'
-  const needsClientCompanyScale = profile.usageType === 'B2B' || profile.usageType === 'B2B2C'
-  const needsEndUserScale = profile.usageType === 'B2C' || profile.usageType === 'B2B2C'
-  const lastStep = profile.usageType === 'USO_INTERNO' ? 3 : 5
+  const isBusinessProject = profile.usageType !== 'uso-interno'
+  const needsClientCompanyScale = profile.usageType === 'b2b' || profile.usageType === 'b2b2c'
+  const needsEndUserScale = profile.usageType === 'b2c' || profile.usageType === 'b2b2c'
+  const lastStep = profile.usageType === 'uso-interno' ? 3 : 5
 
   const advance = () => {
     completeOnboarding(profile)
@@ -158,13 +159,13 @@ export function OnboardingPage() {
         <Block step={2} title="Tipo de uso" description="Campo mais importante para pricing, risco de redistribuição e rota comercial.">
           <div className="grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 lg:grid-cols-4">
             {qualificationUsageTypes.map((item) => {
-              const active = profile.usageType === item.value
+              const active = profile.usageType === item.code
               return (
                 <button
-                  key={item.value}
+                  key={item.code}
                   type="button"
                   aria-pressed={active}
-                  onClick={() => setUsageType(item.value)}
+                  onClick={() => setUsageType(item.code)}
                   className={cn(
                     'flex h-full flex-col gap-1 rounded-[8px] border p-3 text-left transition-colors',
                     active ? 'border-sel-border bg-sel-bg' : 'border-line bg-elevated hover:border-neutral-300',
