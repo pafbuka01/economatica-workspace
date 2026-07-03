@@ -9,7 +9,7 @@ import { RecommendationCard } from '@/features/library/RecommendationCard'
 import { ToolCard } from '@/features/library/ToolCard'
 import { useLibraryRecommendations } from '@/features/library/useLibraryRecommendations'
 import { libraryPrompts, librarySkills, libraryArtifacts, libraryTools } from '@/data/library'
-import { qualificationChannels, qualificationRoles } from '@/features/onboarding/catalogs'
+import { labelFor, qualificationChannels, qualificationRoles } from '@/features/onboarding/catalogs'
 import { getDeclaredProfile, preferredChannelOf } from '@/features/onboarding/profile-store'
 
 const tabs = ['Pra você', 'Prompts', 'Skills', 'Artefatos', 'Ferramentas']
@@ -26,9 +26,11 @@ const filterSelectClasses =
  * mesmo catálogo quando o BFF não está disponível.
  */
 function RecommendedForProfile() {
+  // O motor de recomendação (BFF e fallback local) casa perfis por LABEL;
+  // o perfil declarado guarda CÓDIGOS canônicos — mapeia na entrada.
   const declared = getDeclaredProfile()
-  const [role, setRole] = useState(declared.role)
-  const [channel, setChannel] = useState(preferredChannelOf(declared))
+  const [role, setRole] = useState(labelFor(qualificationRoles, declared.role))
+  const [channel, setChannel] = useState(labelFor(qualificationChannels, preferredChannelOf(declared)))
   const { data, loading, error, recordEvent } = useLibraryRecommendations({
     role,
     preferredChannel: channel,
@@ -50,7 +52,7 @@ function RecommendedForProfile() {
             Perfil
             <select className={filterSelectClasses} value={role} onChange={(e) => setRole(e.target.value)}>
               {qualificationRoles.map((r) => (
-                <option key={r} value={r}>{r}</option>
+                <option key={r.code} value={r.label}>{r.label}</option>
               ))}
             </select>
           </label>
@@ -58,7 +60,7 @@ function RecommendedForProfile() {
             Canal
             <select className={filterSelectClasses} value={channel} onChange={(e) => setChannel(e.target.value)}>
               {qualificationChannels.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c.code} value={c.label}>{c.label}</option>
               ))}
             </select>
           </label>
