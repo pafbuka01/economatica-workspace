@@ -29,10 +29,11 @@ const exists = (f) => fs.existsSync(path.join(RAW, f));
 
 const CATEGORIES = ['Multimercado', 'Ações', 'Renda Fixa'];
 
-/* O catálogo foi montado em duas rodadas; funds2.json é a ampliação. */
+/* O catálogo foi montado em rodadas: funds2 é a ampliação, funds3 as inclusões
+   pedidas caso a caso. Ordem importa só para desempate de fund_id repetido. */
 const catalog = [];
 const seen = new Set();
-for (const file of ['funds.json', 'funds2.json']) {
+for (const file of ['funds.json', 'funds2.json', 'funds3.json']) {
   if (!exists(file)) continue;
   for (const f of read(file).funds) {
     if (seen.has(f.fund_id)) continue;
@@ -234,7 +235,10 @@ console.log(
  * Dataset + HTML
  * ------------------------------------------------------------------ */
 
-const DEFAULTS = ['040177', '541419', '010431', '391573'];
+/* Só entram os que existem no dataset: um default apontando para fundo ausente
+   quebraria a página na primeira renderização. */
+const DEFAULTS = ['678325', '040177', '010431', '391573'].filter((id) => assets[id]);
+if (!DEFAULTS.length) throw new Error('nenhum fundo padrão disponível no dataset');
 
 const dataset = {
   source: 'Economatica',

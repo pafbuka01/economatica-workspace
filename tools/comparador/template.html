@@ -801,6 +801,20 @@
     font-size: 11.5px;
   }
 
+  /* Fundo que estreou depois do início da janela — o retorno dele não cobre
+     o mesmo período dos demais. */
+  .name-cell .since {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--ink-2);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 1px 7px;
+    white-space: nowrap;
+  }
+
   td.pos {
     color: var(--pos);
   }
@@ -1218,6 +1232,11 @@
         cdiCagr = Math.pow(1 + ccum, 252 / (cn - 1)) - 1;
       }
 
+      /* Um fundo mais novo que a janela entra no gráfico só a partir da própria
+         estreia. O retorno dele não cobre o mesmo período dos outros, então a
+         tabela avisa desde quando ele existe. */
+      var winStart = calWindow(period).start;
+
       var rows = [];
       state.funds.forEach(function (id) {
         var s = slice(id, period);
@@ -1228,6 +1247,7 @@
           kind: 'fund',
           name: DATA.assets[id].name,
           meta: DATA.assets[id].manager || '',
+          since: s.d[0] > winStart ? CAL[s.d[0]] : null,
           color: colorOf(id),
           dash: '',
           s: s,
@@ -1788,6 +1808,13 @@
         box.appendChild(sw);
         box.appendChild(nm);
         box.appendChild(mg);
+        if (r.since) {
+          var since = document.createElement('span');
+          since.className = 'since';
+          since.textContent = 'desde ' + fmtDateShort(r.since);
+          since.title = 'Cota disponível a partir de ' + fmtDate(r.since) + ', depois do início da janela.';
+          box.appendChild(since);
+        }
         tdName.appendChild(box);
         tr.appendChild(tdName);
 
