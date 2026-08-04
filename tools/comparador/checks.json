@@ -1,0 +1,435 @@
+{
+  "_comment": "Valores de referência retornados pelo risk_stats da Economatica. Servem para provar que as séries embarcadas e as fórmulas do artefato reproduzem o cálculo oficial. Métricas: cum_return_pct, annualized_return_pct, volatility_annual_pct, max_drawdown_pct (magnitude positiva), trading_days. `from` é o primeiro pregão que o risk_stats efetivamente usou (ele abre a janela um pregão depois da data pedida na chamada), então a comparação usa o intervalo fechado [from, to].",
+  "tolerance": {
+    "pct": 0.06,
+    "days": 0,
+    "pct_by_asset": {
+      "IBOV": 0.5
+    }
+  },
+  "windows": [
+    {
+      "id": "5a",
+      "from": "2021-08-05",
+      "to": "2026-08-03",
+      "risk_free_pct": 12.42,
+      "expect": {
+        "040177": {
+          "cum_return_pct": 83.53,
+          "annualized_return_pct": 12.99,
+          "volatility_annual_pct": 5.81,
+          "max_drawdown_pct": 6.03,
+          "trading_days": 1254
+        },
+        "262773": {
+          "cum_return_pct": 69.42,
+          "annualized_return_pct": 11.19,
+          "volatility_annual_pct": 5.66,
+          "max_drawdown_pct": 11.21,
+          "trading_days": 1254
+        },
+        "320153": {
+          "cum_return_pct": 57.63,
+          "annualized_return_pct": 9.58,
+          "volatility_annual_pct": 6.18,
+          "max_drawdown_pct": 12.64,
+          "trading_days": 1254
+        },
+        "420212": {
+          "cum_return_pct": 74.24,
+          "annualized_return_pct": 11.81,
+          "volatility_annual_pct": 2.67,
+          "max_drawdown_pct": 2.89,
+          "trading_days": 1254
+        },
+        "468908": {
+          "cum_return_pct": 70.67,
+          "annualized_return_pct": 11.36,
+          "volatility_annual_pct": 4.95,
+          "max_drawdown_pct": 4.58,
+          "trading_days": 1253
+        },
+        "522767": {
+          "cum_return_pct": 84.79,
+          "annualized_return_pct": 13.14,
+          "volatility_annual_pct": 9.41,
+          "max_drawdown_pct": 16.94,
+          "trading_days": 1254
+        },
+        "391247": {
+          "cum_return_pct": 86.39,
+          "annualized_return_pct": 13.34,
+          "volatility_annual_pct": 4.37,
+          "max_drawdown_pct": 2.4,
+          "trading_days": 1254
+        },
+        "541419": {
+          "cum_return_pct": 98.22,
+          "annualized_return_pct": 14.75,
+          "volatility_annual_pct": 3.53,
+          "max_drawdown_pct": 2.41,
+          "trading_days": 1254
+        },
+        "464325": {
+          "cum_return_pct": 73.15,
+          "annualized_return_pct": 11.67,
+          "volatility_annual_pct": 3.41,
+          "max_drawdown_pct": 3.64,
+          "trading_days": 1254
+        },
+        "010431": {
+          "cum_return_pct": 7.8,
+          "annualized_return_pct": 1.52,
+          "volatility_annual_pct": 20.54,
+          "max_drawdown_pct": 40.09,
+          "trading_days": 1254
+        },
+        "267163": {
+          "cum_return_pct": -11.73,
+          "annualized_return_pct": -2.48,
+          "volatility_annual_pct": 42.13,
+          "max_drawdown_pct": 59.08,
+          "trading_days": 1254
+        },
+        "309613": {
+          "cum_return_pct": -4.8,
+          "annualized_return_pct": -0.99,
+          "volatility_annual_pct": 20.5,
+          "max_drawdown_pct": 42.04,
+          "trading_days": 1254
+        },
+        "206881": {
+          "cum_return_pct": 3.2,
+          "annualized_return_pct": 0.63,
+          "volatility_annual_pct": 20.44,
+          "max_drawdown_pct": 33.03,
+          "trading_days": 1254
+        },
+        "429198": {
+          "cum_return_pct": -11.22,
+          "annualized_return_pct": -2.36,
+          "volatility_annual_pct": 21.69,
+          "max_drawdown_pct": 45.88,
+          "trading_days": 1254
+        },
+        "395511": {
+          "cum_return_pct": -23.39,
+          "annualized_return_pct": -5.22,
+          "volatility_annual_pct": 27.34,
+          "max_drawdown_pct": 40.52,
+          "trading_days": 1254
+        },
+        "296430": {
+          "cum_return_pct": 84.68,
+          "annualized_return_pct": 13.13,
+          "volatility_annual_pct": 0.57,
+          "max_drawdown_pct": 1.44,
+          "trading_days": 1254
+        },
+        "391573": {
+          "cum_return_pct": 87.34,
+          "annualized_return_pct": 13.46,
+          "volatility_annual_pct": 0.49,
+          "max_drawdown_pct": 0.46,
+          "trading_days": 1254
+        },
+        "474843": {
+          "cum_return_pct": 85.0,
+          "annualized_return_pct": 13.17,
+          "volatility_annual_pct": 0.53,
+          "max_drawdown_pct": 0.68,
+          "trading_days": 1254
+        },
+        "332232": {
+          "cum_return_pct": 86.46,
+          "annualized_return_pct": 13.36,
+          "volatility_annual_pct": 1.11,
+          "max_drawdown_pct": 2.84,
+          "trading_days": 1253
+        },
+        "IBOV": {
+          "cum_return_pct": 46.21,
+          "annualized_return_pct": 7.99,
+          "volatility_annual_pct": 17.61,
+          "max_drawdown_pct": 21.84,
+          "trading_days": 1247
+        },
+        "CDI": {
+          "cum_return_pct": 78.84,
+          "annualized_return_pct": 12.4,
+          "volatility_annual_pct": 0.13,
+          "max_drawdown_pct": 0,
+          "trading_days": 1254
+        }
+      },
+      "from_overrides": {
+        "IBOV": "2021-08-04"
+      }
+    },
+    {
+      "id": "12m",
+      "from": "2025-08-05",
+      "to": "2026-08-03",
+      "risk_free_pct": 14.71,
+      "expect": {
+        "040177": {
+          "cum_return_pct": 16.53,
+          "annualized_return_pct": 16.67,
+          "volatility_annual_pct": 5.04,
+          "max_drawdown_pct": 2.21,
+          "trading_days": 251
+        },
+        "262773": {
+          "cum_return_pct": 9.74,
+          "annualized_return_pct": 9.83,
+          "volatility_annual_pct": 4.45,
+          "max_drawdown_pct": 5.93,
+          "trading_days": 251
+        },
+        "320153": {
+          "cum_return_pct": 4.8,
+          "annualized_return_pct": 4.83,
+          "volatility_annual_pct": 8.69,
+          "max_drawdown_pct": 12.64,
+          "trading_days": 251
+        },
+        "420212": {
+          "cum_return_pct": 13.17,
+          "annualized_return_pct": 13.28,
+          "volatility_annual_pct": 3.26,
+          "max_drawdown_pct": 2.89,
+          "trading_days": 251
+        },
+        "468908": {
+          "cum_return_pct": 9.59,
+          "annualized_return_pct": 9.72,
+          "volatility_annual_pct": 5.75,
+          "max_drawdown_pct": 4.58,
+          "trading_days": 250
+        },
+        "522767": {
+          "cum_return_pct": 7.26,
+          "annualized_return_pct": 7.32,
+          "volatility_annual_pct": 13.82,
+          "max_drawdown_pct": 16.94,
+          "trading_days": 251
+        },
+        "391247": {
+          "cum_return_pct": 9.91,
+          "annualized_return_pct": 10.0,
+          "volatility_annual_pct": 4.74,
+          "max_drawdown_pct": 2.39,
+          "trading_days": 251
+        },
+        "541419": {
+          "cum_return_pct": 13.89,
+          "annualized_return_pct": 14.01,
+          "volatility_annual_pct": 4.11,
+          "max_drawdown_pct": 2.41,
+          "trading_days": 251
+        },
+        "464325": {
+          "cum_return_pct": 10.6,
+          "annualized_return_pct": 10.69,
+          "volatility_annual_pct": 4.51,
+          "max_drawdown_pct": 3.64,
+          "trading_days": 251
+        },
+        "010431": {
+          "cum_return_pct": 31.04,
+          "annualized_return_pct": 31.32,
+          "volatility_annual_pct": 20.11,
+          "max_drawdown_pct": 15.08,
+          "trading_days": 251
+        },
+        "267163": {
+          "cum_return_pct": 4.19,
+          "annualized_return_pct": 4.22,
+          "volatility_annual_pct": 45.02,
+          "max_drawdown_pct": 38.79,
+          "trading_days": 251
+        },
+        "309613": {
+          "cum_return_pct": 21.47,
+          "annualized_return_pct": 21.66,
+          "volatility_annual_pct": 20.22,
+          "max_drawdown_pct": 13.84,
+          "trading_days": 251
+        },
+        "206881": {
+          "cum_return_pct": 3.46,
+          "annualized_return_pct": 3.48,
+          "volatility_annual_pct": 20.2,
+          "max_drawdown_pct": 18.83,
+          "trading_days": 251
+        },
+        "429198": {
+          "cum_return_pct": 11.98,
+          "annualized_return_pct": 12.08,
+          "volatility_annual_pct": 21.25,
+          "max_drawdown_pct": 20.46,
+          "trading_days": 251
+        },
+        "395511": {
+          "cum_return_pct": -2.23,
+          "annualized_return_pct": -2.25,
+          "volatility_annual_pct": 27.42,
+          "max_drawdown_pct": 27.37,
+          "trading_days": 251
+        },
+        "296430": {
+          "cum_return_pct": 14.28,
+          "annualized_return_pct": 14.41,
+          "volatility_annual_pct": 0.38,
+          "max_drawdown_pct": 0.22,
+          "trading_days": 251
+        },
+        "391573": {
+          "cum_return_pct": 14.81,
+          "annualized_return_pct": 14.93,
+          "volatility_annual_pct": 0.75,
+          "max_drawdown_pct": 0.42,
+          "trading_days": 251
+        },
+        "474843": {
+          "cum_return_pct": 14.58,
+          "annualized_return_pct": 14.7,
+          "volatility_annual_pct": 0.44,
+          "max_drawdown_pct": 0.03,
+          "trading_days": 251
+        },
+        "332232": {
+          "cum_return_pct": 14.51,
+          "annualized_return_pct": 14.69,
+          "volatility_annual_pct": 0.74,
+          "max_drawdown_pct": 0.19,
+          "trading_days": 250
+        },
+        "IBOV": {
+          "cum_return_pct": 33.94,
+          "annualized_return_pct": 34.41,
+          "volatility_annual_pct": 17.23,
+          "max_drawdown_pct": 15.25,
+          "trading_days": 250
+        },
+        "CDI": {
+          "cum_return_pct": 14.58,
+          "annualized_return_pct": 14.71,
+          "volatility_annual_pct": 0.02,
+          "max_drawdown_pct": 0,
+          "trading_days": 251
+        }
+      },
+      "from_overrides": {
+        "IBOV": "2025-08-04"
+      }
+    },
+    {
+      "id": "ytd",
+      "from": "2026-01-05",
+      "to": "2026-08-03",
+      "risk_free_pct": 14.57,
+      "expect": {
+        "040177": {
+          "cum_return_pct": 7.72,
+          "annualized_return_pct": 13.9,
+          "volatility_annual_pct": 5.68,
+          "max_drawdown_pct": 2.21,
+          "trading_days": 145
+        },
+        "010431": {
+          "cum_return_pct": 6.1,
+          "annualized_return_pct": 10.92,
+          "volatility_annual_pct": 22.41,
+          "max_drawdown_pct": 15.08,
+          "trading_days": 145
+        },
+        "296430": {
+          "cum_return_pct": 8.13,
+          "annualized_return_pct": 14.65,
+          "volatility_annual_pct": 0.26,
+          "max_drawdown_pct": 0.01,
+          "trading_days": 145
+        },
+        "332232": {
+          "cum_return_pct": 8.27,
+          "annualized_return_pct": 15.03,
+          "volatility_annual_pct": 0.78,
+          "max_drawdown_pct": 0.19,
+          "trading_days": 144
+        },
+        "IBOV": {
+          "cum_return_pct": 10.9,
+          "annualized_return_pct": 19.7,
+          "volatility_annual_pct": 19.08,
+          "max_drawdown_pct": 15.25,
+          "trading_days": 146
+        },
+        "CDI": {
+          "cum_return_pct": 8.08,
+          "annualized_return_pct": 14.57,
+          "volatility_annual_pct": 0.02,
+          "max_drawdown_pct": 0,
+          "trading_days": 145
+        }
+      },
+      "from_overrides": {
+        "IBOV": "2026-01-02"
+      }
+    },
+    {
+      "id": "30d",
+      "from": "2026-07-07",
+      "to": "2026-08-03",
+      "risk_free_pct": 14.15,
+      "expect": {
+        "040177": {
+          "cum_return_pct": 0.92,
+          "annualized_return_pct": 12.93,
+          "volatility_annual_pct": 6.1,
+          "max_drawdown_pct": 0.79,
+          "trading_days": 20
+        },
+        "010431": {
+          "cum_return_pct": 2.89,
+          "annualized_return_pct": 45.96,
+          "volatility_annual_pct": 22.14,
+          "max_drawdown_pct": 5.69,
+          "trading_days": 20
+        },
+        "296430": {
+          "cum_return_pct": 1.02,
+          "annualized_return_pct": 14.44,
+          "volatility_annual_pct": 0.13,
+          "max_drawdown_pct": 0,
+          "trading_days": 20
+        },
+        "332232": {
+          "cum_return_pct": 1.08,
+          "annualized_return_pct": 16.29,
+          "volatility_annual_pct": 0.63,
+          "max_drawdown_pct": 0,
+          "trading_days": 19
+        },
+        "IBOV": {
+          "cum_return_pct": 3.2,
+          "annualized_return_pct": 48.75,
+          "volatility_annual_pct": 19.76,
+          "max_drawdown_pct": 2.56,
+          "trading_days": 21
+        },
+        "CDI": {
+          "cum_return_pct": 1.0,
+          "annualized_return_pct": 14.15,
+          "volatility_annual_pct": 0,
+          "max_drawdown_pct": 0,
+          "trading_days": 20
+        }
+      },
+      "from_overrides": {
+        "IBOV": "2026-07-06"
+      }
+    }
+  ],
+  "_tolerance_note": "Fundos e CDI fecham dentro de 0,06 p.p. Para o IBOV a tolerância é 0,5 p.p. no retorno: o risk_stats compõe o retorno do índice a partir dos retornos diários publicados com 2 casas decimais, e o arredondamento acumula ~0,08 p.p. em um ano. Aqui o retorno vem da razão entre os níveis do índice, que não tem esse resíduo. Número de pregões, volatilidade e drawdown do IBOV batem exatos, então a diferença é de convenção, não de dados."
+}

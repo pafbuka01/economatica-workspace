@@ -27,3 +27,6 @@ dist-ssr
 .context
 .vercel
 .env*
+
+# Dataset consolidado do comparador — regenerado por tools/comparador/build.mjs
+tools/comparador/data/economatica-fundos.json
