@@ -46,11 +46,23 @@ Todos os números vêm das ferramentas MCP da Economatica, capturados em 2026-08
 
 | Fonte | Ferramenta | Vira |
 |---|---|---|
-| Cotas diárias de 19 fundos CVM | `funds_quote_history` | `<fund_id>_a.json`, `<fund_id>_b.json` |
-| Cadastro dos fundos | `funds_search` + `funds_indicators` | `funds.json` |
+| Cotas diárias de 67 fundos CVM | `funds_quote_history` | `<fund_id>_a.json`, `<fund_id>_b.json` |
+| Cadastro dos fundos | `funds_search` + `funds_indicators` | `funds.json`, `funds2.json`, `funds3.json` |
 | Ibovespa diário | `benchmarks_history` | `ibov_1..5.json` |
 | Taxa CDI diária | `benchmarks_history` | `cdi.json` |
 | Métricas oficiais de risco | `risk_stats` | `checks.json` |
+
+O catálogo veio em três rodadas — `funds.json` (19 nomes iniciais), `funds2.json`
+(ampliação para 66) e `funds3.json` (inclusões pedidas caso a caso, hoje só o TC
+Cosmos). São arquivos separados só para preservar a proveniência; o build mescla
+os três e rejeita fund_id repetido.
+
+Todo fundo passou pelo mesmo filtro: cota atualizada, retorno de 60 meses
+plausível e volatilidade de 1 ano dentro da faixa. Ficaram de fora nomes cuja
+classe ativa tinha cota parada (Tork Long Only, Truxt Valor, XP Macro, Kinea
+Absoluto, Charles River, Quasar Advantage, Icatu Vanguarda Crédito) ou que não
+apareceram ativos com histórico usável (Garde D'Artagnan, Mauá Macro, Miles Acer,
+Empírica Lótus, Organon, Kinea Crédito Privado).
 
 O CDI merece nota: a Economatica publica a **taxa anual** vigente em cada dia útil,
 não um índice acumulado. `build.mjs` acumula a curva por `(1 + i)^(1/252)`,
@@ -65,7 +77,14 @@ real — e um ponto errado no meio de 1.250 não aparece no gráfico, mas contam
 volatilidade e drawdown. `verify.mjs` recalcula retorno acumulado, retorno
 anualizado, volatilidade, drawdown e número de pregões a partir dos dados
 embarcados e compara com o que o `risk_stats` da Economatica devolveu para as
-mesmas janelas. Divergência acima de 0,06 p.p. reprova o build.
+mesmas janelas. Divergência acima de 0,06 p.p. reprova o build. Hoje são 604
+comparações cobrindo os 67 fundos, o Ibovespa e o CDI.
+
+O `build.mjs` também barra série truncada antes de chegar lá: confere que a série
+começa perto da data de início do fundo, que termina no pregão corrente e que a
+densidade de pontos bate com o intervalo. Isso pega o caso silencioso de uma
+fatia que voltou pela metade — que não dá erro em lugar nenhum, só produz métrica
+errada.
 
 A verificação também fixa duas convenções que não são óbvias:
 

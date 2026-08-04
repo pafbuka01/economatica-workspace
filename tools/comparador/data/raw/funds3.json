@@ -1,0 +1,24 @@
+{
+  "_comment": "Inclusão pedida diretamente: TC Cosmos. Resolvido via funds_search(q='cosmos') e validado com funds_indicators (data_quality=ok). Série começa em 2022-11-04, então não tem os 5 anos completos dos demais — a tabela do artefato mostra isso na coluna de pregões.",
+  "funds": [
+    {
+      "fund_id": "678325",
+      "name": "Classe Única de Cotas do TC Cosmos FI Financeiro Mult",
+      "short_name": "TC Cosmos",
+      "manager": "Pandhora Investimentos",
+      "cnpj": "47543176000153",
+      "anbima_class": "Multimercados",
+      "category": "Multimercado",
+      "benchmark": "CDI",
+      "admin_fee_pct": 2,
+      "min_initial_investment": 500,
+      "start_date": "2022-11-04",
+      "last_quote_date": "2026-07-30",
+      "ret_12m_pct": 6.75,
+      "ret_60m_pct": null,
+      "volatility_1y": 9.82,
+      "sharpe_1y": -0.66,
+      "aum_brl_thousands": 87401
+    }
+  ]
+}

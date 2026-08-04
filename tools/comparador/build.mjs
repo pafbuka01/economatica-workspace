@@ -70,11 +70,37 @@ function joinSlices(files) {
   return [...byDate.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1));
 }
 
+const WINDOW_START = '2021-08-01';
+const MIN_LAST_DATE = '2026-07-25';
+
+const addDays = (iso, n) => new Date(Date.parse(iso + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
+const daysBetween = (a, b) => (Date.parse(b) - Date.parse(a)) / 864e5;
+
+/**
+ * Uma série truncada não dá erro em lugar nenhum: ela só produz métricas
+ * silenciosamente erradas. Aqui checamos as duas pontas e a densidade — sem
+ * exigir 5 anos de todo mundo, porque fundo novo (TC Cosmos, de nov/2022)
+ * legitimamente tem menos pregões.
+ */
 const funds = new Map();
 for (const f of catalog) {
   const series = joinSlices([`${f.fund_id}_a.json`, `${f.fund_id}_b.json`]);
-  if (series.length < 1000) {
-    throw new Error(`${f.fund_id} (${f.short_name}) só tem ${series.length} pontos — série incompleta`);
+  const id = `${f.fund_id} (${f.short_name})`;
+  const first = series[0][0];
+  const last = series[series.length - 1][0];
+
+  const expectedStart = f.start_date > WINDOW_START ? f.start_date : WINDOW_START;
+  if (first > addDays(expectedStart, 12)) {
+    throw new Error(`${id}: série começa em ${first}, tarde demais para um fundo de ${expectedStart}`);
+  }
+  if (last < MIN_LAST_DATE) {
+    throw new Error(`${id}: série termina em ${last} — cota desatualizada ou coleta truncada`);
+  }
+  const expectedPoints = (daysBetween(first, last) * 5) / 7;
+  if (series.length < expectedPoints * 0.85) {
+    throw new Error(
+      `${id}: ${series.length} pontos entre ${first} e ${last}, esperado ~${Math.round(expectedPoints)} — série com buracos`
+    );
   }
   funds.set(f.fund_id, series);
 }
