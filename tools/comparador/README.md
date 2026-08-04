@@ -5,6 +5,18 @@ brasileiros da base Economatica contra Ibovespa e CDI, com seletor de período
 (30 dias, YTD, 12 meses, 5 anos) e as métricas de retorno e risco recalculadas
 sobre a janela escolhida.
 
+## Como o leitor monta a comparação
+
+Os fundos escolhidos aparecem como pills, cada uma com um × para tirar da
+comparação. Para adicionar, a busca aceita nome do fundo, nome da gestora ou
+categoria, sem exigir acento — "acoes" acha "Ações", "genoa" acha o Genoa Capital
+Radar. Setas navegam a lista, Enter adiciona, Esc fecha.
+
+O limite é de seis fundos simultâneos, que é onde a paleta categórica ainda
+separa as linhas com segurança para daltonismo. Cada fundo guarda seu slot de cor
+enquanto estiver selecionado: remover um da lista não repinta os que ficaram, para
+a leitura do gráfico não mudar de significado no meio da análise.
+
 ## Rodar
 
 ```bash

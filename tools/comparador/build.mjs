@@ -27,8 +27,22 @@ const exists = (f) => fs.existsSync(path.join(RAW, f));
  * Catálogo
  * ------------------------------------------------------------------ */
 
-const catalog = read('funds.json').funds;
 const CATEGORIES = ['Multimercado', 'Ações', 'Renda Fixa'];
+
+/* O catálogo foi montado em duas rodadas; funds2.json é a ampliação. */
+const catalog = [];
+const seen = new Set();
+for (const file of ['funds.json', 'funds2.json']) {
+  if (!exists(file)) continue;
+  for (const f of read(file).funds) {
+    if (seen.has(f.fund_id)) continue;
+    if (!CATEGORIES.includes(f.category)) {
+      throw new Error(`categoria inválida em ${f.fund_id}: ${f.category}`);
+    }
+    seen.add(f.fund_id);
+    catalog.push(f);
+  }
+}
 
 /* ------------------------------------------------------------------ *
  * Séries brutas
