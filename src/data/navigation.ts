@@ -3,6 +3,7 @@ import {
   HomeIcon,
   PlanoIcon,
   SparkleNavIcon,
+  PlataformaIcon as ComparadorIcon,
   KentoMcpIcon,
   PlataformaIcon,
   ExcelIcon,
@@ -45,6 +46,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { to: '/kento-chat', label: 'Kento', icon: SparkleNavIcon },
       { to: '/kento-mcp', label: 'Conexões', icon: KentoMcpIcon, indent: true },
+      { to: '/comparador', label: 'Comparador', icon: ComparadorIcon, showDot: true },
       { to: '/terminal', label: 'Terminal Economatica', icon: TerminalIcon, showDot: true },
       { to: '/apis', label: 'APIs Economatica', icon: ApisIcon, showDot: true },
       { to: '/plataforma', label: 'Plataforma', icon: PlataformaIcon, disabled: true },
