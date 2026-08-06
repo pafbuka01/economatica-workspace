@@ -27,3 +27,6 @@ dist-ssr
 .context
 .vercel
 .env*
+
+# artefato gerado
+dist-artifact

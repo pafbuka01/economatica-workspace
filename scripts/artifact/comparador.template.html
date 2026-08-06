@@ -1,0 +1,996 @@
+<title>Comparador B3 — Economatica</title>
+
+<style>
+  /* ---------------------------------------------------------------------
+     Tokens. Tema definido só aqui; componentes nunca leem cor direto.
+     Ordem: base -> preferência do SO -> data-theme (o toggle vence sempre).
+     --------------------------------------------------------------------- */
+  :root {
+    --canvas:        #f7f8f9;
+    --surface:       #ffffff;
+    --raised:        #f1f3f5;
+    --band:          #eceff1;
+
+    --line:          #dde2e6;
+    --hairline:      #e9edf0;
+
+    --ink:           #12181d;
+    --ink-soft:      #4a555e;
+    --ink-faint:     #7c8891;
+    --ink-ghost:     #a8b2ba;
+
+    /* Acento: petróleo. Só foco, link e seleção — nunca dado. */
+    --accent:        #0e6e6b;
+    --accent-soft:   #e2f0ef;
+    --accent-line:   #a8d4d1;
+
+    /* Semântico: exclusivo do heatmap. Separado do acento de propósito. */
+    --pos:           23, 178, 106;
+    --neg:           220, 38, 38;
+    --pos-ink:       #0f7a48;
+    --neg-ink:       #b42318;
+
+    --shadow:        0 1px 2px rgba(18, 24, 29, .05), 0 8px 24px -12px rgba(18, 24, 29, .18);
+
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --canvas:      #14171a;
+      --surface:     #1b1f23;
+      --raised:      #23282d;
+      --band:        #252b30;
+
+      --line:        #333a40;
+      --hairline:    #2a3036;
+
+      --ink:         #e6eaed;
+      --ink-soft:    #a5b0b8;
+      --ink-faint:   #78848d;
+      --ink-ghost:   #59646c;
+
+      --accent:      #3ebdb4;
+      --accent-soft: #12302f;
+      --accent-line: #2c5f5c;
+
+      --pos-ink:     #4ade9b;
+      --neg-ink:     #f87171;
+
+      --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --canvas: #14171a; --surface: #1b1f23; --raised: #23282d; --band: #252b30;
+    --line: #333a40; --hairline: #2a3036;
+    --ink: #e6eaed; --ink-soft: #a5b0b8; --ink-faint: #78848d; --ink-ghost: #59646c;
+    --accent: #3ebdb4; --accent-soft: #12302f; --accent-line: #2c5f5c;
+    --pos-ink: #4ade9b; --neg-ink: #f87171;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+
+  :root[data-theme="light"] {
+    --canvas: #f7f8f9; --surface: #ffffff; --raised: #f1f3f5; --band: #eceff1;
+    --line: #dde2e6; --hairline: #e9edf0;
+    --ink: #12181d; --ink-soft: #4a555e; --ink-faint: #7c8891; --ink-ghost: #a8b2ba;
+    --accent: #0e6e6b; --accent-soft: #e2f0ef; --accent-line: #a8d4d1;
+    --pos-ink: #0f7a48; --neg-ink: #b42318;
+    --shadow: 0 1px 2px rgba(18,24,29,.05), 0 8px 24px -12px rgba(18,24,29,.18);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+
+  .wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 28px 20px 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* --- Cabeçalho-instrumento: leitura do universo em régua de hairlines --- */
+  .masthead { display: flex; flex-direction: column; gap: 14px; }
+
+  .masthead h1 {
+    margin: 0;
+    font-size: clamp(21px, 3.4vw, 27px);
+    font-weight: 640;
+    letter-spacing: -.022em;
+    text-wrap: balance;
+  }
+
+  .masthead p {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+  }
+
+  .readout {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .readout div {
+    flex: 1 1 128px;
+    padding: 9px 14px;
+    border-right: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .readout div:last-child { border-right: 0; }
+
+  .readout dt {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .085em;
+    color: var(--ink-faint);
+    font-weight: 600;
+  }
+
+  .readout dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+  }
+
+  /* --- Seletor --- */
+  .picker {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 5px 4px 9px;
+    border: 1px solid var(--accent-line);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    animation: pop .16s ease-out;
+  }
+
+  @keyframes pop { from { opacity: 0; transform: translateY(-2px); } }
+
+  .chip b {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+  }
+
+  .chip span {
+    font-size: 12px;
+    color: var(--ink-soft);
+    max-width: 132px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chip button {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    color: var(--ink-faint);
+    padding: 2px;
+    line-height: 0;
+    border-radius: 4px;
+  }
+  .chip button:hover { background: rgba(var(--neg), .12); color: var(--neg-ink); }
+
+  .searchbox { position: relative; flex: 1 1 240px; min-width: 200px; }
+
+  .searchbox input {
+    width: 100%;
+    padding: 7px 11px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  .searchbox input::placeholder { color: var(--ink-ghost); }
+  .searchbox input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  .results {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    z-index: 40;
+    max-height: 292px;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 4px;
+  }
+  .results:empty { display: none; }
+
+  .results button {
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+    gap: 9px;
+    padding: 6px 8px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 5px;
+    color: var(--ink);
+  }
+  .results button:hover, .results button:focus-visible { background: var(--accent-soft); }
+  .results button[disabled] { opacity: .38; cursor: not-allowed; }
+
+  .results .tk { font-family: var(--mono); font-size: 12.5px; font-weight: 650; width: 66px; flex: none; }
+  .results .nm { flex: 1; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .results .sc { font-size: 11px; color: var(--ink-faint); flex: none; }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    border-top: 1px solid var(--hairline);
+    padding-top: 9px;
+  }
+
+  .tbtn {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    border-radius: 5px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: border-color .12s, color .12s, background .12s;
+  }
+  .tbtn:hover:not([disabled]) { border-color: var(--accent-line); color: var(--accent); background: var(--accent-soft); }
+  .tbtn[disabled] { opacity: .4; cursor: not-allowed; }
+  .count { margin-left: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
+
+  /* --- Avisos e carimbo --- */
+  .note {
+    display: flex;
+    gap: 8px;
+    padding: 8px 11px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+  .note.stamp { background: var(--raised); }
+  .note strong { color: var(--ink); font-weight: 600; }
+  .note .mk { flex: none; font-family: var(--mono); font-weight: 700; color: var(--ink-faint); }
+  .note.warn .mk { color: var(--neg-ink); }
+
+  .notes { display: flex; flex-direction: column; gap: 7px; }
+
+  /* --- Tabela --- */
+  .tablebox {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow-x: auto;
+  }
+
+  table { border-collapse: collapse; width: 100%; }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 9px 12px;
+    text-align: right;
+    vertical-align: bottom;
+  }
+
+  th.rowhead, thead th.corner {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    text-align: left;
+    min-width: 176px;
+  }
+  thead th.corner { z-index: 30; font-size: 11px; color: var(--ink-faint); font-weight: 600; }
+  th.rowhead { z-index: 10; }
+
+  .cohead { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; min-width: 122px; }
+  .cohead b { font-family: var(--mono); font-size: 13.5px; font-weight: 650; letter-spacing: -.015em; }
+  .cohead span { font-size: 11.5px; font-weight: 400; color: var(--ink-soft); max-width: 138px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cohead em { font-size: 10px; font-style: normal; color: var(--ink-ghost); max-width: 138px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  tbody th.band {
+    position: sticky;
+    left: 0;
+    background: var(--band);
+    text-align: left;
+    padding: 5px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .085em;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  tbody th.rowhead {
+    font-weight: 400;
+    font-size: 13px;
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  tbody tr:hover th.rowhead { background: var(--raised); }
+
+  td {
+    padding: 7px 12px;
+    text-align: right;
+    border-bottom: 1px solid var(--hairline);
+    white-space: nowrap;
+  }
+
+  .val {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+    letter-spacing: -.01em;
+  }
+
+  .pct {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-faint);
+    margin-left: 5px;
+    cursor: help;
+  }
+  .pct.hi { color: var(--pos-ink); }
+  .pct.lo { color: var(--neg-ink); }
+
+  .void { font-family: var(--mono); font-size: 12.5px; color: var(--ink-ghost); cursor: help; }
+
+  .hint { border-bottom: 1px dotted var(--ink-ghost); cursor: help; }
+
+  /* --- KPI setorial --- */
+  .kpi h2 { margin: 0; font-size: 14.5px; font-weight: 640; letter-spacing: -.015em; }
+  .kpi .sub { font-size: 12.5px; color: var(--ink-soft); margin: 2px 0 0; }
+  .kpi header { margin-bottom: 8px; }
+
+  .cite {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-faint);
+    text-decoration: none;
+    margin-top: 1px;
+  }
+  .cite:hover { color: var(--accent); text-decoration: underline; }
+
+  .foot { font-size: 11.5px; color: var(--ink-ghost); margin: 7px 2px 0; }
+  .foot code { font-family: var(--mono); font-size: 11px; }
+
+  /* --- Legenda --- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    padding: 0 2px;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+  .legend b { font-family: var(--mono); font-weight: 500; color: var(--ink-soft); }
+
+  /* --- Vazio --- */
+  .empty {
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .empty h2 { margin: 0; font-size: 15px; font-weight: 640; letter-spacing: -.015em; }
+  .empty > div > p { margin: 3px 0 0; font-size: 13px; color: var(--ink-soft); }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .preset {
+    border: 1px solid var(--line);
+    background: var(--canvas);
+    border-radius: 8px;
+    padding: 8px 11px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: border-color .12s, background .12s;
+    color: var(--ink);
+    font-family: var(--sans);
+  }
+  .preset:hover { border-color: var(--accent-line); background: var(--accent-soft); }
+  .preset b { font-size: 13px; font-weight: 580; }
+  .preset span { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+  .preset em { font-style: normal; font-size: 10px; color: var(--ink-ghost); }
+
+  .seclist { display: flex; flex-wrap: wrap; gap: 3px 16px; }
+  .seclist span { font-size: 12px; color: var(--ink-soft); }
+  .seclist b { font-family: var(--mono); font-weight: 500; color: var(--ink-ghost); }
+
+  .subhead {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .085em;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--hairline);
+    padding-top: 13px;
+    margin-bottom: 7px;
+  }
+
+  .tickrow { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tick {
+    border: 1px solid var(--line);
+    background: var(--canvas);
+    border-radius: 5px;
+    padding: 3px 7px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: border-color .12s, background .12s;
+  }
+  .tick:hover { border-color: var(--accent-line); background: var(--accent-soft); }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <h1>Comparador de empresas · B3</h1>
+      <p>
+        Compare ações lado a lado em valuation, rentabilidade, alavancagem, retorno e risco — com a posição
+        de cada uma na distribuição do próprio setor.
+      </p>
+    </div>
+    <dl class="readout" id="readout"></dl>
+  </header>
+
+  <div class="picker">
+    <div class="chips" id="chips">
+      <div class="searchbox">
+        <input id="q" type="text" autocomplete="off" spellcheck="false" aria-label="Buscar empresa" />
+        <div class="results" id="results" role="listbox"></div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="tbtn" id="peers" disabled>Preencher com pares do setor</button>
+      <button class="tbtn" id="clear" disabled>Limpar seleção</button>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <div class="note stamp" id="stamp"></div>
+
+  <div id="view"></div>
+</div>
+
+<script>
+/* ====================================================================
+   Dados: snapshot da Economatica embutido na página (nenhuma requisição
+   externa — a CSP do artefato bloqueia qualquer host).
+   ==================================================================== */
+const SNAP = /*__SNAPSHOT__*/;
+const KPI  = /*__KPI__*/;
+
+/* --------------------------------------------------------------------
+   Catálogo de métricas. `dir` é o que impede o erro clássico do heatmap:
+   em P/L menor é melhor, em ROE maior é melhor. Sem isso a tabela pinta
+   de verde a empresa mais endividada.
+   -------------------------------------------------------------------- */
+const METRICS = [
+  ['tamanho', 'market_cap_brl_thousands',       'Valor de mercado',        'brlTh', 0,  0],
+  ['tamanho', 'enterprise_value_brl_thousands', 'Enterprise value',        'brlTh', 0,  0, { ev: 1 }],
+  ['tamanho', 'revenue_3m_brl_thousands',       'Receita (trimestre)',     'brlTh', 0,  0],
+  ['tamanho', 'equity_brl_thousands',           'Patrimônio líquido',      'brlTh', 0,  0],
+  ['tamanho', 'total_assets_brl_thousands',     'Ativo total',             'brlTh', 0,  0],
+
+  ['valuation', 'pe_ltm',        'P/L',         'x', 1, -1, { pm: 1, hint: 'Preço sobre lucro dos últimos 12 meses. Negativo é prejuízo, não desconto.' }],
+  ['valuation', 'pb_ltm',        'P/VPA',       'x', 2, -1, { pm: 1, hint: 'Preço sobre valor patrimonial. Sozinho engana — leia junto do ROE.' }],
+  ['valuation', 'ev_ebitda_ltm', 'EV/EBITDA',   'x', 1, -1, { pm: 1, ev: 1, hint: 'Não se aplica a bancos: a fonte não calcula enterprise value para eles.' }],
+  ['valuation', 'ev_ebit_ltm',   'EV/EBIT',     'x', 1, -1, { pm: 1, ev: 1 }],
+  ['valuation', 'ev_sales_ltm',  'EV/Receita',  'x', 1, -1, { pm: 1, ev: 1 }],
+  ['valuation', 'psr_ltm',       'P/Receita',   'x', 2, -1, { pm: 1 }],
+  ['valuation', 'pfcf_ltm',      'P/FCF',       'x', 1, -1, { pm: 1 }],
+
+  ['rentabilidade', 'roe_ltm_pct',           'ROE',            'pct', 1, 1, { hint: 'Retorno sobre patrimônio líquido nos últimos 12 meses.' }],
+  ['rentabilidade', 'roic_ltm_pct',          'ROIC',           'pct', 1, 1],
+  ['rentabilidade', 'roa_ltm_pct',           'ROA',            'pct', 1, 1],
+  ['rentabilidade', 'ebitda_margin_ltm_pct', 'Margem EBITDA',  'pct', 1, 1],
+  ['rentabilidade', 'net_margin_ltm_pct',    'Margem líquida', 'pct', 1, 1],
+  ['rentabilidade', 'fcf_margin_ltm_pct',    'Margem FCF',     'pct', 1, 1],
+
+  ['alavancagem', 'net_debt_ebitda_ltm', 'Dív. líq./EBITDA', 'x', 1, -1, { ev: 1, hint: 'Negativo é caixa líquido. Não se aplica a bancos.' }],
+
+  ['retorno', 'dividend_yield_ltm_pct', 'Dividend yield',   'pct', 2, 1],
+  ['retorno', 'return_1m_pct',          'Retorno 1 mês',    'pct', 2, 1],
+  ['retorno', 'return_3m_pct',          'Retorno 3 meses',  'pct', 2, 1],
+  ['retorno', 'return_6m_pct',          'Retorno 6 meses',  'pct', 2, 1],
+  ['retorno', 'return_1y_pct',          'Retorno 1 ano',    'pct', 2, 1],
+  ['retorno', 'return_ytd_pct',         'Retorno no ano',   'pct', 2, 1],
+
+  ['risco', 'beta_5y',            'Beta 5 anos',        'x',   2, -1, { hint: 'Sensibilidade ao Ibovespa. Abaixo de 1 oscila menos que o índice.' }],
+  ['risco', 'volatility_1y_pct',  'Volatilidade 1 ano', 'pct', 1, -1],
+
+  ['liquidez', 'avg_quarterly_volume_brl_thousands', 'Volume médio trimestral', 'brlTh', 0, 1, { hint: 'Giro financeiro médio por trimestre nos últimos 12 meses.' }],
+  ['liquidez', 'close_price_brl',                    'Cotação',                 'brl',   2, 0],
+].map(([block, key, label, unit, dec, dir, o = {}]) => ({ block, key, label, unit, dec, dir, ...o }));
+
+const BLOCKS = [
+  ['tamanho', 'Tamanho'],
+  ['valuation', 'Valuation'],
+  ['rentabilidade', 'Rentabilidade'],
+  ['alavancagem', 'Alavancagem'],
+  ['retorno', 'Retorno ao acionista'],
+  ['risco', 'Risco'],
+  ['liquidez', 'Liquidez'],
+];
+
+const PRESETS = [
+  { label: 'Bancões',               t: ['ITUB4', 'BBDC4', 'BBAS3', 'SANB11'], n: 'EV não se aplica' },
+  { label: 'Mineração e siderurgia', t: ['VALE3', 'CMIN3', 'GGBR4', 'CSNA3'], n: 'múltiplo negativo' },
+  { label: 'Papel e celulose',      t: ['SUZB3', 'KLBN11', 'RANI3'],          n: '' },
+  { label: 'Petróleo',              t: ['PETR4', 'PRIO3', 'RECV3'],           n: '' },
+];
+
+const MAX = 6;
+
+/* ====================== consultas sobre o snapshot ====================== */
+
+const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+
+const INDEX = SNAP.companies.map((c) => ({ c, tk: c.ticker.toLowerCase(), nm: fold(c.name) }));
+const BY_TICKER = new Map(SNAP.companies.map((c) => [c.ticker, c]));
+
+const liquidity = (c) => c.metrics.avg_quarterly_volume_brl_thousands ?? -1;
+const byLiquidity = (a, b) => liquidity(b) - liquidity(a);
+
+function search(query, limit = 10) {
+  const q = fold(query);
+  if (!q) return [];
+  const out = [];
+  for (const e of INDEX) {
+    let s = -1;
+    if (e.tk === q) s = 0;
+    else if (e.tk.startsWith(q)) s = 1;
+    else if (e.nm.startsWith(q)) s = 2;
+    else if (e.nm.includes(q)) s = 3;
+    else if (e.tk.includes(q)) s = 4;
+    if (s >= 0) out.push({ c: e.c, s });
+  }
+  return out.sort((a, b) => a.s - b.s || byLiquidity(a.c, b.c)).slice(0, limit).map((x) => x.c);
+}
+
+/* Cascata segmento -> subsetor -> setor. Só classe primária: trazer PETR3 como
+   "par" da PETR4 compararia a empresa com ela mesma. */
+function peersOf(target, limit) {
+  const pool = SNAP.companies.filter((c) => c.isPrimaryClass && c.cnpj !== target.cnpj);
+  const tiers = [
+    pool.filter((c) => target.segment && c.segment === target.segment),
+    pool.filter((c) => target.subsector && c.subsector === target.subsector),
+    pool.filter((c) => c.sector === target.sector),
+  ];
+  const seen = new Set(), out = [];
+  for (const tier of tiers) {
+    for (const c of tier.sort(byLiquidity)) {
+      if (out.length >= limit) break;
+      if (seen.has(c.ticker)) continue;
+      seen.add(c.ticker); out.push(c);
+    }
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
+/* ====================== célula, percentil, heatmap ====================== */
+
+/* Três "vazios" que não podem virar a mesma coisa na tela. */
+function cellFor(company, m) {
+  if (m.ev && company.evNotApplicable) return { st: 'na', v: null };
+  const v = company.metrics[m.key];
+  if (v === null || v === undefined || !isFinite(v)) return { st: 'missing', v: null };
+  if (m.pm && v <= 0) return { st: 'nm', v };
+  return { st: 'ok', v };
+}
+
+/* Percentil já orientado pela direção: 100 é sempre "melhor do setor", então em
+   P/L percentil alto significa mais barato, não mais caro. */
+function percentile(v, d, dir) {
+  if (!dir) return null;
+  const pts = [[d.min, 0], [d.p25, 25], [d.median, 50], [d.p75, 75], [d.max, 100]];
+  let asc;
+  if (v <= pts[0][0]) asc = 0;
+  else if (v >= pts[4][0]) asc = 100;
+  else {
+    asc = 100;
+    for (let i = 0; i < 4; i++) {
+      const [lv, lp] = pts[i], [hv, hp] = pts[i + 1];
+      if (v >= lv && v <= hv) { const span = hv - lv; asc = span === 0 ? lp : lp + ((v - lv) / span) * (hp - lp); break; }
+    }
+  }
+  return Math.round(dir < 0 ? 100 - asc : asc);
+}
+
+function buildRow(companies, m) {
+  const base = companies.map((c) => cellFor(c, m));
+  const vals = base.filter((c) => c.st === 'ok').map((c) => c.v);
+  const min = Math.min(...vals), max = Math.max(...vals), flat = max === min;
+
+  return base.map((cell, i) => {
+    let rank = null;
+    if (cell.st === 'ok' && m.dir && vals.length > 1) {
+      const n = flat ? 0.5 : (cell.v - min) / (max - min);
+      rank = m.dir < 0 ? 1 - n : n;
+    }
+    const dist = (SNAP.sectorStats[companies[i].sector] || {})[m.key] || null;
+    const p = cell.st === 'ok' && dist ? percentile(cell.v, dist, m.dir) : null;
+    return { ...cell, rank, p, dist };
+  });
+}
+
+/* Alfa baixo para o número seguir legível nos dois temas. A faixa morna do
+   meio não recebe cor: só os extremos comunicam. */
+function heat(rank) {
+  if (rank === null) return '';
+  const strength = Math.abs(rank - 0.5) * 2;
+  if (strength < 0.15) return '';
+  const a = (0.06 + strength * 0.16).toFixed(3);
+  return `background:rgba(var(--${rank >= 0.5 ? 'pos' : 'neg'}), ${a})`;
+}
+
+/* ====================== formatação ====================== */
+
+const nf = (v, d) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+function brlTh(t) {
+  const a = Math.abs(t);
+  if (a >= 1e9) return `R$ ${(t / 1e9).toFixed(1)} tri`;
+  if (a >= 1e6) return `R$ ${(t / 1e6).toFixed(1)} bi`;
+  if (a >= 1e3) return `R$ ${(t / 1e3).toFixed(1)} mi`;
+  return `R$ ${t.toFixed(0)} mil`;
+}
+
+function fmt(v, m) {
+  if (v === null) return '—';
+  if (m.unit === 'pct')   return nf(v, m.dec) + '%';
+  if (m.unit === 'x')     return nf(v, m.dec) + 'x';
+  if (m.unit === 'brl')   return 'R$ ' + nf(v, 2);
+  return brlTh(v);
+}
+
+const VOID_LABEL = { nm: 'n/m', na: 'n/a', missing: '—' };
+const VOID_HINT = {
+  nm: 'Não significativo: múltiplo de preço negativo (a empresa teve prejuízo no período).',
+  na: 'Não se aplica: a fonte não calcula enterprise value para bancos e seguradoras.',
+  missing: 'Sem dado publicado na fonte para este trimestre.',
+};
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ====================== avisos ====================== */
+
+function warnings(sel) {
+  const w = [];
+  if (sel.length < 2) return w;
+
+  const sectors = new Set(sel.map((c) => c.sector));
+  if (sectors.size > 1) {
+    w.push(`Seleção com ${sectors.size} setores diferentes. Múltiplo de valuation só é comparável dentro do mesmo setor.`);
+  }
+
+  const dup = sel.filter((c) => sel.some((o) => o !== c && o.cnpj === c.cnpj));
+  if (dup.length) {
+    const names = [...new Set(dup.map((c) => c.name))].join(', ');
+    w.push(`${names}: classes da mesma empresa na comparação (mesmo CNPJ). Os múltiplos diferem só pelo preço da classe.`);
+  }
+
+  const banks = sel.filter((c) => c.evNotApplicable);
+  if (banks.length && banks.length < sel.length) {
+    w.push(`${banks.map((b) => b.ticker).join(', ')}: banco ou seguradora. Linhas de EV aparecem como não aplicável.`);
+  }
+
+  const thin = sel.filter((c) => (c.metrics.avg_quarterly_volume_brl_thousands ?? 0) < 10000);
+  if (thin.length) {
+    w.push(`${thin.map((c) => c.ticker).join(', ')}: liquidez muito baixa. O preço, e portanto todo múltiplo, pode estar defasado.`);
+  }
+  return w;
+}
+
+/* ====================== estado ====================== */
+
+let selected = [];
+
+const $ = (id) => document.getElementById(id);
+
+function setSelection(next) {
+  selected = next.slice(0, MAX);
+  render();
+}
+
+/* ====================== render ====================== */
+
+function renderReadout() {
+  const m = SNAP.meta;
+  const [y, mo, d] = m.marketDataAsOf.split('-');
+  $('readout').innerHTML = [
+    ['Tickers', m.tickerCount],
+    ['Empresas', m.companyCount],
+    ['Setores', m.sectorCount],
+    ['Fundamentos', m.fundamentalsQuarter],
+    ['Preço', `${d}/${mo}/${y}`],
+  ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+
+  $('stamp').innerHTML =
+    `<span class="mk">i</span><p style="margin:0">Múltiplos cruzam <strong>preço de ${d}/${mo}/${y}</strong> com ` +
+    `<strong>fundamentos do ${m.fundamentalsQuarter}</strong> — as duas pontas têm datas diferentes por natureza. ` +
+    `Universo de ${m.tickerCount} tickers e ${m.companyCount} empresas após dedup por CNPJ. Fonte Economatica. ` +
+    `Não é recomendação de investimento (CVM Res. 20/2021).</p>`;
+}
+
+function renderChips() {
+  const box = $('chips');
+  [...box.querySelectorAll('.chip')].forEach((n) => n.remove());
+  const sb = box.querySelector('.searchbox');
+
+  for (const c of selected) {
+    const el = document.createElement('span');
+    el.className = 'chip';
+    el.innerHTML = `<b>${esc(c.ticker)}</b><span>${esc(c.name)}</span>` +
+      `<button type="button" aria-label="Remover ${esc(c.ticker)}">✕</button>`;
+    el.querySelector('button').onclick = () => setSelection(selected.filter((x) => x !== c));
+    box.insertBefore(el, sb);
+  }
+
+  const full = selected.length >= MAX;
+  const q = $('q');
+  q.disabled = full;
+  q.placeholder = full ? `Máximo de ${MAX} empresas` : `Buscar entre ${SNAP.meta.tickerCount} ações da B3…`;
+
+  $('count').textContent = `${selected.length} de ${MAX}`;
+  $('peers').disabled = !selected.length || full;
+  $('clear').disabled = !selected.length;
+}
+
+function renderResults() {
+  const box = $('results');
+  const hits = search($('q').value);
+  box.innerHTML = '';
+  const chosen = new Set(selected.map((c) => c.ticker));
+
+  for (const c of hits) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.disabled = chosen.has(c.ticker);
+    b.innerHTML = `<span class="tk">${esc(c.ticker)}</span><span class="nm">${esc(c.name)}</span>` +
+      `<span class="sc">${esc(c.sector)}</span>`;
+    b.onclick = () => { setSelection([...selected, c]); $('q').value = ''; renderResults(); };
+    box.appendChild(b);
+  }
+}
+
+function renderTable(sel) {
+  const head = sel.map((c) => `<th><span class="cohead"><b>${esc(c.ticker)}</b>` +
+    `<span>${esc(c.name)}</span><em>${esc(c.segment || c.sector)}</em></span></th>`).join('');
+
+  let body = '';
+  for (const [block, label] of BLOCKS) {
+    const rows = METRICS.filter((m) => m.block === block)
+      .map((m) => ({ m, cells: buildRow(sel, m) }))
+      .filter((r) => r.cells.some((c) => c.st === 'ok'));   // bloco vazio não vira seção em branco
+    if (!rows.length) continue;
+
+    body += `<tr><th class="band" colspan="${sel.length + 1}">${label}</th></tr>`;
+
+    for (const { m, cells } of rows) {
+      const name = m.hint ? `<span class="hint" title="${esc(m.hint)}">${m.label}</span>` : m.label;
+      body += `<tr><th class="rowhead">${name}</th>` + cells.map((c) => {
+        if (c.st !== 'ok') {
+          return `<td><span class="void" title="${esc(VOID_HINT[c.st])}">${VOID_LABEL[c.st]}</span></td>`;
+        }
+        const badge = c.p === null ? '' :
+          `<span class="pct ${c.p >= 75 ? 'hi' : c.p <= 25 ? 'lo' : ''}" title="Percentil ${c.p} no setor (${c.dist.n} empresas). Mediana do setor: ${c.dist.median}.">P${c.p}</span>`;
+        return `<td style="${heat(c.rank)}"><span class="val">${fmt(c.v, m)}</span>${badge}</td>`;
+      }).join('') + '</tr>';
+    }
+  }
+
+  return `<div class="tablebox"><table><thead><tr><th class="corner">Métrica</th>${head}</tr></thead>` +
+    `<tbody>${body}</tbody></table></div>`;
+}
+
+/* Bloco de KPI gerencial: só quando todas compartilham o segmento — Basileia
+   só significa alguma coisa entre bancos. Cada número carrega o documento CVM
+   de origem, que é o contrato de auditabilidade da fonte. */
+function renderKpi(sel) {
+  const segs = new Set(sel.map((c) => c.segment).filter(Boolean));
+  if (segs.size !== 1) return '';
+  const seg = [...segs][0];
+  const defs = KPI.catalog[seg];
+  if (!defs) return '';
+
+  const has = (d) => sel.some((c) => KPI.values.some((v) => v.ticker === c.ticker && v.code === d.code));
+  const covered = defs.filter(has), missing = defs.filter((d) => !has(d));
+  if (!covered.length) return '';
+
+  const head = sel.map((c) => `<th><span class="cohead"><b>${esc(c.ticker)}</b></span></th>`).join('');
+
+  const body = covered.map((d) => {
+    const cells = sel.map((c) => KPI.values.find((v) => v.ticker === c.ticker && v.code === d.code));
+    const vals = cells.filter(Boolean).map((v) => v.value);
+    const min = Math.min(...vals), max = Math.max(...vals), flat = max === min;
+
+    const tds = cells.map((v) => {
+      if (!v) return `<td><span class="void" title="Não publicado nos releases auditados, ou fora da coleta deste snapshot. A ausência é do dado, não um zero.">não publicado</span></td>`;
+      let rank = null;
+      if (d.dir && vals.length > 1) {
+        const n = flat ? 0.5 : (v.value - min) / (max - min);
+        rank = d.dir < 0 ? 1 - n : n;
+      }
+      const title = `${v.citation.document}, p. ${v.citation.page}\n\n“${v.citation.snippet}”\n\nConfiança da extração: ${Math.round(v.citation.confidence * 100)}%`;
+      return `<td style="${heat(rank)}"><span class="val">${nf(v.value, 1)}%</span>` +
+        `<a class="cite" href="${esc(v.citation.url)}" target="_blank" rel="noreferrer" title="${esc(title)}">${esc(v.citation.document)} ↗</a></td>`;
+    }).join('');
+
+    const name = d.hint ? `<span class="hint" title="${esc(d.hint)}">${d.label}</span>` : d.label;
+    return `<tr><th class="rowhead">${name}</th>${tds}</tr>`;
+  }).join('');
+
+  const foot = missing.length
+    ? `<p class="foot">O catálogo de ${esc(seg)} tem ainda ${missing.map((d) => d.label).join(', ')} — fora da coleta deste snapshot.</p>`
+    : '';
+
+  return `<section class="kpi"><header><h2>Indicadores gerenciais · ${esc(seg)}</h2>` +
+    `<p class="sub">Extraídos dos releases oficiais, cada número com o documento CVM de origem.</p></header>` +
+    `<div class="tablebox"><table><thead><tr><th class="corner">Indicador</th>${head}</tr></thead>` +
+    `<tbody>${body}</tbody></table></div>${foot}</section>`;
+}
+
+function renderEmpty() {
+  const counts = new Map();
+  for (const c of SNAP.companies) {
+    if (c.isPrimaryClass) counts.set(c.sector, (counts.get(c.sector) || 0) + 1);
+  }
+  const sectors = [...counts].sort((a, b) => b[1] - a[1]);
+  const liquid = SNAP.companies.filter((c) => c.isPrimaryClass).sort(byLiquidity).slice(0, 8);
+
+  return `<div class="empty">
+    <div>
+      <h2>Escolha até ${MAX} empresas para comparar</h2>
+      <p>Busque por ticker ou nome, ou comece por uma das comparações abaixo.</p>
+    </div>
+    <div class="presets">${PRESETS.map((p, i) =>
+      `<button class="preset" data-preset="${i}"><b>${p.label}</b><span>${p.t.join(' · ')}</span>` +
+      (p.n ? `<em>expõe ${p.n}</em>` : '') + `</button>`).join('')}</div>
+    <div>
+      <div class="subhead">Mais líquidas do universo</div>
+      <div class="tickrow">${liquid.map((c) => `<button class="tick" data-tick="${c.ticker}">${c.ticker}</button>`).join('')}</div>
+    </div>
+    <div>
+      <div class="subhead">Cobertura por setor</div>
+      <div class="seclist">${sectors.map(([s, n]) => `<span>${esc(s)} <b>${n}</b></span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function render() {
+  renderChips();
+
+  const view = $('view');
+
+  if (!selected.length) {
+    view.innerHTML = renderEmpty();
+    view.querySelectorAll('[data-preset]').forEach((b) => {
+      b.onclick = () => setSelection(PRESETS[+b.dataset.preset].t.map((t) => BY_TICKER.get(t)).filter(Boolean));
+    });
+    view.querySelectorAll('[data-tick]').forEach((b) => {
+      b.onclick = () => setSelection([BY_TICKER.get(b.dataset.tick)]);
+    });
+    return;
+  }
+
+  if (selected.length === 1) {
+    view.innerHTML = `<div class="empty"><p style="margin:0;text-align:center;color:var(--ink-soft);font-size:13px">
+      Adicione ao menos mais uma empresa, ou use <strong style="color:var(--ink)">Preencher com pares do setor</strong>
+      para montar a comparação automaticamente.</p></div>`;
+    return;
+  }
+
+  const w = warnings(selected);
+  const notes = w.length
+    ? `<div class="notes">${w.map((x) => `<div class="note warn"><span class="mk">!</span><span>${esc(x)}</span></div>`).join('')}</div>`
+    : '';
+
+  const legend = `<div class="legend">
+    <span><i style="background:rgba(var(--pos),.22)"></i>melhor da seleção</span>
+    <span><i style="background:rgba(var(--neg),.22)"></i>pior da seleção</span>
+    <span><b>P72</b> percentil no setor (100 = melhor)</span>
+    <span><b>n/m</b> não significativo (múltiplo negativo)</span>
+    <span><b>n/a</b> não se aplica ao setor</span>
+  </div>`;
+
+  view.innerHTML = `<div style="display:flex;flex-direction:column;gap:14px">
+    ${notes}${renderTable(selected)}${legend}${renderKpi(selected)}
+  </div>`;
+}
+
+/* ====================== eventos ====================== */
+
+$('q').addEventListener('input', renderResults);
+$('q').addEventListener('focus', renderResults);
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.searchbox')) $('results').innerHTML = '';
+});
+
+$('peers').onclick = () => {
+  const anchor = selected[0];
+  if (!anchor) return;
+  const chosen = new Set(selected.map((c) => c.ticker));
+  const add = peersOf(anchor, MAX).filter((p) => !chosen.has(p.ticker));
+  setSelection([...selected, ...add]);
+};
+
+$('clear').onclick = () => setSelection([]);
+
+renderReadout();
+render();
+</script>

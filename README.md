@@ -74,6 +74,17 @@ aparece o bloco de indicadores gerenciais (bancos: Basileia, CET1, inadimplênci
 90+, cobertura, carteira). Cada número carrega o link do documento CVM de origem,
 com página e trecho citado — contrato de auditabilidade da fonte.
 
+**Artefato autocontido.** O mesmo comparador existe como página única, sem
+build nem servidor — o snapshot vai embutido no HTML (nenhuma requisição
+externa, a CSP do artefato bloqueia qualquer host):
+
+```bash
+node scripts/build-artifact.mjs   # -> dist-artifact/comparador.html (454 KB)
+```
+
+`scripts/artifact/comparador.template.html` é o template; o build injeta o
+snapshot e os KPIs (lidos de `sectorKpis.ts`, fonte única com o app React).
+
 A Home (`/`) e o comparador (`/comparador`) são as telas construídas. Os demais itens de navegação têm rotas-stub
 (`PlaceholderPage`) para a estrutura crescer sem quebrar a navegação.
 
