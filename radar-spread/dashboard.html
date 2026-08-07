@@ -1,0 +1,680 @@
+<title>Debêntures BR · Varredura</title>
+<style>
+:root{
+  color-scheme: light;
+  --ground:#eef2f3; --surface:#ffffff; --surface-2:#e7edee; --surface-3:#dde5e7;
+  --ink:#0d1518; --ink-2:#4f6167; --ink-3:#7e9198;
+  --line:#d5dfe1; --line-2:#bccacd;
+  --brand:#082e37; --on-brand:#eaf3f2; --accent:#cede33; --on-accent:#082e37;
+  --s1:#00879b; --s1-soft:rgba(0,135,155,.14);
+  --s2:#eb6834;
+  --crit:#b0392a; --crit-bg:#f8e6e2; --crit-bd:#e8c4bb;
+  --warn:#96660c; --warn-bg:#f8eedb; --warn-bd:#e6d4ad;
+  --good:#0d7a4e; --good-bg:#dff2e8; --good-bd:#b6ddc7;
+  --grid:rgba(13,21,24,.07);
+  --tip-bg:#082e37; --tip-fg:#eaf3f2; --tip-bd:#082e37;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#05171d; --surface:#0a2730; --surface-2:#0e313b; --surface-3:#123c48;
+    --ink:#e3eef0; --ink-2:#98b2b9; --ink-3:#6b878f;
+    --line:#164049; --line-2:#1e5361;
+    --brand:#cede33; --on-brand:#082e37;
+    --s1:#1f9fb3; --s1-soft:rgba(31,159,179,.18);
+    --s2:#d17a4a;
+    --crit:#e28878; --crit-bg:#3a1c17; --crit-bd:#5c2c23;
+    --warn:#d7a648; --warn-bg:#37290f; --warn-bd:#54401a;
+    --good:#46bf8a; --good-bg:#0d3326; --good-bd:#18503a;
+    --grid:rgba(227,238,240,.09);
+    --tip-bg:#04222a; --tip-fg:#e3eef0; --tip-bd:#1e5361;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#05171d; --surface:#0a2730; --surface-2:#0e313b; --surface-3:#123c48;
+  --ink:#e3eef0; --ink-2:#98b2b9; --ink-3:#6b878f;
+  --line:#164049; --line-2:#1e5361;
+  --brand:#cede33; --on-brand:#082e37;
+  --s1:#1f9fb3; --s1-soft:rgba(31,159,179,.18);
+  --s2:#d17a4a;
+  --crit:#e28878; --crit-bg:#3a1c17; --crit-bd:#5c2c23;
+  --warn:#d7a648; --warn-bg:#37290f; --warn-bd:#54401a;
+  --good:#46bf8a; --good-bg:#0d3326; --good-bd:#18503a;
+  --grid:rgba(227,238,240,.09);
+  --tip-bg:#04222a; --tip-fg:#e3eef0; --tip-bd:#1e5361;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1440px;margin:0 auto;padding:0 20px 80px}
+
+/* ---------- topo ---------- */
+.bar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.bar .wrap{padding-top:16px;padding-bottom:16px;display:flex;gap:20px;align-items:flex-start;
+  flex-wrap:wrap;justify-content:space-between}
+.brandblock{border-left:3px solid var(--accent);padding-left:14px}
+.brandblock .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.brandblock h1{margin:4px 0 0;font-family:var(--mono);font-size:22px;font-weight:600;
+  letter-spacing:-.03em;line-height:1.1}
+.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.status{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.5}
+.status b{color:var(--ink-2);font-weight:500}
+button{font-family:var(--sans);font-size:13px;cursor:pointer;border-radius:5px;
+  border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);padding:8px 14px;
+  transition:background .12s}
+button:hover:not(:disabled){background:var(--surface-3)}
+button:disabled{opacity:.5;cursor:default}
+button.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);
+  font-weight:600}
+button.primary:hover:not(:disabled){filter:brightness(1.06)}
+.spin{display:inline-block;width:11px;height:11px;border:2px solid currentColor;
+  border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;
+  vertical-align:-1px;margin-right:7px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.prog{height:3px;background:var(--surface-3);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--s1);width:0;transition:width .2s}
+
+/* ---------- kpis ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  margin-top:20px}
+.kpi{background:var(--surface);padding:13px 15px}
+.kpi .v{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;display:block;line-height:1.1}
+.kpi .k{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:6px;display:block;line-height:1.4}
+
+/* ---------- filtros ---------- */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px;
+  background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.filters label{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);display:block;margin-bottom:4px}
+input[type=text],input[type=number],select{font-family:var(--sans);font-size:13px;
+  padding:6px 9px;border-radius:5px;border:1px solid var(--line-2);background:var(--surface-2);
+  color:var(--ink);min-width:0}
+input[type=text]{min-width:190px}
+.seg{display:flex;border:1px solid var(--line-2);border-radius:5px;overflow:hidden}
+.seg button{border:none;border-radius:0;padding:6px 11px;font-size:12px;background:var(--surface-2);
+  border-right:1px solid var(--line-2)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed=true]{background:var(--brand);color:var(--on-brand);font-weight:600}
+.grow{flex:1;min-width:120px}
+
+/* ---------- tabela ---------- */
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface);
+  margin-top:18px;max-height:calc(100vh - 300px);min-height:320px}
+table{border-collapse:collapse;width:100%;min-width:1180px}
+th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;background:var(--surface-2);
+  border-bottom:1px solid var(--line-2);cursor:pointer;user-select:none;
+  position:sticky;top:0;z-index:5}
+th:hover{color:var(--ink)}
+th[aria-sort]{color:var(--ink)}
+th .ar{opacity:.55;font-size:8px;margin-left:2px}
+td:first-child,th:first-child,td.l,th.l{text-align:left}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr[aria-selected=true]{background:var(--s1-soft)}
+tbody tr:last-child td{border-bottom:none}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12.5px}
+.code{font-family:var(--mono);font-weight:600;font-size:12.5px}
+.sub{display:block;font-size:11px;color:var(--ink-3);font-weight:400;margin-top:1px;
+  max-width:230px;overflow:hidden;text-overflow:ellipsis}
+.pos{color:var(--crit)} .neg{color:var(--good)} .dim{color:var(--ink-3)}
+td.stripe{border-left:3px solid transparent;padding-left:10px}
+td.stripe.s3{border-left-color:var(--crit)}
+td.stripe.s2{border-left-color:var(--warn)}
+td.stripe.s1{border-left-color:var(--line-2)}
+.chip{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 6px;border-radius:3px;border:1px solid;font-weight:500}
+.chip.di{color:var(--s1);background:var(--s1-soft);border-color:transparent}
+.chip.ipca{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-bd)}
+.chip.pre{color:var(--ink-3);background:var(--surface-2);border-color:var(--line)}
+.chip.good{color:var(--good);background:var(--good-bg);border-color:var(--good-bd)}
+.chip.warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-bd)}
+.chip.crit{color:var(--crit);background:var(--crit-bg);border-color:var(--crit-bd)}
+.more{text-align:center;padding:14px}
+
+/* ---------- painel ---------- */
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--surface);
+  border-left:1px solid var(--line-2);z-index:40;overflow-y:auto;padding:22px 24px 40px;
+  box-shadow:-8px 0 28px rgba(0,0,0,.14);transform:translateX(100%);transition:transform .18s ease}
+.panel.open{transform:none}
+.panel .x{position:absolute;top:16px;right:18px;padding:5px 10px}
+.panel h2{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.02em;margin:0}
+.panel .who{color:var(--ink-2);font-size:13px;margin-top:3px}
+dl.kv{display:grid;grid-template-columns:1fr auto;gap:8px 14px;margin:16px 0 0;font-size:13px}
+dl.kv dt{color:var(--ink-2)}
+dl.kv dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12.5px;
+  text-align:right;font-weight:500}
+dl.kv dd.hi{color:var(--crit);font-weight:600}
+dl.kv dd.ok{color:var(--good);font-weight:600}
+.panel h3{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:24px 0 8px}
+
+/* ---------- estados ---------- */
+.note{border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.55;margin-top:18px;
+  border:1px solid var(--line);background:var(--surface)}
+.note.err{border-left:3px solid var(--crit);background:var(--crit-bg);border-color:var(--crit-bd)}
+.note.warnbox{border-left:3px solid var(--warn);background:var(--warn-bg);border-color:var(--warn-bd)}
+.note h4{margin:0 0 5px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:600}
+.note.err h4{color:var(--crit)} .note.warnbox h4{color:var(--warn)}
+.empty{text-align:center;padding:60px 20px;color:var(--ink-3)}
+.empty .big{font-family:var(--mono);font-size:15px;color:var(--ink-2);margin-bottom:8px}
+.legendline{font-size:12px;color:var(--ink-3);margin-top:12px;line-height:1.6}
+.legendline b{color:var(--ink-2);font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+</style>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="brandblock">
+      <span class="eyebrow">Economática · Crédito privado</span>
+      <h1>Debêntures BR · Varredura</h1>
+    </div>
+    <div class="actions">
+      <div class="status" id="status">verificando conexão…</div>
+      <button class="primary" id="btn-refresh" disabled>Atualizar</button>
+    </div>
+  </div>
+  <div class="prog"><i id="prog"></i></div>
+</div>
+
+<div class="wrap">
+  <div id="banner"></div>
+
+  <div class="kpis" id="kpis" hidden></div>
+
+  <div class="filters" id="filters" hidden>
+    <div><label for="q">Busca</label>
+      <input type="text" id="q" placeholder="código, emissor ou setor"></div>
+    <div><label>Indexador</label>
+      <div class="seg" id="seg-idx">
+        <button data-v="" aria-pressed="true">Todos</button>
+        <button data-v="DI" aria-pressed="false">DI+</button>
+        <button data-v="IPCA" aria-pressed="false">IPCA+</button>
+        <button data-v="PRE" aria-pressed="false">Pré</button>
+      </div></div>
+    <div><label for="minvol">Volume mín. (R$ mi)</label>
+      <input type="number" id="minvol" value="0" min="0" step="50" style="width:110px"></div>
+    <div class="grow"><label for="sector">Setor</label>
+      <select id="sector" style="width:100%"><option value="">Todos</option></select></div>
+    <div><label for="onlyrated">Filtros</label>
+      <div class="seg">
+        <button id="onlyrated" aria-pressed="false">Com rating</button>
+        <button id="onlyopen" aria-pressed="false">Pico &gt; contratual</button>
+      </div></div>
+  </div>
+
+  <div id="tablewrap" hidden>
+    <div class="scroll">
+      <table>
+        <thead><tr id="head"></tr></thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+    <div class="more" id="more"></div>
+    <p class="legendline">
+      <b>Contratual</b> é o spread de emissão, extraído do indexador de cada papel.
+      <b>Pico 12m</b> é a maior taxa indicativa observada em 12 meses — para DI+ é spread sobre o
+      DI e a coluna <b>Abriu no pico</b> mede quanto ele chegou a subir sobre o contratual;
+      para IPCA+ e Pré a taxa é juro real ou pré-fixado e essa subtração não é comparável,
+      então a coluna fica vazia. <b>Pico não é hoje</b>: o valor corrente exige a série,
+      que abre no painel ao clicar na linha.
+    </p>
+  </div>
+
+  <div class="empty" id="empty" hidden>
+    <div class="big">Nenhuma varredura carregada</div>
+    <div>Clique em Atualizar para buscar o universo de debêntures.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel">
+  <button class="x" id="btn-close">Fechar</button>
+  <div id="panel-body"></div>
+</div>
+
+<script>
+const SERVER = "Economatica Notícias";
+const SCREEN_FIELDS = "index_correction,volume_brl,ytm_max_12m_pct,max_drawdown_12m_pct,"
+  + "premium_cdi_12m_pct,sharpe_12m,volatility_12m_pct,duration_business_days,rating,"
+  + "covenants_all_met,default_event,sector_naics";
+
+const $ = id => document.getElementById(id);
+const fmt=(v,d=2)=>v==null||Number.isNaN(v)?"—":v.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const MESES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const vencFmt=s=>{if(!s)return"—";const[y,m]=s.split("-");return `${MESES[+m-1]}/${y.slice(2)}`};
+const dFmt=s=>{if(!s)return"—";const[y,m,d]=s.split("-");return `${d}/${MESES[+m-1]}/${y.slice(2)}`};
+const volFmt=v=>v==null?"—":(v>=1e9?`${fmt(v/1e9,2)} bi`:`${Math.round(v/1e6)} mi`);
+const stamp=ms=>new Date(ms).toLocaleString("pt-BR",{day:"2-digit",month:"short",
+  hour:"2-digit",minute:"2-digit"});
+
+/* index_correction → {kind, spread}. Ex: "DI + 1,0500%", "IPCA + 6,7670%",
+   "PREFIXADO + 16,7620%". Alguns papéis usam percentual do DI ("DI x 108%"),
+   que não é spread aditivo — devolve spread null para não somar coisas diferentes. */
+function parseIdx(s){
+  if(!s) return {kind:null, spread:null, raw:s};
+  const m = s.match(/^\s*([A-Za-zÀ-ú]+)\s*([+x*])\s*([\d.,]+)\s*%/);
+  if(!m) return {kind:null, spread:null, raw:s};
+  const kindRaw = m[1].toUpperCase();
+  const kind = kindRaw.startsWith("DI") ? "DI"
+             : kindRaw.startsWith("IPCA") ? "IPCA"
+             : kindRaw.startsWith("PRE") ? "PRE" : null;
+  const val = parseFloat(m[3].replace(/\./g,"").replace(",","."));
+  return {kind, spread: m[2]==="+" ? val : null, raw:s};
+}
+
+const state = {rows:[], storedAt:null, sort:{key:"abriu", dir:-1}, limit:120,
+               idx:"", rated:false, open:false};
+
+/* ---------- erros: cada código tem uma saída diferente ---------- */
+function errCopy(e){
+  const c = e && e.code;
+  switch(c){
+    case "not_granted": case "capability_disabled": case "capability_removed":
+      return {t:"Abra pelo claude.ai", m:"Esta página busca os dados ao vivo pelo seu conector "
+        +"e precisa rodar dentro do claude.ai. Numa aba isolada ela não tem acesso à base."};
+    case "server_not_connected":
+      return {t:"Conector não encontrado", m:`Adicione <b>${SERVER}</b> em claude.ai → `
+        +"Configurações → Conectores e recarregue esta página."};
+    case "needs_reauth":
+      return {t:"Sessão do conector expirou", m:`Reconecte <b>${SERVER}</b> em claude.ai → `
+        +"Configurações → Conectores e tente de novo."};
+    case "selection_required":
+      return {t:"Escolha o conector", m:`Você tem mais de um conector chamado <b>${SERVER}</b>. `
+        +"Escolha um no aviso do claude.ai e recarregue."};
+    case "blocked_by_policy":
+      return {t:"Bloqueado por política", m:"A política da sua organização impede esta chamada. "
+        +"Fale com quem administra o workspace."};
+    case "approval_required":
+      return {t:"Precisa de aprovação", m:"A política da organização exige aprovação por chamada, "
+        +"o que ainda não é suportado dentro de um artefato."};
+    case "tool_error":
+      return {t:"A base recusou a consulta", m:(e.message||"Sem detalhe.")};
+    case "server_unavailable":
+      return {t:"Base indisponível", m:"O servidor não respondeu. É transitório — tente atualizar "
+        +"de novo em alguns instantes."};
+    case "rate_limited":
+      return {t:"Muitas chamadas", m:"Espere alguns segundos antes de atualizar de novo."};
+    default:
+      return {t:"Não foi possível carregar", m:(e && e.message) || "Erro desconhecido."};
+  }
+}
+function banner(html){ $("banner").innerHTML = html; }
+function showErr(e){
+  const {t,m} = errCopy(e);
+  banner(`<div class="note err"><h4>${t}</h4>${m}</div>`);
+}
+
+/* ---------- varredura paginada ---------- */
+let running = false;
+async function scan({fresh}){
+  if(running) return;
+  running = true;
+  const btn = $("btn-refresh");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Varrendo…';
+  banner("");
+  $("prog").style.width = "0%";
+
+  const rows = []; let cursor = null; let total = null; let storedAt = null;
+  let pages = 0; let retried = false;
+
+  try{
+    while(true){
+      const input = {size:50, sort_by:"volume_brl", fields:SCREEN_FIELDS};
+      if(cursor) input.cursor = cursor;
+      let res;
+      try{
+        res = await window.claude.mcp.callTool(SERVER, "debentures_screen", input,
+          {cache:{staleTime: fresh?0:15*60*1000, gcTime:24*60*60*1000, refresh: !!fresh && pages===0}});
+      }catch(e){
+        // uma única retentativa, e só no que o runtime marcou como retentável
+        if(e && e.retryable && !retried){
+          retried = true;
+          await new Promise(r=>setTimeout(r, Math.min(e.retryAfterMs||1500, 6000) + Math.random()*400));
+          continue;
+        }
+        throw e;
+      }
+      const p = res.payload || {};
+      if(res.cache && storedAt===null) storedAt = res.cache.storedAt;
+      if(total===null && typeof p.total === "number") total = p.total;
+      (p.hits||[]).forEach(h=>rows.push(h));
+      pages++;
+      if(total) $("prog").style.width = Math.min(100, 100*rows.length/total) + "%";
+      cursor = p.next_cursor || null;
+      // scan_limit_reached: página pode voltar curta ou vazia e ainda ter continuação
+      if(!cursor) break;
+      if(pages > 60) break;   // trava de segurança contra cursor que não termina
+    }
+
+    state.rows = rows.map(h=>{
+      const ix = parseIdx(h.index_correction);
+      const pico = h.ytm_max_12m_pct;
+      // só faz sentido comparar pico com contratual dentro de DI+ (ambos são spread sobre o DI)
+      const abriu = (ix.kind==="DI" && ix.spread!=null && pico!=null)
+        ? Math.round((pico - ix.spread)*100) : null;
+      return {...h, _kind:ix.kind, _spread:ix.spread, _pico:pico, _abriu:abriu};
+    });
+    state.storedAt = storedAt;
+    state.limit = 120;
+    if(total && rows.length < total)
+      banner(`<div class="note warnbox"><h4>Varredura parcial</h4>`
+        +`Retornaram ${rows.length} de ${total} papéis — a paginação parou antes do fim. `
+        +`Atualize de novo para completar.</div>`);
+    render();
+  }catch(e){
+    showErr(e);
+    if(!state.rows.length){ $("empty").hidden = false; $("tablewrap").hidden = true; }
+  }finally{
+    running = false;
+    btn.disabled = false;
+    btn.textContent = "Atualizar";
+    $("prog").style.width = "0%";
+    updateStatus();
+  }
+}
+
+function updateStatus(){
+  const n = state.rows.length;
+  const when = state.storedAt ? `dados de ${stamp(state.storedAt)}`
+             : (n ? "dados buscados agora" : "");
+  $("status").innerHTML = n
+    ? `<b>${n}</b> papéis · ${when}`
+    : "pronto para varrer";
+}
+
+/* ---------- colunas ---------- */
+const COLS = [
+  {k:"code",    t:"Papel",      l:1, v:r=>`<span class="code">${r.code}</span>`},
+  {k:"name",    t:"Emissor",    l:1, v:r=>`${r.name||"—"}<span class="sub">${r.sector_naics||""}</span>`},
+  {k:"_kind",   t:"Indexador",  l:1, v:r=>{
+     const c=r._kind==="DI"?"di":r._kind==="IPCA"?"ipca":"pre";
+     return r._kind?`<span class="chip ${c}">${r._kind}</span>`:'<span class="dim">—</span>'}},
+  {k:"_spread", t:"Contratual", v:r=>r._spread==null?'<span class="dim">—</span>':`+${fmt(r._spread)}%`},
+  {k:"_pico",   t:"Pico 12m",   v:r=>r._pico==null?'<span class="dim">—</span>':`${fmt(r._pico)}%`},
+  {k:"_abriu",  t:"Abriu no pico", v:r=>r._abriu==null?'<span class="dim">—</span>'
+      :`<span class="${r._abriu>0?"pos":"neg"}">${r._abriu>0?"+":"−"}${Math.abs(r._abriu)}b</span>`},
+  {k:"max_drawdown_12m_pct", t:"Drawdown PU", v:r=>r.max_drawdown_12m_pct==null?'<span class="dim">—</span>'
+      :`<span class="${r.max_drawdown_12m_pct<-3?"pos":""}">${fmt(r.max_drawdown_12m_pct,1)}%</span>`},
+  {k:"premium_cdi_12m_pct", t:"Prêmio CDI", v:r=>r.premium_cdi_12m_pct==null?'<span class="dim">—</span>':`${fmt(r.premium_cdi_12m_pct,0)}%`},
+  {k:"sharpe_12m", t:"Sharpe", v:r=>r.sharpe_12m==null?'<span class="dim">—</span>':fmt(r.sharpe_12m)},
+  {k:"volatility_12m_pct", t:"Vol 12m", v:r=>r.volatility_12m_pct==null?'<span class="dim">—</span>':`${fmt(r.volatility_12m_pct,1)}%`},
+  {k:"volume_brl", t:"Volume", v:r=>volFmt(r.volume_brl)},
+  {k:"maturity_date", t:"Vencto", v:r=>vencFmt(r.maturity_date)},
+  {k:"rating", t:"Rating", l:1, v:r=>r.rating?`<span class="num" style="font-size:11px">${r.rating}</span>`:'<span class="dim">—</span>'},
+  {k:"covenants_all_met", t:"Covenant", l:1, v:r=>r.covenants_all_met===true?'<span class="chip good">ok</span>'
+      :r.covenants_all_met===false?'<span class="chip crit">não</span>':'<span class="dim">—</span>'},
+];
+
+function sevOf(r){
+  if(r._abriu!=null) return r._abriu>=300?3:r._abriu>=100?2:1;
+  const dd = r.max_drawdown_12m_pct;
+  if(dd==null) return 0;
+  return dd<=-10?3:dd<=-3?2:1;
+}
+
+function filtered(){
+  const q = $("q").value.trim().toLowerCase();
+  const minv = (parseFloat($("minvol").value)||0) * 1e6;
+  const sec = $("sector").value;
+  return state.rows.filter(r=>{
+    if(state.idx && r._kind !== state.idx) return false;
+    if(minv && (r.volume_brl||0) < minv) return false;
+    if(sec && r.sector_naics !== sec) return false;
+    if(state.rated && !r.rating) return false;
+    if(state.open && !(r._abriu>0)) return false;
+    if(q){
+      const hay = `${r.code} ${r.name||""} ${r.sector_naics||""}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function render(){
+  if(!state.rows.length){ $("empty").hidden=false; $("tablewrap").hidden=true;
+    $("kpis").hidden=true; $("filters").hidden=true; return; }
+  $("empty").hidden=true; $("tablewrap").hidden=false;
+  $("kpis").hidden=false; $("filters").hidden=false;
+
+  // setores (uma vez)
+  const selSec = $("sector");
+  if(selSec.options.length<=1){
+    [...new Set(state.rows.map(r=>r.sector_naics).filter(Boolean))].sort()
+      .forEach(s=>{const o=document.createElement("option");o.value=s;
+        o.textContent=s.length>52?s.slice(0,52)+"…":s;selSec.appendChild(o)});
+  }
+
+  const rows = filtered();
+  const di = state.rows.filter(r=>r._kind==="DI").length;
+  const ip = state.rows.filter(r=>r._kind==="IPCA").length;
+  const pre = state.rows.filter(r=>r._kind==="PRE").length;
+  const abertos = state.rows.filter(r=>r._abriu!=null && r._abriu>=100).length;
+  const semTaxa = state.rows.filter(r=>r._pico==null).length;
+
+  $("kpis").innerHTML = [
+    [state.rows.length, "papéis no snapshot"],
+    [di, "DI+ · spread direto"],
+    [ip, "IPCA+ · juro real"],
+    [pre, "pré-fixado"],
+    [abertos, "DI+ com pico ≥ 100b<br>sobre o contratual"],
+    [semTaxa, "sem taxa em 12m<br>(ilíquidos)"],
+  ].map(([v,k])=>`<div class="kpi"><span class="v">${v}</span><span class="k">${k}</span></div>`).join("");
+
+  const {key,dir} = state.sort;
+  rows.sort((a,b)=>{
+    let x=a[key], y=b[key];
+    if(x==null&&y==null) return 0;
+    if(x==null) return 1;          // vazios sempre no fim, nos dois sentidos
+    if(y==null) return -1;
+    if(typeof x==="string") return dir*x.localeCompare(y,"pt-BR");
+    return dir*(x-y);
+  });
+
+  $("head").innerHTML = COLS.map(c=>{
+    const on = state.sort.key===c.k;
+    return `<th class="${c.l?"l":""}" data-k="${c.k}" ${on?`aria-sort="${dir<0?"descending":"ascending"}"`:""}>`
+      +`${c.t}${on?`<span class="ar">${dir<0?"▼":"▲"}</span>`:""}</th>`;
+  }).join("");
+
+  const shown = rows.slice(0, state.limit);
+  $("body").innerHTML = shown.map(r=>`<tr data-code="${r.code}">`
+    + COLS.map((c,i)=>`<td class="${c.l?"l":""} ${i===0?`stripe s${sevOf(r)}`:""} ${c.k.includes("_")||!c.l?"num":""}">${c.v(r)}</td>`).join("")
+    + `</tr>`).join("");
+
+  $("more").innerHTML = rows.length > shown.length
+    ? `<button id="btn-more">Mostrar mais ${Math.min(200, rows.length-shown.length)} · `
+      + `${shown.length} de ${rows.length}</button>`
+    : `<span class="dim" style="font-size:12px">${rows.length} papéis`
+      + `${rows.length!==state.rows.length?` (de ${state.rows.length})`:""}</span>`;
+  const bm = $("btn-more");
+  if(bm) bm.onclick = ()=>{ state.limit += 200; render(); };
+  updateStatus();
+}
+
+/* ---------- painel: série do papel ---------- */
+let panelSeq = 0;
+async function openPanel(code){
+  const r = state.rows.find(x=>x.code===code);
+  if(!r) return;
+  const seq = ++panelSeq;
+  $("panel").classList.add("open");
+  document.querySelectorAll("tbody tr").forEach(tr=>
+    tr.setAttribute("aria-selected", tr.dataset.code===code));
+
+  const head = `<h2>${r.code}</h2><div class="who">${r.name||""}${r.sector_naics?` · ${r.sector_naics}`:""}</div>
+    <dl class="kv">
+      <dt>Indexador</dt><dd>${r.index_correction||"—"}</dd>
+      <dt>Vencimento</dt><dd>${dFmt(r.maturity_date)}</dd>
+      <dt>Volume</dt><dd>R$ ${volFmt(r.volume_brl)}</dd>
+      <dt>Rating</dt><dd>${r.rating||"—"}</dd>
+      <dt>Covenants atendidos</dt><dd class="${r.covenants_all_met===false?"hi":r.covenants_all_met?"ok":""}">${
+        r.covenants_all_met===true?"sim":r.covenants_all_met===false?"não":"sem relatório"}</dd>
+      <dt>Inadimplemento</dt><dd class="${r.default_event?"hi":""}">${
+        r.default_event===true?"sim":r.default_event===false?"não":"—"}</dd>
+      <dt>Pico de taxa 12m</dt><dd>${r._pico==null?"—":fmt(r._pico)+"%"}</dd>
+      <dt>Drawdown de PU 12m</dt><dd class="${r.max_drawdown_12m_pct<-3?"hi":""}">${
+        r.max_drawdown_12m_pct==null?"—":fmt(r.max_drawdown_12m_pct,1)+"%"}</dd>
+    </dl>`;
+  $("panel-body").innerHTML = head
+    + `<h3>Série de 12 meses</h3><div id="ser"><span class="spin"></span>buscando…</div>`;
+
+  const to = new Date(); const from = new Date(to.getTime() - 372*864e5);
+  const iso = d => d.toISOString().slice(0,10);
+  try{
+    const res = await window.claude.mcp.callTool(SERVER, "debentures_quote_history",
+      {code:r.code, from:iso(from), to:iso(to), metric:"all"},
+      {cache:{staleTime:15*60*1000, gcTime:24*60*60*1000}});
+    if(seq !== panelSeq) return;           // o usuário já clicou noutro papel
+    renderSeries(res.payload||{}, r);
+  }catch(e){
+    if(seq !== panelSeq) return;
+    const {t,m} = errCopy(e);
+    $("ser").innerHTML = `<div class="note err" style="margin-top:0"><h4>${t}</h4>${m}</div>`;
+  }
+}
+
+function renderSeries(p, r){
+  const s = (p.series||[]).filter(x=>x && x.ytm!=null);
+  if(!s.length){
+    $("ser").innerHTML = `<div class="note" style="margin-top:0">Sem marcação nos últimos 12 meses. `
+      + `Papel ilíquido: a ANBIMA não publicou taxa indicativa no período.</div>`;
+    return;
+  }
+  const ys=s.map(x=>x.ytm), last=s[s.length-1];
+  const lo=Math.min(...ys), hi=Math.max(...ys);
+  const W=500,H=140,M={t:12,r:10,b:20,l:34};
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const sx=i=>M.l+i*iw/((s.length-1)||1);
+  const sy=v=>M.t+ih-((v-lo)/((hi-lo)||1))*ih;
+  const d=s.map((x,i)=>(i?"L":"M")+sx(i).toFixed(1)+" "+sy(x.ytm).toFixed(1)).join(" ");
+  const area=d+` L ${sx(s.length-1).toFixed(1)} ${M.t+ih} L ${sx(0).toFixed(1)} ${M.t+ih} Z`;
+  const refY = (r._kind==="DI" && r._spread!=null && r._spread>=lo && r._spread<=hi)
+    ? `<line x1="${M.l}" y1="${sy(r._spread)}" x2="${W-M.r}" y2="${sy(r._spread)}"
+        stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>` : "";
+
+  // gate de marcação: dispersão do dia + distância entre pontas
+  const sd = last.std_dev;
+  const ba = (last.bid_rate!=null && last.ask_rate!=null)
+    ? Math.round((last.bid_rate-last.ask_rate)*100) : null;
+  let gate="—", cls="mute";
+  if(sd!=null){
+    if(sd<=0.30 && (ba==null||ba<=200)){gate="limpo";cls="good"}
+    else if(sd<=0.80 && (ba==null||ba<=300)){gate="atenção";cls="warn"}
+    else {gate="sujo";cls="crit"}
+  }
+  const vsContr = (r._kind==="DI" && r._spread!=null)
+    ? Math.round((last.ytm - r._spread)*100) : null;
+
+  $("ser").innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" width="100%" role="img"
+      aria-label="Série de taxa indicativa de ${r.code} nos últimos 12 meses, de ${fmt(lo)} a ${fmt(hi)} por cento.">
+      <line x1="${M.l}" y1="${sy(hi)}" x2="${W-M.r}" y2="${sy(hi)}" stroke="var(--grid)"/>
+      <line x1="${M.l}" y1="${sy(lo)}" x2="${W-M.r}" y2="${sy(lo)}" stroke="var(--grid)"/>
+      <text x="${M.l-6}" y="${sy(hi)+3.5}" text-anchor="end" fill="var(--ink-3)"
+        font-family="var(--mono)" font-size="9">${fmt(hi)}</text>
+      <text x="${M.l-6}" y="${sy(lo)+3.5}" text-anchor="end" fill="var(--ink-3)"
+        font-family="var(--mono)" font-size="9">${fmt(lo)}</text>
+      ${refY}
+      <path d="${area}" fill="var(--s1-soft)"/>
+      <path d="${d}" fill="none" stroke="var(--s1)" stroke-width="1.8"
+        stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${sx(s.length-1).toFixed(1)}" cy="${sy(last.ytm).toFixed(1)}" r="3.2"
+        fill="var(--s1)" stroke="var(--surface)" stroke-width="1.5"/>
+      <text x="${M.l}" y="${H-6}" fill="var(--ink-3)" font-family="var(--mono)" font-size="9">${dFmt(s[0].date)}</text>
+      <text x="${W-M.r}" y="${H-6}" text-anchor="end" fill="var(--ink-3)"
+        font-family="var(--mono)" font-size="9">${dFmt(last.date)}</text>
+    </svg>
+    <dl class="kv">
+      <dt>Taxa em ${dFmt(last.date)}</dt><dd>${fmt(last.ytm)}%</dd>
+      ${vsContr!=null?`<dt>Contra o contratual</dt><dd class="${vsContr>0?"hi":"ok"}">${
+        vsContr>0?"+":"−"}${Math.abs(vsContr)} bps</dd>`:""}
+      <dt>Mínimo · máximo 12m</dt><dd>${fmt(lo)}% · ${fmt(hi)}%</dd>
+      <dt>PU a par</dt><dd>${last.pu_par==null?"—":fmt(last.pu_par,1)}</dd>
+      <dt>Dispersão entre marcações</dt><dd>${sd==null?"—":fmt(sd)}</dd>
+      <dt>Bid / ask</dt><dd>${last.bid_rate==null?"—":fmt(last.bid_rate)} / ${
+        last.ask_rate==null?"—":fmt(last.ask_rate)}${ba!=null?` <span class="dim">(${ba}b)</span>`:""}</dd>
+      <dt>Marcação</dt><dd><span class="chip ${cls}">${gate}</span></dd>
+      <dt>Pontos na janela</dt><dd>${s.length} · ${p.granularity||"—"}</dd>
+    </dl>
+    ${sd!=null&&gate!=="limpo"?`<div class="note warnbox">Dispersão de ${fmt(sd)}${
+      ba!=null?` e ${ba} bps entre as pontas`:""}: a taxa acima é indicativa, mas o mercado não `
+      +`está de acordo sobre ela. Trate o nível como estimativa, não como preço executável.</div>`:""}`;
+}
+
+/* ---------- ligações ---------- */
+$("btn-refresh").onclick = ()=>scan({fresh:true});
+$("btn-close").onclick = ()=>{ $("panel").classList.remove("open"); panelSeq++;
+  document.querySelectorAll("tbody tr").forEach(tr=>tr.setAttribute("aria-selected","false")); };
+addEventListener("keydown", e=>{ if(e.key==="Escape") $("btn-close").click(); });
+$("body").addEventListener("click", e=>{
+  const tr = e.target.closest("tr"); if(tr) openPanel(tr.dataset.code);
+});
+$("head").addEventListener("click", e=>{
+  const th = e.target.closest("th"); if(!th) return;
+  const k = th.dataset.k;
+  state.sort = (state.sort.key===k) ? {key:k, dir:-state.sort.dir} : {key:k, dir:-1};
+  state.limit = 120; render();
+});
+["q","minvol","sector"].forEach(id=>{
+  const el=$(id);
+  el.addEventListener(id==="q"?"input":"change", ()=>{ state.limit=120; render(); });
+});
+$("seg-idx").addEventListener("click", e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  state.idx = b.dataset.v;
+  [...$("seg-idx").children].forEach(x=>x.setAttribute("aria-pressed", x===b));
+  state.limit=120; render();
+});
+$("onlyrated").onclick = e=>{ state.rated=!state.rated;
+  e.target.setAttribute("aria-pressed", state.rated); state.limit=120; render(); };
+$("onlyopen").onclick = e=>{ state.open=!state.open;
+  e.target.setAttribute("aria-pressed", state.open); state.limit=120; render(); };
+
+/* ---------- boot ---------- */
+(async function boot(){
+  if(!window.claude || window.claude.mcp === undefined){
+    $("status").textContent = "sem conexão";
+    showErr({code:"capability_disabled"});
+    $("empty").hidden = false;
+    return;
+  }
+  $("btn-refresh").disabled = false;
+  try{
+    const {servers} = await window.claude.mcp.listTools();
+    const me = (servers||[]).find(s=>s.server===SERVER);
+    // authStatus vem ANTES do teste de lista vazia: um conector com credencial
+    // vencida também aparece sem ferramentas, e mandar "adicione o conector"
+    // para quem só precisa reconectar manda a pessoa para o lugar errado.
+    if(me && me.authStatus === "needs_reauth"){
+      $("status").textContent = "reconectar";
+      showErr({code:"needs_reauth"});
+      $("empty").hidden = false;
+      return;
+    }
+    if(!me || !me.tools || !me.tools.length){
+      $("status").textContent = "conector indisponível";
+      showErr({code:"server_not_connected"});
+      $("empty").hidden = false;
+      return;
+    }
+    $("status").textContent = "conectado · carregando";
+    scan({fresh:false});
+  }catch(e){
+    // listTools falhou: não bloqueia — tenta a varredura, que traz o código real
+    $("status").textContent = "conectado";
+    scan({fresh:false});
+  }
+})();
+</script>

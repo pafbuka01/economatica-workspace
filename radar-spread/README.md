@@ -109,3 +109,39 @@ uma reconstrução a partir do template.)
   arquivado, covenants do relatório anual do agente fiduciário.
 - Covenants podem vir marcados como `validated_by_trustee: false` — apurados pela própria
   companhia e ainda em validação. O radar mostra a ressalva em vez de esconder.
+
+## Dashboard ao vivo (`dashboard.html`)
+
+Varredura do universo inteiro com botão de atualizar, publicada como Artifact com a
+capability `mcp` declarada sobre o conector **Economatica Notícias**. A página não carrega
+dado congelado: ela chama `debentures_screen` paginado (50 por vez, cursor até o fim) com
+as credenciais de quem abre, e `debentures_quote_history` sob demanda ao clicar numa linha.
+
+Universo em ago/2026: **1.311** debêntures ativas — 604 DI+, 673 IPCA+, 28 pré-fixadas,
+6 em outros indexadores.
+
+### O que a varredura consegue medir sem série
+
+`ytm_pct` continua vazio no snapshot, mas dois campos salvam o estágio 1:
+
+- `index_correction` (ex.: `"DI + 1,0500%"`) dá o **spread contratual** de todo papel, parseável.
+- `ytm_max_12m_pct` dá o **pico de taxa em 12 meses**.
+
+Para DI+ os dois são spread sobre o DI, então `pico − contratual` mede quanto o papel
+chegou a abrir — um ranking do universo inteiro a custo de ~27 chamadas. Para IPCA+ e
+pré-fixado a taxa é juro real ou pré e essa subtração não é comparável; a coluna fica vazia.
+
+**Pico não é hoje.** O valor corrente só existe na série, que é 1 chamada por papel — por
+isso o drill-down. É o mesmo funil de três estágios, agora operável pela interface.
+
+### Estados degradados
+
+Cada código de erro do runtime tem uma saída própria, porque o conserto de cada um é
+diferente: `server_not_connected` manda adicionar o conector, `needs_reauth` manda
+reconectar, `blocked_by_policy` manda falar com o admin, `server_unavailable` é transitório
+e ganha uma única retentativa. `authStatus` é testado **antes** da lista de ferramentas
+vazia — um conector com credencial vencida também aparece sem ferramentas, e mandar
+"adicione o conector" para quem só precisa reconectar leva a pessoa ao lugar errado.
+
+`mock.js` + `test.mjs` exercitam todos esses ramos com a forma de resposta observada e
+valores sintéticos (`node test.mjs`, precisa de playwright e do Chromium do ambiente).
