@@ -18,6 +18,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TEMPLATE = join(ROOT, 'scripts', 'artifact', 'comparador.template.html')
 const SNAPSHOT = join(ROOT, 'src', 'data', 'comparator', 'snapshot.json')
 const KPI_SRC = join(ROOT, 'src', 'data', 'comparator', 'sectorKpis.ts')
+const NEWS = join(ROOT, 'src', 'data', 'comparator', 'news.json')
 const OUT = join(ROOT, 'dist-artifact', 'comparador.html')
 
 /**
@@ -87,6 +88,7 @@ function build() {
   const template = readFileSync(TEMPLATE, 'utf8')
   const snapshot = compactSnapshot(JSON.parse(readFileSync(SNAPSHOT, 'utf8')))
   const kpis = loadKpis()
+  const news = JSON.parse(readFileSync(NEWS, 'utf8'))
 
   const kpiCount = kpis.values.length
   const catalogCount = Object.values(kpis.catalog).reduce((n, defs) => n + defs.length, 0)
@@ -98,8 +100,9 @@ function build() {
   const html = template
     .replace('/*__SNAPSHOT__*/', () => inject(snapshot))
     .replace('/*__KPI__*/', () => inject(kpis))
+    .replace('/*__NEWS__*/', () => inject(news))
 
-  if (html.includes('__SNAPSHOT__') || html.includes('__KPI__')) {
+  if (html.includes('__SNAPSHOT__') || html.includes('__KPI__') || html.includes('__NEWS__')) {
     throw new Error('placeholder não substituído')
   }
 
@@ -110,6 +113,7 @@ function build() {
   console.log(`OK -> dist-artifact/comparador.html (${kb} KB)`)
   console.log(`  ${snapshot.companies.length} tickers · ${snapshot.meta.companyCount} empresas`)
   console.log(`  ${catalogCount} KPIs no catálogo, ${kpiCount} valores com citação`)
+  console.log(`  sentimento ${news.meta.sentimentTickers} tickers · manchetes ${news.meta.newsTickers} · confiança ${news.meta.iceeTickers}`)
 }
 
 build()

@@ -74,6 +74,32 @@ aparece o bloco de indicadores gerenciais (bancos: Basileia, CET1, inadimplênci
 90+, cobertura, carteira). Cada número carrega o link do documento CVM de origem,
 com página e trecho citado — contrato de auditabilidade da fonte.
 
+**Sentimento, notícias e confiança da administração.** Bloco adicional por
+empresa, gerado por `node scripts/build-news.mjs` a partir de `scripts/raw-news/`
+e `scripts/raw-sentiment/`:
+
+| Sinal | Cobertura | Origem |
+| --- | --- | --- |
+| Sentimento de notícias (net −100 a +100) | 193 tickers, 151 com amostra suficiente | `news_sentiment_overview`, batch de 50 tickers por chamada |
+| Principais manchetes | 146 tickers | `news_search` agrupado, com complemento individual |
+| Confiança da administração (ICEE) | 14 empresas com call no 2T26 | `ir_sentiment_overview` |
+
+Quatro decisões que a API não toma, e sem as quais o bloco engana:
+
+- `by_group` só devolve contagens; o net por ticker é derivado de (pos−neg)÷total;
+- abaixo de 8 notícias a direção é ruído — vira "amostra insuficiente", não um número;
+- `sentiment_score` é **confiança do modelo**, não intensidade: a polaridade sai
+  do campo `sentiment`;
+- matéria marcada com 4+ tickers é giro de mercado e cede a vez; título que cita
+  a empresa sobe na fila, senão "Ibovespa sobe/cai" domina a lista de todo mundo.
+
+**Gráficos de valuation.** Alternador tabela/gráficos, em SVG inline. A régua
+mostra a caixa do setor (P25–mediana–P75, bigodes no mínimo e máximo) com cada
+empresa marcada; o eixo foca o interquartil porque um outlier setorial espremeria
+a seleção inteira. A dispersão cruza P/L com ROE sobre os pares do setor. A
+identidade das empresas vai por rótulo direto, nunca por cor — assim verde e
+vermelho seguem significando só melhor e pior.
+
 **Artefato autocontido.** O mesmo comparador existe como página única, sem
 build nem servidor — o snapshot vai embutido no HTML (nenhuma requisição
 externa, a CSP do artefato bloqueia qualquer host):
