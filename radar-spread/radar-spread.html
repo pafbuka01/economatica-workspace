@@ -1,0 +1,627 @@
+<title>Radar de Spread · Debêntures DI+</title>
+<style>
+:root{
+  color-scheme: light;
+  --ground:#eef2f3; --surface:#ffffff; --surface-2:#e7edee; --surface-3:#dde5e7;
+  --ink:#0d1518; --ink-2:#4f6167; --ink-3:#7e9198;
+  --line:#d5dfe1; --line-2:#bccacd;
+  --brand:#082e37; --on-brand:#eaf3f2; --accent:#cede33; --on-accent:#082e37;
+  --s1:#00879b; --s1-soft:rgba(0,135,155,.14); --s1-line:rgba(0,135,155,.30);
+  --s2:#eb6834; --s2-soft:rgba(235,104,52,.13);
+  --crit:#b0392a; --crit-bg:#f8e6e2; --crit-bd:#e8c4bb;
+  --warn:#96660c; --warn-bg:#f8eedb; --warn-bd:#e6d4ad;
+  --good:#0d7a4e; --good-bg:#dff2e8; --good-bd:#b6ddc7;
+  --grid:rgba(13,21,24,.07);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#05171d; --surface:#0a2730; --surface-2:#0e313b; --surface-3:#123c48;
+    --ink:#e3eef0; --ink-2:#98b2b9; --ink-3:#6b878f;
+    --line:#164049; --line-2:#1e5361;
+    --brand:#cede33; --on-brand:#082e37;
+    --s1:#1f9fb3; --s1-soft:rgba(31,159,179,.18); --s1-line:rgba(31,159,179,.34);
+    --s2:#d17a4a; --s2-soft:rgba(209,122,74,.16);
+    --crit:#e28878; --crit-bg:#3a1c17; --crit-bd:#5c2c23;
+    --warn:#d7a648; --warn-bg:#37290f; --warn-bd:#54401a;
+    --good:#46bf8a; --good-bg:#0d3326; --good-bd:#18503a;
+    --grid:rgba(227,238,240,.09);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#05171d; --surface:#0a2730; --surface-2:#0e313b; --surface-3:#123c48;
+  --ink:#e3eef0; --ink-2:#98b2b9; --ink-3:#6b878f;
+  --line:#164049; --line-2:#1e5361;
+  --brand:#cede33; --on-brand:#082e37;
+  --s1:#1f9fb3; --s1-soft:rgba(31,159,179,.18); --s1-line:rgba(31,159,179,.34);
+  --s2:#d17a4a; --s2-soft:rgba(209,122,74,.16);
+  --crit:#e28878; --crit-bg:#3a1c17; --crit-bd:#5c2c23;
+  --warn:#d7a648; --warn-bg:#37290f; --warn-bd:#54401a;
+  --good:#46bf8a; --good-bg:#0d3326; --good-bd:#18503a;
+  --grid:rgba(227,238,240,.09);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px 96px}
+.prose{max-width:66ch}
+h1,h2,h3{text-wrap:balance;margin:0}
+a{color:inherit}
+
+/* ---------- micro-label ---------- */
+.eyebrow{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500;
+}
+
+/* ---------- header ---------- */
+.masthead{
+  border-bottom:1px solid var(--line); background:var(--surface);
+  margin-bottom:44px;
+}
+.masthead .wrap{padding-top:34px;padding-bottom:30px}
+.rail{border-left:3px solid var(--accent);padding-left:18px}
+.masthead h1{
+  font-family:var(--mono); font-size:clamp(30px,5.4vw,50px); font-weight:600;
+  letter-spacing:-.035em; line-height:1.02; margin:12px 0 0;
+}
+.masthead h1 .dim{color:var(--ink-3);font-weight:400}
+.masthead .lede{color:var(--ink-2);margin-top:12px;max-width:60ch;font-size:16px}
+.stamp{
+  display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:22px;
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-3);
+}
+.stamp b{color:var(--ink-2);font-weight:500}
+
+/* ---------- sections ---------- */
+section{margin-top:56px}
+.sechead{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.sechead h2{
+  font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.02em;
+}
+.sechead .n{font-family:var(--mono);font-size:11.5px;color:var(--accent);
+  background:var(--brand);color:var(--on-brand);padding:2px 7px;border-radius:3px;font-weight:500}
+.secsub{color:var(--ink-2);margin:0 0 22px;max-width:70ch;font-size:14.5px}
+
+/* ---------- thesis tiles ---------- */
+.thesis{
+  background:var(--surface);border:1px solid var(--line);border-radius:6px;
+  padding:26px 28px;display:grid;gap:26px;
+  grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+}
+@media(max-width:820px){.thesis{grid-template-columns:1fr}}
+.thesis .claim{font-size:17.5px;line-height:1.5;margin:10px 0 0}
+.thesis .claim b{font-family:var(--mono);font-weight:600;letter-spacing:-.02em}
+.thesis .note{color:var(--ink-2);font-size:13.5px;margin-top:14px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:5px;overflow:hidden;align-self:start}
+.tile{background:var(--surface);padding:16px 14px}
+.tile .v{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.035em;
+  line-height:1.05;font-variant-numeric:tabular-nums;display:block}
+.tile .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:7px;display:block;line-height:1.4}
+
+/* ---------- table ---------- */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%}
+table.t-radar{min-width:1280px}
+table.t-watch{min-width:1080px}
+th,td{text-align:right;padding:11px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;background:var(--surface-2);
+  border-bottom:1px solid var(--line-2);
+}
+td:first-child,th:first-child,td.l,th.l{text-align:left}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:13px}
+.code{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:-.01em}
+.sub{display:block;font-family:var(--sans);font-size:11.5px;color:var(--ink-3);
+  font-weight:400;letter-spacing:0;margin-top:1px}
+.big{font-size:14.5px;font-weight:600}
+.pos{color:var(--crit)}   /* spread abrindo = ruim p/ quem tem, entrada p/ quem compra */
+.neg{color:var(--good)}
+
+/* chips */
+.chip{
+  display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;padding:2.5px 7px;border-radius:3px;border:1px solid;font-weight:500;
+}
+.chip.good{color:var(--good);background:var(--good-bg);border-color:var(--good-bd)}
+.chip.warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-bd)}
+.chip.crit{color:var(--crit);background:var(--crit-bg);border-color:var(--crit-bd)}
+.chip.mute{color:var(--ink-3);background:var(--surface-2);border-color:var(--line)}
+
+/* severity stripe on the row */
+td.stripe{border-left:3px solid transparent;padding-left:11px}
+td.stripe.s3{border-left-color:var(--crit)}
+td.stripe.s2{border-left-color:var(--warn)}
+td.stripe.s1{border-left-color:var(--line-2)}
+
+/* ---------- charts ---------- */
+.spark{display:block}
+.figure{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 22px 12px}
+.figcap{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:4px}
+.figcap h3{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.015em}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+.legend i{display:inline-block;width:16px;height:2.5px;border-radius:2px;margin-right:6px;
+  vertical-align:middle}
+.chartbox{position:relative}
+#tip{
+  position:absolute;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--brand);color:var(--on-brand);font-family:var(--mono);font-size:11.5px;
+  padding:8px 10px;border-radius:4px;line-height:1.55;white-space:nowrap;z-index:5;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+#tip .td{opacity:.66;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+#tip .tv{font-variant-numeric:tabular-nums}
+
+/* ---------- dossier ---------- */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 22px}
+.card h3{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.02em;
+  text-transform:uppercase;color:var(--ink-2);margin-bottom:14px}
+dl.kv{display:grid;grid-template-columns:1fr auto;gap:9px 16px;margin:0;font-size:13.5px}
+dl.kv dt{color:var(--ink-2)}
+dl.kv dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;
+  font-size:13px;text-align:right;font-weight:500}
+dl.kv dd.hi{color:var(--crit);font-weight:600}
+
+/* timeline */
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line-2)}
+.tl li{position:relative;padding:0 0 18px 26px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:0;top:6px;width:11px;height:11px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--line-2)}
+.tl li.mark::before{border-color:var(--s1);background:var(--s1)}
+.tl li.markr::before{border-color:var(--crit);background:var(--crit)}
+.tl .d{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3)}
+.tl .t{font-size:13.5px;line-height:1.55;margin-top:2px}
+.tl .t b{font-family:var(--mono);font-weight:600;font-size:12.5px}
+
+.flag{
+  border-left:3px solid var(--warn);background:var(--warn-bg);
+  padding:15px 18px;border-radius:0 5px 5px 0;font-size:13.5px;line-height:1.6;
+}
+.flag .h{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--warn);font-weight:600;margin-bottom:6px}
+
+p{margin:0 0 14px}
+p:last-child{margin-bottom:0}
+.foot{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink-3);line-height:1.65}
+.foot b{color:var(--ink-2);font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="rail">
+      <span class="eyebrow">Economática · Crédito privado · Renda fixa BR</span>
+      <h1>Radar de Spread<br><span class="dim">Debêntures DI+</span></h1>
+      <p class="lede">Abertura de taxa no secundário como sinal de entrada, filtrada por
+      qualidade de marcação, covenant e notícia do emissor.</p>
+    </div>
+    <div class="stamp">
+      <span>Marcação ANBIMA até <b>06/ago/2026</b></span>
+      <span>Universo <b>384 papéis</b> DI+ acima de R$ 500 mi</span>
+      <span>Série completa <b>4</b> · Observação <b>10</b></span>
+      <span>Fundamentos <b>1T2026</b> · Covenants <b>exercício 2025</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="thesis">
+    <div>
+      <span class="eyebrow">A leitura de hoje</span>
+      <p class="claim">Dois papéis da <b>Hapvida</b> pagam <b>DI+7,0%</b> com rating
+      <b>AA+</b> e covenant de alavancagem apurado em <b>1,32x</b> contra teto de 3,0x.
+      O spread abriu cerca de <b>600 bps</b> e, ao contrário de Tupy e Equipav,
+      <b>não voltou</b>.</p>
+      <p class="note">A dispersão entre marcações caiu de 2,46 no pico para 0,20 hoje: o preço
+      deixou de ser ruído de iliquidez e virou consenso. É o que separa uma oportunidade
+      de uma tela quebrada.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile"><span class="v">606</span><span class="k">bps abertos<br>vs regime calmo</span></div>
+      <div class="tile"><span class="v">63%</span><span class="k">do pico<br>ainda retido</span></div>
+      <div class="tile"><span class="v">80,4</span><span class="k">PU a par<br>% do valor</span></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sechead"><span class="n">01</span><h2>O radar</h2></div>
+    <p class="secsub">Papéis com série de 12 meses reconstruída. <b>Abriu</b> mede o spread de hoje
+    contra a mediana do regime calmo (ago–out/25). <b>Retido</b> é quanto da abertura segue de pé
+    depois da retração. A faixa à esquerda gradua a severidade.</p>
+    <div class="scroll">
+      <table class="t-radar">
+        <thead><tr>
+          <th class="l">Papel</th><th class="l">Emissor</th><th class="l">Rating</th>
+          <th>Vencto</th><th>Emissão</th><th>Hoje</th><th>Abriu</th><th>Retido</th>
+          <th>1 mês</th><th>3 meses</th><th>PU par</th><th>Disp.</th>
+          <th class="l">Marcação</th><th class="l">Estágio</th><th class="l">12 meses</th>
+        </tr></thead>
+        <tbody id="radar-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead"><span class="n">02</span><h2>Dossiê · Hapvida</h2></div>
+    <p class="secsub">O emissor responde por 6 das 14 emissões sinalizadas e concentra a maior
+    abertura do universo high grade. CNPJ 05.197.443/0001-38, com ação listada (HAPV3), o que
+    habilita as camadas de notícia e fundamento.</p>
+
+    <div class="figure">
+      <div class="figcap">
+        <h3>Spread sobre DI · marcação ANBIMA semanal</h3>
+        <div class="legend">
+          <span><i style="background:var(--s1)"></i>HAPV19 · venc. mai/32</span>
+          <span><i style="background:var(--s2)"></i>HAPV28 · venc. out/32</span>
+          <span><i style="background:var(--ink-3);height:0;border-top:2px dashed var(--ink-3)"></i>faixa de emissão</span>
+        </div>
+      </div>
+      <div class="chartbox">
+        <svg id="hero" class="spark" role="img" aria-label="Série do spread sobre DI das debêntures HAPV19 e HAPV28 entre agosto de 2025 e agosto de 2026, com pico em abril de 2026 e patamar atual próximo de 7 por cento."></svg>
+        <div id="tip"></div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div class="card">
+        <h3>O que moveu o spread</h3>
+        <ul class="tl">
+          <li><div class="d">14 nov 2025</div><div class="t">Primeira perna: spread sai de
+            <b>DI+1,11%</b> para <b>DI+1,81%</b> em uma semana. O gatilho não aparece na
+            janela de notícia indexada.</div></li>
+          <li class="markr"><div class="d">Fev – 02 abr 2026</div><div class="t">Perna maior:
+            de <b>DI+2,86%</b> a <b>DI+9,87%</b>. Coincide com a temporada do 4T25, que o BTG
+            depois classificaria como “4T desafiador”. O ano de 2025 fechou com prejuízo de
+            R$ 237,6 mi.</div></li>
+          <li class="mark"><div class="d">12 mai 2026</div><div class="t">1T26 acima do esperado,
+            EBITDA ajustado de R$ 803 mi e sinistralidade caixa em 72,2%. A ação sobe
+            <b>9,27%</b> e o spread fecha <b>245 bps</b> em uma semana, de 7,39% para 4,94%.
+            Crédito e equity leram o mesmo release.</div></li>
+          <li><div class="d">22 jun 2026</div><div class="t">Itaú BBA corta o preço-alvo de
+            R$ 15 para R$ 13, citando risco na recuperação de beneficiários em São Paulo e
+            avanço de depósitos judiciais. O spread reabre de 4,93% para
+            <b>6,79%</b>.</div></li>
+          <li><div class="d">Jul – ago 2026</div><div class="t">Ação cai 13% na semana de 25/jul
+            e mais 5,18% em 05/ago. Perda de ~146 mil beneficiários em SP em 12 meses.
+            O spread <b>estaciona perto de 7,0%</b>.</div></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>Fundamento · HAPV3 · 1T2026</h3>
+          <dl class="kv">
+            <dt>Dívida líquida</dt><dd>R$ 4,97 bi</dd>
+            <dt>Dívida líquida / EBITDA</dt><dd class="hi">3,0x</dd>
+            <dt>Margem EBITDA LTM</dt><dd>9,2%</dd>
+            <dt>Margem líquida LTM</dt><dd class="hi">−2,4%</dd>
+            <dt>ROE LTM</dt><dd class="hi">−0,9%</dd>
+            <dt>P/VPA</dt><dd>0,1x</dd>
+            <dt>Ação em 12 meses</dt><dd class="hi">−69,0%</dd>
+            <dt>Volatilidade 1a</dt><dd>77,4%</dd>
+          </dl>
+        </div>
+        <div class="card" style="margin-top:18px">
+          <h3>Crédito · agente fiduciário 2025</h3>
+          <dl class="kv">
+            <dt>Covenant DL/EBITDA</dt><dd>≤ 3,00x</dd>
+            <dt>Apurado dez/2025</dt><dd>1,32x</dd>
+            <dt>Trimestres anteriores</dt><dd>0,98 · 0,95 · 1,00</dd>
+            <dt>Evento de inadimplemento</dt><dd>não</dd>
+            <dt>Banda de atenção</dt><dd>baixa (21)</dd>
+            <dt>Vencimentos em 24 meses</dt><dd>R$ 0</dd>
+            <dt>Debêntures além de 24m</dt><dd>R$ 9,15 bi</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="flag" style="margin-top:18px">
+      <div class="h">A divergência que decide o caso</div>
+      O covenant reporta alavancagem de <b>1,32x</b> (dez/2025), com folga larga contra o teto de
+      3,0x. O mesmo indicador calculado sobre o balanço do 1T26 dá <b>3,0x</b>, exatamente no
+      limite. Parte da diferença é data, parte é definição de EBITDA. E o número do covenant vem
+      apurado pela própria companhia, marcado no relatório como
+      <b>ainda em validação pelo agente fiduciário</b>. Reconciliar esses dois números é o passo
+      que antecede qualquer dimensionamento de posição, e é também o motivo pelo qual o subscore
+      de risco implícito no mercado (40) é o mais alto do emissor enquanto o de covenant fica em 20.
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead"><span class="n">03</span><h2>Os que já andaram</h2></div>
+    <p class="secsub">Mesma mecânica, momento diferente. Tupy e Equipav abriram no mesmo trimestre
+    e já devolveram a maior parte: entrar agora é pegar a cauda do movimento, não o movimento.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>TUPY15 · Tupy · brAA S&amp;P</h3>
+        <p style="font-size:13.5px;color:var(--ink-2)">Saiu de DI+0,94% para um pico de
+        <b style="color:var(--ink)">DI+7,08%</b> em 17/abr e está em <b style="color:var(--ink)">DI+3,18%</b>.
+        Reteve apenas <b style="color:var(--ink)">37%</b> da abertura e fechou 296 bps em três meses.
+        Dispersão de 0,04, a marcação mais limpa do radar. O trade existiu; hoje é carrego.</p>
+      </div>
+      <div class="card">
+        <h3>AEGE16 · Equipav Saneamento · brAA+ S&amp;P</h3>
+        <p style="font-size:13.5px;color:var(--ink-2)">Emitida a DI+3,90%, foi a
+        <b style="color:var(--ink)">DI+7,54%</b> em 10/abr e voltou para
+        <b style="color:var(--ink)">DI+4,91%</b>, ainda 101 bps acima do contratual.
+        Reteve <b style="color:var(--ink)">42%</b>. Banda de atenção baixa e sem covenant apurado
+        no exercício, o que deixa a leitura de crédito mais pobre do que a da Hapvida.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead"><span class="n">04</span><h2>Em observação</h2></div>
+    <p class="secsub">Sinalizados pelo estágio cadastral do funil (drawdown de PU, prêmio negativo
+    sobre CDI, Sharpe abaixo de zero) mas ainda sem série reconstruída. O pico de taxa vem do
+    snapshot de 12 meses, não de série própria.</p>
+    <div class="scroll">
+      <table class="t-watch">
+        <thead><tr>
+          <th class="l">Papel</th><th class="l">Emissor</th><th class="l">Rating</th>
+          <th>Vencto</th><th>Volume</th><th>Emissão</th><th>Pico 12m</th>
+          <th>Drawdown PU</th><th>Sharpe</th><th class="l">Por que entrou</th>
+        </tr></thead>
+        <tbody id="watch-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead"><span class="n">05</span><h2>Como ler, e o que a base não entrega</h2></div>
+    <div class="prose">
+      <p><b>Por que o spread é a própria taxa.</b> Em debênture DI+, a taxa indicativa da ANBIMA
+      já é o spread sobre o DI, então não há curva a modelar. A aritmética fecha: a AEGE16, emitida
+      a DI+3,90%, negociava a 2,99% com PU a par de 103,3, isto é, spread de mercado abaixo do
+      contratual gera ágio. Para papéis IPCA+ isso não vale, porque ali a taxa é juro real e o
+      spread exigiria interpolar a curva NTN-B por duration. Esse universo ficou de fora.</p>
+
+      <p><b>Por que o ranking não usa z-score puro.</b> Com o evento dentro da janela, ele mesmo
+      infla o desvio padrão e comprime o escore: a Hapvida, que abriu 600 bps, marca z de apenas
+      1,03 na janela cheia. As métricas que sobrevivem a isso são a abertura em bps contra o
+      regime calmo e a fração do pico ainda retida, que é o que a tabela ordena.</p>
+
+      <p><b>O filtro de marcação.</b> A dispersão entre as marcações do dia separa repreço de
+      ruído. No pico de 02/abr a HAPV28 tinha dispersão de 2,46, com bid a 13,05% e ask a 8,89%:
+      nesse dia o papel não tinha preço, tinha desacordo. Hoje a dispersão é 0,20. O limiar é
+      absoluto, não percentil, porque em papel de história ultracalma um percentil alto aparece
+      com dispersão irrelevante — a AEGE16 dava falso positivo assim.</p>
+
+      <p><b>Cobertura da camada fundamentalista.</b> A ponte entre debênture e empresa é o CNPJ.
+      Dos 33 emissores das 50 maiores emissões, 18 têm ação registrada com CNPJ idêntico. O restante
+      é SPE, concessionária ou subsidiária sem ação própria, e para esses a camada de fundamento
+      é o relatório do agente fiduciário, não múltiplo de ação. Ajuda que a base de ações inclua
+      companhias registradas sem negociação relevante, como Eurofarma, Compass, Coelba e MRS.</p>
+
+      <p><b>Onde a notícia falha.</b> Busca por texto livre para emissor não listado devolve ruído:
+      procurar “Equipav Aegea saneamento debênture” trouxe Autodesk, Fleury e Unipar. Só o filtro
+      por ticker funciona, e mesmo ele traz falso positivo, como um release da Aura marcado com
+      RAIL3. Por isso a Hapvida rendeu dossiê e a Equipav não. E há uma lacuna assumida: o gatilho
+      de novembro de 2025 e o da virada de fevereiro para março de 2026 não apareceram na janela
+      indexada, então a origem da primeira perna está descrita como coincidência de calendário,
+      não como causa verificada.</p>
+
+      <p><b>Defasagem.</b> Marcação até 06/ago/2026. Fundamentos do 1T2026, o último trimestre
+      arquivado. Covenants do relatório anual do agente fiduciário de 2025, com a ressalva de
+      validação pendente. Três relógios diferentes na mesma tela.</p>
+    </div>
+  </section>
+
+  <p class="foot">
+    <b>Não é recomendação de investimento.</b> Indicador quantitativo construído sobre marcação
+    secundária ANBIMA, cadastro de debêntures, relatório anual de agente fiduciário e fundamentos
+    societários, todos via base Economática. O rating de crédito é o da agência citada em cada
+    linha; a banda de atenção é escore quantitativo e não substitui rating (CVM Resolução 20/2021).
+    Séries de papel ilíquido são esparsas e reamostradas em frequência semanal.
+  </p>
+</div>
+
+<script>
+const DATA = {"HAPV19":{"code":"HAPV19","nome":"Hapvida","emissor_cnpj":"05197443000138","contratual":1.05,"rating":"AA+ (bra) Fitch","venc":"2032-05-16","volume":1500000000,"setor":"Saúde","ticker":"HAPV3","garantia":"Quirografária","atual":6.9898,"vs_contratual_bps":594,"mediana":2.1318,"base":1.0656,"min":1.0493,"min_data":"2025-08-01","max":9.8674,"max_data":"2026-04-02","aberto_vs_base_bps":592,"aberto_vs_min_bps":594,"retracao_do_pico_bps":288,"pct_do_pico_retido":67.3,"percentil":72.2,"z_full":1.05,"z_base":836.45,"d1m_bps":-14,"d3m_bps":-40,"d6m_bps":479,"pu_par":80.44,"pu_min":72.72,"pu_min_data":"2026-04-02","sd_atual":0.23,"sd_percentil":53.7,"sd_max":1.71,"bid_ask_bps":167,"bid_ask_percentil":63.0,"gate":"limpo","estagio":"estacionado","pontos":54,"inicio":"2025-08-01","fim":"2026-08-06","serie":[{"d":"2025-08-01","y":1.0493,"sd":0.03},{"d":"2025-08-08","y":1.066,"sd":0.04},{"d":"2025-08-15","y":1.0572,"sd":0.04},{"d":"2025-08-22","y":1.0607,"sd":0.04},{"d":"2025-08-29","y":1.0662,"sd":0.02},{"d":"2025-09-05","y":1.0532,"sd":0.04},{"d":"2025-09-12","y":1.0581,"sd":0.04},{"d":"2025-09-19","y":1.0659,"sd":0.02},{"d":"2025-09-26","y":1.0718,"sd":0.03},{"d":"2025-10-03","y":1.0747,"sd":0.01},{"d":"2025-10-10","y":1.0655,"sd":0.03},{"d":"2025-10-17","y":1.0657,"sd":0.06},{"d":"2025-10-24","y":1.081,"sd":0.07},{"d":"2025-10-31","y":1.1127,"sd":0.07},{"d":"2025-11-07","y":1.11,"sd":0.05},{"d":"2025-11-14","y":1.8123,"sd":0.43},{"d":"2025-11-21","y":1.8925,"sd":0.38},{"d":"2025-11-28","y":1.8797,"sd":0.04},{"d":"2025-12-05","y":1.877,"sd":0.06},{"d":"2025-12-12","y":1.9016,"sd":0.08},{"d":"2025-12-19","y":1.9506,"sd":0.08},{"d":"2025-12-26","y":1.9361,"sd":0.04},{"d":"2026-01-02","y":1.9379,"sd":0.05},{"d":"2026-01-09","y":1.9999,"sd":0.1},{"d":"2026-01-16","y":1.982,"sd":0.07},{"d":"2026-01-23","y":1.9946,"sd":0.05},{"d":"2026-01-30","y":2.067,"sd":0.07},{"d":"2026-02-06","y":2.1965,"sd":0.12},{"d":"2026-02-13","y":2.7275,"sd":0.36},{"d":"2026-02-20","y":2.8643,"sd":0.15},{"d":"2026-02-27","y":4.6979,"sd":0.52},{"d":"2026-03-06","y":4.7543,"sd":0.43},{"d":"2026-03-13","y":4.8247,"sd":0.38},{"d":"2026-03-20","y":9.5694,"sd":1.36},{"d":"2026-03-27","y":9.5857,"sd":1.71},{"d":"2026-04-02","y":9.8674,"sd":1.61},{"d":"2026-04-10","y":8.4415,"sd":1.24},{"d":"2026-04-17","y":8.2293,"sd":1.03},{"d":"2026-04-24","y":7.7769,"sd":0.51},{"d":"2026-04-30","y":7.6341,"sd":0.37},{"d":"2026-05-08","y":7.3875,"sd":0.44},{"d":"2026-05-15","y":4.943,"sd":0.4},{"d":"2026-05-22","y":4.8643,"sd":0.4},{"d":"2026-05-29","y":4.991,"sd":0.34},{"d":"2026-06-05","y":5.1363,"sd":0.33},{"d":"2026-06-12","y":6.8995,"sd":1.05},{"d":"2026-06-19","y":7.1147,"sd":0.62},{"d":"2026-06-26","y":7.1829,"sd":0.48},{"d":"2026-07-03","y":7.0396,"sd":0.33},{"d":"2026-07-10","y":7.1297,"sd":0.33},{"d":"2026-07-17","y":7.1608,"sd":0.32},{"d":"2026-07-24","y":7.2981,"sd":0.38},{"d":"2026-07-31","y":7.0828,"sd":0.15},{"d":"2026-08-06","y":6.9898,"sd":0.23}]},"HAPV28":{"code":"HAPV28","nome":"Hapvida","emissor_cnpj":"05197443000138","contratual":1.2,"rating":"AA+ (bra) Fitch","venc":"2032-10-15","volume":1000000000,"setor":"Saúde","ticker":"HAPV3","garantia":"Quirografária","atual":7.0025,"vs_contratual_bps":580,"mediana":2.2652,"base":0.9437,"min":0.9287,"min_data":"2025-09-05","max":10.5298,"max_data":"2026-04-02","aberto_vs_base_bps":606,"aberto_vs_min_bps":607,"retracao_do_pico_bps":353,"pct_do_pico_retido":63.2,"percentil":72.2,"z_full":1.03,"z_base":206.23,"d1m_bps":-20,"d3m_bps":-40,"d6m_bps":465,"pu_par":80.44,"pu_min":71.21,"pu_min_data":"2026-04-02","sd_atual":0.2,"sd_percentil":57.4,"sd_max":2.46,"bid_ask_bps":184,"bid_ask_percentil":70.4,"gate":"limpo","estagio":"estacionado","pontos":54,"inicio":"2025-08-01","fim":"2026-08-06","serie":[{"d":"2025-08-01","y":0.9646,"sd":0.16},{"d":"2025-08-08","y":0.9304,"sd":0.04},{"d":"2025-08-15","y":0.9374,"sd":0.04},{"d":"2025-08-22","y":0.9534,"sd":0.13},{"d":"2025-08-29","y":0.9308,"sd":0.0},{"d":"2025-09-05","y":0.9287,"sd":0.0},{"d":"2025-09-12","y":0.9551,"sd":0.05},{"d":"2025-09-19","y":0.9479,"sd":0.06},{"d":"2025-09-26","y":0.9396,"sd":0.11},{"d":"2025-10-03","y":0.9299,"sd":0.01},{"d":"2025-10-10","y":0.9996,"sd":0.09},{"d":"2025-10-17","y":1.027,"sd":0.04},{"d":"2025-10-24","y":1.0748,"sd":0.03},{"d":"2025-10-31","y":1.1372,"sd":0.07},{"d":"2025-11-07","y":1.1814,"sd":0.14},{"d":"2025-11-14","y":1.9135,"sd":0.42},{"d":"2025-11-21","y":1.9404,"sd":0.35},{"d":"2025-11-28","y":1.9405,"sd":0.07},{"d":"2025-12-05","y":1.9218,"sd":0.07},{"d":"2025-12-12","y":1.9855,"sd":0.22},{"d":"2025-12-19","y":2.0198,"sd":0.09},{"d":"2025-12-26","y":2.0215,"sd":0.08},{"d":"2026-01-02","y":2.0238,"sd":0.08},{"d":"2026-01-09","y":2.0814,"sd":0.07},{"d":"2026-01-16","y":2.0541,"sd":0.03},{"d":"2026-01-23","y":2.092,"sd":0.05},{"d":"2026-01-30","y":2.1747,"sd":0.11},{"d":"2026-02-06","y":2.3558,"sd":0.17},{"d":"2026-02-13","y":2.9753,"sd":0.38},{"d":"2026-02-20","y":2.9706,"sd":0.35},{"d":"2026-02-27","y":5.0552,"sd":0.21},{"d":"2026-03-06","y":5.1179,"sd":0.2},{"d":"2026-03-13","y":5.1465,"sd":0.9},{"d":"2026-03-20","y":9.6543,"sd":1.68},{"d":"2026-03-27","y":9.9036,"sd":2.46},{"d":"2026-04-02","y":10.5298,"sd":1.79},{"d":"2026-04-10","y":8.2065,"sd":1.22},{"d":"2026-04-17","y":8.0027,"sd":1.1},{"d":"2026-04-24","y":7.8319,"sd":0.6},{"d":"2026-04-30","y":7.6796,"sd":0.47},{"d":"2026-05-08","y":7.4058,"sd":0.49},{"d":"2026-05-15","y":4.9405,"sd":0.21},{"d":"2026-05-22","y":4.9227,"sd":0.21},{"d":"2026-05-29","y":4.903,"sd":0.19},{"d":"2026-06-05","y":4.9299,"sd":0.21},{"d":"2026-06-12","y":6.7861,"sd":1.29},{"d":"2026-06-19","y":7.1568,"sd":0.45},{"d":"2026-06-26","y":7.186,"sd":0.22},{"d":"2026-07-03","y":7.1536,"sd":0.23},{"d":"2026-07-10","y":7.2038,"sd":0.2},{"d":"2026-07-17","y":7.0528,"sd":0.12},{"d":"2026-07-24","y":7.0981,"sd":0.23},{"d":"2026-07-31","y":7.0581,"sd":0.12},{"d":"2026-08-06","y":7.0025,"sd":0.2}]},"TUPY15":{"code":"TUPY15","nome":"Tupy","emissor_cnpj":"84683374000149","contratual":0.87,"rating":"brAA S&P","venc":"2029-07-17","volume":789770000,"setor":"Autopeças","ticker":null,"garantia":"Quirografária","atual":3.1849,"vs_contratual_bps":231,"mediana":2.0515,"base":0.9411,"min":0.9163,"min_data":"2025-08-22","max":7.0814,"max_data":"2026-04-17","aberto_vs_base_bps":224,"aberto_vs_min_bps":227,"retracao_do_pico_bps":390,"pct_do_pico_retido":36.5,"percentil":70.4,"z_full":0.24,"z_base":120.68,"d1m_bps":1,"d3m_bps":-296,"d6m_bps":116,"pu_par":94.58,"pu_min":85.69,"pu_min_data":"2026-04-17","sd_atual":0.04,"sd_percentil":9.3,"sd_max":3.34,"bid_ask_bps":310,"bid_ask_percentil":54.8,"gate":"limpo","estagio":"fechando","pontos":54,"inicio":"2025-08-01","fim":"2026-08-06","serie":[{"d":"2025-08-01","y":0.9535,"sd":0.03},{"d":"2025-08-08","y":0.9434,"sd":0.03},{"d":"2025-08-15","y":0.9358,"sd":0.02},{"d":"2025-08-22","y":0.9163,"sd":0.03},{"d":"2025-08-29","y":0.9388,"sd":0.05},{"d":"2025-09-05","y":0.928,"sd":0.06},{"d":"2025-09-12","y":0.9329,"sd":0.06},{"d":"2025-09-19","y":0.9328,"sd":0.06},{"d":"2025-09-26","y":0.9479,"sd":0.05},{"d":"2025-10-03","y":0.9605,"sd":0.08},{"d":"2025-10-10","y":0.9883,"sd":0.07},{"d":"2025-10-17","y":0.9655,"sd":0.08},{"d":"2025-10-24","y":1.0085,"sd":0.11},{"d":"2025-10-31","y":1.14,"sd":0.13},{"d":"2025-11-07","y":1.1808,"sd":0.3},{"d":"2025-11-14","y":1.3217,"sd":0.34},{"d":"2025-11-21","y":1.6983,"sd":0.94},{"d":"2025-11-28","y":2.1128,"sd":1.03},{"d":"2025-12-05","y":2.1714,"sd":0.99},{"d":"2025-12-12","y":2.7054,"sd":1.05},{"d":"2025-12-19","y":1.942,"sd":0.21},{"d":"2025-12-26","y":1.9323,"sd":0.2},{"d":"2026-01-02","y":1.8771,"sd":0.11},{"d":"2026-01-09","y":2.0505,"sd":0.26},{"d":"2026-01-16","y":2.0526,"sd":0.24},{"d":"2026-01-23","y":2.0289,"sd":0.24},{"d":"2026-01-30","y":2.0124,"sd":0.23},{"d":"2026-02-06","y":2.0238,"sd":0.25},{"d":"2026-02-13","y":2.0671,"sd":0.43},{"d":"2026-02-20","y":2.003,"sd":0.26},{"d":"2026-02-27","y":2.071,"sd":0.27},{"d":"2026-03-06","y":2.0005,"sd":0.22},{"d":"2026-03-13","y":1.8759,"sd":0.1},{"d":"2026-03-20","y":2.6302,"sd":0.37},{"d":"2026-03-27","y":5.5191,"sd":2.35},{"d":"2026-04-02","y":5.1725,"sd":1.23},{"d":"2026-04-10","y":6.1428,"sd":3.34},{"d":"2026-04-17","y":7.0814,"sd":2.58},{"d":"2026-04-24","y":6.5941,"sd":1.0},{"d":"2026-04-30","y":6.7134,"sd":0.25},{"d":"2026-05-08","y":6.1411,"sd":0.76},{"d":"2026-05-15","y":5.7678,"sd":0.7},{"d":"2026-05-22","y":5.1069,"sd":0.94},{"d":"2026-05-29","y":5.1552,"sd":0.9},{"d":"2026-06-05","y":4.8608,"sd":0.66},{"d":"2026-06-12","y":3.8215,"sd":1.27},{"d":"2026-06-19","y":3.8663,"sd":1.46},{"d":"2026-06-26","y":3.6962,"sd":0.8},{"d":"2026-07-03","y":3.5371,"sd":0.81},{"d":"2026-07-10","y":3.178,"sd":0.26},{"d":"2026-07-17","y":3.1406,"sd":0.21},{"d":"2026-07-24","y":3.1362,"sd":0.19},{"d":"2026-07-31","y":3.2555,"sd":0.14},{"d":"2026-08-06","y":3.1849,"sd":0.04}]},"AEGE16":{"code":"AEGE16","nome":"Equipav Saneamento","emissor_cnpj":"15385166000140","contratual":3.9,"rating":"brAA+ S&P","venc":"2034-03-11","volume":1000000000,"setor":"Saneamento","ticker":null,"garantia":"Quirografária","atual":4.9056,"vs_contratual_bps":101,"mediana":3.0223,"base":3.0058,"min":2.7878,"min_data":"2026-02-06","max":7.5403,"max_data":"2026-04-10","aberto_vs_base_bps":190,"aberto_vs_min_bps":212,"retracao_do_pico_bps":263,"pct_do_pico_retido":41.9,"percentil":70.4,"z_full":0.68,"z_base":79.01,"d1m_bps":-13,"d3m_bps":-173,"d6m_bps":212,"pu_par":96.88,"pu_min":88.34,"pu_min_data":"2026-04-10","sd_atual":0.14,"sd_percentil":75.9,"sd_max":2.95,"bid_ask_bps":177,"bid_ask_percentil":68.5,"gate":"limpo","estagio":"fechando","pontos":54,"inicio":"2025-08-01","fim":"2026-08-06","serie":[{"d":"2025-08-01","y":2.995,"sd":0.11},{"d":"2025-08-08","y":3.0341,"sd":0.01},{"d":"2025-08-15","y":3.0414,"sd":0.06},{"d":"2025-08-22","y":3.0385,"sd":0.03},{"d":"2025-08-29","y":3.0275,"sd":0.02},{"d":"2025-09-05","y":3.0172,"sd":0.02},{"d":"2025-09-12","y":3.0061,"sd":0.01},{"d":"2025-09-19","y":3.0014,"sd":0.0},{"d":"2025-09-26","y":3.0056,"sd":0.03},{"d":"2025-10-03","y":2.9768,"sd":0.02},{"d":"2025-10-10","y":2.9688,"sd":0.02},{"d":"2025-10-17","y":2.9761,"sd":0.02},{"d":"2025-10-24","y":2.9515,"sd":0.03},{"d":"2025-10-31","y":2.9388,"sd":0.01},{"d":"2025-11-07","y":2.9476,"sd":0.02},{"d":"2025-11-14","y":2.9325,"sd":0.02},{"d":"2025-11-21","y":2.9268,"sd":0.02},{"d":"2025-11-28","y":2.9208,"sd":0.02},{"d":"2025-12-05","y":2.9029,"sd":0.02},{"d":"2025-12-12","y":2.9131,"sd":0.02},{"d":"2025-12-19","y":2.8932,"sd":0.02},{"d":"2025-12-26","y":2.8888,"sd":0.01},{"d":"2026-01-02","y":2.8729,"sd":0.02},{"d":"2026-01-09","y":2.8857,"sd":0.01},{"d":"2026-01-16","y":2.8408,"sd":0.03},{"d":"2026-01-23","y":2.8089,"sd":0.06},{"d":"2026-01-30","y":2.8245,"sd":0.06},{"d":"2026-02-06","y":2.7878,"sd":0.06},{"d":"2026-02-13","y":2.8349,"sd":0.06},{"d":"2026-02-20","y":2.9556,"sd":0.07},{"d":"2026-02-27","y":3.0057,"sd":0.04},{"d":"2026-03-06","y":3.2505,"sd":0.06},{"d":"2026-03-13","y":3.3478,"sd":0.09},{"d":"2026-03-20","y":3.4613,"sd":0.16},{"d":"2026-03-27","y":3.5532,"sd":0.12},{"d":"2026-04-02","y":4.6279,"sd":1.16},{"d":"2026-04-10","y":7.5403,"sd":2.95},{"d":"2026-04-17","y":7.1712,"sd":0.42},{"d":"2026-04-24","y":6.8474,"sd":0.34},{"d":"2026-04-30","y":6.0404,"sd":0.22},{"d":"2026-05-08","y":6.6335,"sd":0.09},{"d":"2026-05-15","y":6.4911,"sd":0.14},{"d":"2026-05-22","y":5.3729,"sd":0.17},{"d":"2026-05-29","y":5.9492,"sd":0.66},{"d":"2026-06-05","y":5.8159,"sd":0.91},{"d":"2026-06-12","y":5.7162,"sd":0.39},{"d":"2026-06-19","y":5.2828,"sd":0.13},{"d":"2026-06-26","y":5.2735,"sd":0.12},{"d":"2026-07-03","y":5.4327,"sd":0.58},{"d":"2026-07-10","y":5.0386,"sd":0.21},{"d":"2026-07-17","y":5.0598,"sd":0.09},{"d":"2026-07-24","y":4.4208,"sd":0.92},{"d":"2026-07-31","y":4.971,"sd":0.12},{"d":"2026-08-06","y":4.9056,"sd":0.14}]}};
+
+const WATCH = [
+ ["HAPVA0","Hapvida","AA+ (bra) Fitch","out/33","R$ 3,65 bi","DI+1,05%",null,-22.71,null,"Maior emissão do cluster; drawdown de 22,7% sem série reconstruída"],
+ ["HAPV18","Hapvida","AA+ (bra) Fitch","out/31","R$ 1,00 bi","DI+1,10%",9.89,-21.70,-1.01,"Mesma curva do dossiê, vencimento mais curto"],
+ ["HAPV15","Hapvida","sem rating","jan/30","R$ 1,00 bi","DI+1,75%",10.44,-18.84,-0.96,"Pico de 10,4%; rating não publicado no cadastro"],
+ ["HAPV17","Hapvida","AAA Fitch","mai/31","R$ 1,00 bi","DI+1,60%",10.51,-18.57,-1.02,"Único AAA do cluster com abertura equivalente"],
+ ["AEGE17","Equipav Saneamento","brAA+ S&P","jun/35","R$ 1,20 bi","DI+3,40%",7.87,-14.75,-0.21,"Par longo da AEGE16, mesmo emissor e mesmo evento"],
+ ["BCBF16","Bcbf Participações","AA+ (bra) Fitch","out/27","R$ 1,20 bi","DI+1,45%",14.69,-8.30,-0.09,"Pico de 14,7% em papel AA+ curto; exige checar marcação"],
+ ["RNDNA1","Randon Implementos","brAAA S&P","mai/31","R$ 600 mi","DI+1,17%",2.84,-3.77,-0.65,"Sharpe negativo com prêmio de 76% do CDI"],
+ ["ARML15","Armac","AA-(bra) Fitch","set/32","R$ 617 mi","DI+1,35%",3.22,-3.53,-0.49,"Prêmio de 64% do CDI, o mais baixo entre os AA-"],
+ ["UNIP18","Unipar","AA+(bra) Fitch","out/30","R$ 750 mi","DI+2,05%",2.42,-2.84,-0.02,"Prêmio de 95% do CDI com Sharpe zerado"],
+ ["ARML14","Armac","AA-(bra) Fitch","mar/32","R$ 694 mi","DI+1,90%",2.85,-1.75,-0.67,"Segundo papel do emissor com Sharpe negativo"]
+];
+
+const fmt = (v,d=2)=>v==null?"—":v.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const bps = v=>(v>0?"+":"−")+Math.abs(Math.round(v));
+const MESES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const shortDate=s=>{const[y,m,d]=s.split("-");return `${d}/${MESES[+m-1]}/${y.slice(2)}`};
+const vencFmt=s=>{const[y,m]=s.split("-");return `${MESES[+m-1]}/${y.slice(2)}`};
+const volFmt=v=>v>=1e9?`R$ ${fmt(v/1e9,2)} bi`:`R$ ${Math.round(v/1e6)} mi`;
+
+/* ---------- sparkline: one series, contractual baseline, emphasized endpoint ---------- */
+function sparkline(serie, contratual){
+  const W=132,H=34,P=3;
+  const ys=serie.map(p=>p.y);
+  const lo=Math.min(...ys,contratual), hi=Math.max(...ys);
+  const sx=i=>P+i*(W-2*P)/(serie.length-1);
+  const sy=v=>H-P-((v-lo)/((hi-lo)||1))*(H-2*P);
+  const d=serie.map((p,i)=>(i?"L":"M")+sx(i).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ");
+  const area=d+` L ${sx(serie.length-1).toFixed(1)} ${H-P} L ${sx(0).toFixed(1)} ${H-P} Z`;
+  const ex=sx(serie.length-1), ey=sy(serie[serie.length-1].y);
+  return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    <path d="${area}" fill="var(--s1-soft)"/>
+    <line x1="${P}" y1="${sy(contratual).toFixed(1)}" x2="${W-P}" y2="${sy(contratual).toFixed(1)}"
+      stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="2 3" opacity=".65"/>
+    <path d="${d}" fill="none" stroke="var(--s1)" stroke-width="1.6"
+      stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="2.6" fill="var(--s1)"
+      stroke="var(--surface)" stroke-width="1.5"/>
+  </svg>`;
+}
+
+/* ---------- radar table ---------- */
+const order=["HAPV28","HAPV19","TUPY15","AEGE16"];
+const sev=r=>r.aberto_vs_base_bps>=500?3:(r.aberto_vs_base_bps>=200?2:1);
+const gateChip=g=>g==="limpo"?'<span class="chip good">limpo</span>'
+  :g==="atencao"?'<span class="chip warn">atenção</span>':'<span class="chip crit">sujo</span>';
+const stageChip=e=>e==="estacionado"?'<span class="chip crit">estacionado</span>'
+  :e==="abrindo"?'<span class="chip warn">abrindo</span>':'<span class="chip mute">fechando</span>';
+
+document.getElementById("radar-body").innerHTML = order.map(c=>{
+  const r=DATA[c];
+  return `<tr>
+    <td class="stripe s${sev(r)} l"><span class="code">${r.code}</span>
+      <span class="sub">${r.garantia}</span></td>
+    <td class="l">${r.nome}<span class="sub">${r.setor}${r.ticker?" · "+r.ticker:""}</span></td>
+    <td class="l num" style="font-size:11.5px">${r.rating}</td>
+    <td class="num">${vencFmt(r.venc)}</td>
+    <td class="num" style="color:var(--ink-3)">DI+${fmt(r.contratual)}</td>
+    <td class="num big">DI+${fmt(r.atual)}</td>
+    <td class="num big pos">${bps(r.aberto_vs_base_bps)}b</td>
+    <td class="num">${fmt(r.pct_do_pico_retido,0)}%</td>
+    <td class="num ${r.d1m_bps>0?"pos":"neg"}">${bps(r.d1m_bps)}b</td>
+    <td class="num ${r.d3m_bps>0?"pos":"neg"}">${bps(r.d3m_bps)}b</td>
+    <td class="num">${fmt(r.pu_par,1)}</td>
+    <td class="num">${fmt(r.sd_atual)}</td>
+    <td class="l">${gateChip(r.gate)}</td>
+    <td class="l">${stageChip(r.estagio)}</td>
+    <td class="l">${sparkline(r.serie,r.contratual)}</td>
+  </tr>`;
+}).join("");
+
+document.getElementById("watch-body").innerHTML = WATCH.map(w=>`<tr>
+  <td class="stripe s${w[7]<=-15?3:(w[7]<=-5?2:1)} l"><span class="code">${w[0]}</span></td>
+  <td class="l">${w[1]}</td>
+  <td class="l num" style="font-size:11.5px">${w[2]}</td>
+  <td class="num">${w[3]}</td>
+  <td class="num">${w[4]}</td>
+  <td class="num" style="color:var(--ink-3)">${w[5]}</td>
+  <td class="num big">${w[6]==null?"—":"DI+"+fmt(w[6])}</td>
+  <td class="num pos">${fmt(w[7],1)}%</td>
+  <td class="num">${w[8]==null?"—":fmt(w[8])}</td>
+  <td class="l" style="font-size:12.5px;color:var(--ink-2);white-space:normal;min-width:230px">${w[9]}</td>
+</tr>`).join("");
+
+/* ---------- hero chart: two series, reference band, peak + release annotations ---------- */
+const A=DATA.HAPV19.serie, B=DATA.HAPV28.serie;
+const svg=document.getElementById("hero"), tip=document.getElementById("tip");
+let geo=null;
+
+function drawHero(){
+  const box=svg.parentElement.getBoundingClientRect();
+  const W=Math.max(340,Math.floor(box.width)), H=W<560?250:320;
+  const M={t:24,r:16,b:30,l:44};
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const hi=Math.ceil(Math.max(...A.map(p=>p.y),...B.map(p=>p.y)));
+  const sx=i=>M.l+i*iw/(A.length-1);
+  const sy=v=>M.t+ih-(v/hi)*ih;
+  geo={sx,sy,M,iw,ih,W,H};
+
+  const path=s=>s.map((p,i)=>(i?"L":"M")+sx(i).toFixed(1)+" "+sy(p.y).toFixed(1)).join(" ");
+  const ticks=[0,2,4,6,8,10].filter(t=>t<=hi);
+
+  // release week band: 08/mai -> 15/mai
+  const i08=A.findIndex(p=>p.d==="2026-05-08"), i15=A.findIndex(p=>p.d==="2026-05-15");
+  const iPk=B.reduce((b,p,i)=>p.y>B[b].y?i:b,0);
+
+  const xlab=["2025-08-01","2025-11-07","2026-02-06","2026-05-08","2026-08-06"];
+
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.setAttribute("width",W); svg.setAttribute("height",H);
+  svg.innerHTML=`
+    <g>${ticks.map(t=>`<line x1="${M.l}" y1="${sy(t)}" x2="${W-M.r}" y2="${sy(t)}"
+        stroke="var(--grid)" stroke-width="1"/>
+      <text x="${M.l-9}" y="${sy(t)+3.5}" text-anchor="end" fill="var(--ink-3)"
+        font-family="var(--mono)" font-size="10">${t}%</text>`).join("")}</g>
+
+    <rect x="${sx(i08)}" y="${M.t}" width="${sx(i15)-sx(i08)}" height="${ih}"
+      fill="var(--s1)" opacity=".10"/>
+    <text x="${(sx(i08)+sx(i15))/2}" y="${M.t-8}" text-anchor="middle" fill="var(--ink-2)"
+      font-family="var(--mono)" font-size="9.5" letter-spacing=".08em">1T26</text>
+
+    <line x1="${M.l}" y1="${sy(1.125)}" x2="${W-M.r}" y2="${sy(1.125)}"
+      stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="4 4" opacity=".75"/>
+
+    <path d="${path(B)}" fill="none" stroke="var(--s2)" stroke-width="2"
+      stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="${path(A)}" fill="none" stroke="var(--s1)" stroke-width="2"
+      stroke-linejoin="round" stroke-linecap="round"/>
+
+    <circle cx="${sx(iPk)}" cy="${sy(B[iPk].y)}" r="4" fill="var(--s2)"
+      stroke="var(--surface)" stroke-width="2"/>
+    <text x="${sx(iPk)+9}" y="${sy(B[iPk].y)+3}" fill="var(--ink)" font-family="var(--mono)"
+      font-size="10.5" font-weight="600">10,53% · 02/abr</text>
+
+    <circle cx="${sx(A.length-1)}" cy="${sy(A[A.length-1].y)}" r="4" fill="var(--s1)"
+      stroke="var(--surface)" stroke-width="2"/>
+
+    <g>${xlab.map(dt=>{const i=A.findIndex(p=>p.d===dt);
+      return `<text x="${sx(i)}" y="${H-10}" text-anchor="middle" fill="var(--ink-3)"
+        font-family="var(--mono)" font-size="10">${shortDate(dt).slice(3)}</text>`}).join("")}</g>
+
+    <line id="cross" x1="0" y1="${M.t}" x2="0" y2="${M.t+ih}" stroke="var(--ink-3)"
+      stroke-width="1" opacity="0"/>
+    <circle id="dA" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" opacity="0"/>
+    <circle id="dB" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2" opacity="0"/>
+    <rect id="hit" x="${M.l}" y="${M.t}" width="${iw}" height="${ih}" fill="transparent"/>`;
+
+  const hit=svg.querySelector("#hit");
+  hit.addEventListener("pointermove",onMove);
+  hit.addEventListener("pointerleave",onLeave);
+}
+
+function onMove(e){
+  const r=svg.getBoundingClientRect();
+  const x=(e.clientX-r.left)*(geo.W/r.width);
+  let i=Math.round((x-geo.M.l)/(geo.iw/(A.length-1)));
+  i=Math.max(0,Math.min(A.length-1,i));
+  const cx=geo.sx(i);
+  svg.querySelector("#cross").setAttribute("x1",cx);
+  svg.querySelector("#cross").setAttribute("x2",cx);
+  svg.querySelector("#cross").setAttribute("opacity",".45");
+  const dA=svg.querySelector("#dA"), dB=svg.querySelector("#dB");
+  dA.setAttribute("cx",cx); dA.setAttribute("cy",geo.sy(A[i].y)); dA.setAttribute("opacity","1");
+  dB.setAttribute("cx",cx); dB.setAttribute("cy",geo.sy(B[i].y)); dB.setAttribute("opacity","1");
+  tip.innerHTML=`<span class="td">${shortDate(A[i].d)}</span><br>
+    <span class="tv">HAPV19 &nbsp;DI+${fmt(A[i].y)}%</span><br>
+    <span class="tv">HAPV28 &nbsp;DI+${fmt(B[i].y)}%</span><br>
+    <span class="tv" style="opacity:.66">dispersão ${fmt(A[i].sd)}</span>`;
+  tip.style.opacity="1";
+  const tw=tip.offsetWidth, sc=r.width/geo.W;
+  let left=cx*sc+14;
+  if(left+tw>r.width-4) left=cx*sc-tw-14;
+  tip.style.left=Math.max(4,left)+"px";
+  tip.style.top=Math.max(4,geo.sy(Math.max(A[i].y,B[i].y))*sc-14)+"px";
+}
+function onLeave(){
+  tip.style.opacity="0";
+  svg.querySelector("#cross").setAttribute("opacity","0");
+  svg.querySelector("#dA").setAttribute("opacity","0");
+  svg.querySelector("#dB").setAttribute("opacity","0");
+}
+
+drawHero();
+let rt; addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(drawHero,140)});
+</script>
