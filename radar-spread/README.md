@@ -4,6 +4,7 @@ Radar de abertura de spread (taxa) no secundário de debêntures corporativas DI
 construído sobre a base Economatica via MCP. Identifica papéis cujo spread abriu
 e ainda não fechou, filtrados por qualidade de marcação, covenant e notícia do emissor.
 
+Cobertura atual: **14 papéis** com série de 12 meses reconstruída, de 6 emissores.
 Artefato publicado: página HTML autocontida em `radar-spread.html`.
 
 ## Por que existe um funil
@@ -35,7 +36,7 @@ O ranking **não** usa z-score puro. Com o evento dentro da janela, ele infla o 
 desvio padrão e comprime o escore: a Hapvida, que abriu ~600 bps, marca z de 1,03 na
 janela cheia. As métricas que sobrevivem:
 
-- `aberto_vs_base_bps` — spread de hoje contra a mediana do regime calmo (12 primeiras semanas)
+- `aberto_vs_base_bps` — spread de hoje contra a mediana do regime calmo (ago–out/25; ver abaixo)
 - `pct_do_pico_retido` — quanto da abertura segue de pé após a retração
 - `vs_contratual_bps` — repreço desde a originação
 - `percentil` — posição na própria janela de 12 meses
@@ -49,6 +50,17 @@ iliquidez. No pico de 02/abr/26 a HAPV28 tinha dispersão 2,46 com bid a 13,05% 
 O limiar é **absoluto** (`≤0,30` limpo, `≤0,80` atenção, acima disso sujo), não percentil.
 Percentil sozinho gera falso positivo em papel de história ultracalma — a AEGE16, com
 dispersão de 0,14, aparecia como "sujo" só porque sua mediana histórica era 0,02.
+
+Dispersão baixa **não basta**: a TUPY15 marca 0,04 com bid/ask de 310 bps — consenso sobre
+um preço que ninguém pratica dos dois lados. O gate exige as duas travas (dispersão E
+bid/ask ≤ 200 bps para "limpo").
+
+## A base é medida por data, não por posição
+
+O HAPVA0 só passa a ser marcado pela ANBIMA em 28/nov/25, quando a primeira perna já tinha
+acontecido. Uma base pelas "12 primeiras semanas da série" pegaria o estresse como calmaria
+e esconderia a abertura. `BASE_ATE = "2025-11-01"` recorta por data; papéis sem essa janela
+usam o mínimo da série como piso e são marcados `base_parcial`.
 
 ## Cobertura da camada fundamentalista
 
@@ -68,7 +80,7 @@ com RAIL3).
 ## Como rodar
 
 ```bash
-python3 calc.py          # lê series.py, emite radar.json + tabela no stdout
+python3 calc.py          # lê series.py + series2.py, emite radar.json + tabela no stdout
 ```
 
 Para atualizar os dados, refazer as chamadas MCP do estágio 1–2 e regravar `series.py`
