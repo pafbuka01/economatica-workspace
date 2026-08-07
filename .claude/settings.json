@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Economatica_Not_cias__equities_quote_history",
+      "mcp__Economatica_Not_cias__equities_get",
+      "mcp__Economatica_Not_cias__equities_screen",
+      "mcp__Economatica_Not_cias__equities_quote",
+      "mcp__Economatica_Not_cias__equities_fundamentals_history",
+      "mcp__Economatica_Not_cias__benchmarks_history",
+      "mcp__Economatica_Not_cias__benchmarks_list",
+      "mcp__Economatica_Not_cias__quote",
+      "mcp__Economatica_Not_cias__quote_history",
+      "mcp__Economatica_Not_cias__spread_stats",
+      "mcp__Economatica_Not_cias__correlation_matrix",
+      "mcp__Economatica_Not_cias__peer_compare",
+      "mcp__Economatica_Not_cias__risk_stats"
+    ]
+  }
+}
