@@ -64,6 +64,16 @@ header.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-
 .asof .mono{color:var(--ink-2)}
 
 .controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 0 14px;border-bottom:1px solid var(--grid);margin-bottom:16px}
+.upd{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1px solid var(--axis);border-radius:8px;font-size:12.5px;background:var(--surface);color:var(--ink)}
+@media (hover:hover){.upd:not(:disabled):hover{border-color:var(--s1)}}
+.upd:disabled{opacity:.55;cursor:default}
+.upd .dot{width:7px;height:7px;border-radius:50%;background:var(--good);flex:none}
+.upd.busy .dot{background:var(--warn)}
+.upd.fail .dot{background:var(--crit)}
+@media (prefers-reduced-motion: no-preference){.upd.busy .dot{animation:pulse 1.1s ease-in-out infinite}}
+@keyframes pulse{50%{opacity:.35}}
+.upd-status{font-size:11.5px;color:var(--muted);max-width:46ch}
+.upd-status.warn{color:var(--ink-2)}
 .ctl-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .chips{display:flex;gap:4px}
 .chip{padding:4px 10px;border:1px solid var(--hair);border-radius:999px;font-size:12.5px;color:var(--ink-2);background:var(--surface)}
@@ -203,6 +213,8 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
     <span class="ctl-label">Janela do z-score</span>
     <div class="chips" id="winChips" role="group" aria-label="Janela do z-score em pregões"></div>
     <span class="ctl-label" style="margin-left:auto" id="uniCount"></span>
+    <button class="upd" id="updBtn" type="button"><span class="dot"></span><span id="updLabel">Atualizar dados</span></button>
+    <span class="upd-status" id="updStatus"></span>
   </div>
 
   <div class="tiles" id="tiles"></div>
@@ -324,7 +336,11 @@ const abbrSec=s=>SEC_ABBR[s]||s;
 /* ================= dados ================= */
 const IDX={};                       // ticker -> registro
 const TICKERS=[];                   // ordem alfabética (sem IBOV)
-(function init(){
+let DATE_IDX=new Map();             // data -> posição no calendário
+function buildIndex(){
+  for(const k in IDX)delete IDX[k];
+  TICKERS.length=0;
+  DATE_IDX=new Map(DB.dates.map((d,i)=>[d,i]));
   for(const r of DB.universe){
     const t=r[0];const s=DB.series[t];if(!s)continue;
     const m=DB.meta[t]||{};
@@ -338,8 +354,8 @@ const TICKERS=[];                   // ordem alfabética (sem IBOV)
     IDX.IBOV={t:'IBOV',name:'Ibovespa (índice)',sector:'Índice',px:null,seg:'Índice',sub:null,dy:null,pe:null,pb:null,ev:null,vol1y:null,ret1y:null,
       o:DB.series.IBOV.o,c:DB.series.IBOV.c,ln:DB.series.IBOV.c.map(v=>v==null?NaN:Math.log(v))};
   }
-})();
-const N=DB.dates.length;
+}
+buildIndex();
 const lastPx=t=>{const r=IDX[t];return r.c[r.c.length-1]};
 const sameCompany=(a,b)=>a.slice(0,4)===b.slice(0,4);
 
@@ -968,6 +984,14 @@ function initControls(){
   $('tkSearch').addEventListener('input',()=>{state.search=$('tkSearch').value;state.shown=150;renderScan()});
   $('pennyCk').addEventListener('change',()=>{state.penny=$('pennyCk').checked;recomputeAll()});
   $('moreBtn').addEventListener('click',()=>{state.shown+=150;renderScan()});
+  const ub=$('updBtn');
+  if(mcpOn()){
+    ub.addEventListener('click',refresh);
+    $('updStatus').textContent='dados embutidos até '+fmtDate(DB.asof);
+  }else{
+    ub.disabled=true;
+    $('updStatus').textContent='atualização ao vivo indisponível aqui · dados embutidos até '+fmtDate(DB.asof);
+  }
   bindChart();
   let rt=null;
   window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(drawMain,120)});
@@ -976,6 +1000,139 @@ function initControls(){
     const m=h.match(/^([A-Z0-9]{4,6})\/([A-Z0-9]{4,6})/);
     if(m&&IDX[m[1]]&&IDX[m[2]]&&(m[1]!==state.A||m[2]!==state.B))loadPair(m[1],m[2]);
   });
+}
+
+/* ================= atualização ao vivo ================= */
+const MCP_SERVER='Economatica Notícias', MCP_TOOL='equities_quote_history';
+const ANCHOR='PETR4';   // negocia todo pregão: define o calendário
+const OVERLAP=40;       // pregões relidos a cada rodada, para flagrar reajuste
+
+const mcpOn=()=>!!(window.claude&&window.claude.mcp);
+
+// cada código tem uma correção diferente — um aviso genérico esconderia a saída
+function errCopy(e){
+  switch(e&&e.code){
+    case 'not_granted': case 'capability_disabled': case 'capability_removed':
+      return 'Atualização ao vivo indisponível nesta visualização; os dados embutidos seguem válidos.';
+    case 'server_not_connected':
+      return 'Conector Economatica Notícias não encontrado. Adicione-o em Configurações → Conectores, na claude.ai.';
+    case 'needs_reauth':
+      return 'A sessão do conector Economatica expirou. Reconecte em Configurações → Conectores, na claude.ai.';
+    case 'selection_required':
+      return 'Há mais de um conector Economatica. Escolha um quando a claude.ai perguntar e tente de novo.';
+    case 'not_in_manifest': return 'Esta página não tem permissão para essa consulta.';
+    case 'blocked_by_policy': return 'A política da sua organização bloqueia essa consulta.';
+    case 'approval_required': return 'A consulta exige aprovação por chamada, ainda não suportada em artefatos.';
+    case 'server_unavailable': return 'A Economatica não respondeu. Tente de novo em alguns minutos.';
+    case 'rate_limited': return 'Consultas demais em sequência. Aguarde um instante e tente de novo.';
+    case 'tool_error': return 'A Economatica recusou a consulta: '+((e&&e.message)||'sem detalhe')+'.';
+    default: return 'Não foi possível atualizar agora'+(e&&e.message?': '+e.message:'')+'.';
+  }
+}
+async function callHist(ticker,from,to){
+  for(let tent=0;;tent++){
+    try{
+      const r=await window.claude.mcp.callTool(MCP_SERVER,MCP_TOOL,{ticker,metric:'close_adj',from,to},{cache:false});
+      const p=r&&r.payload, arr=p&&Array.isArray(p.series)?p.series:null;
+      if(!arr)throw {code:'tool_error',message:'resposta sem série ('+ticker+')'};
+      return arr.filter(x=>x&&typeof x.date==='string'&&typeof x.close_adj==='number'&&isFinite(x.close_adj)&&x.close_adj>0);
+    }catch(e){
+      if(!(e&&e.retryable)||tent>=1)throw e;   // só o que a origem marcou como repetível, uma vez
+      await new Promise(r=>setTimeout(r,(e.retryAfterMs||1500)+Math.random()*600));
+    }
+  }
+}
+async function pool(items,limit,fn,tick){
+  const out=new Array(items.length);let i=0,done=0;
+  const worker=async()=>{while(i<items.length){const k=i++;
+    try{out[k]=await fn(items[k])}catch(e){out[k]={__err:e}}
+    if(tick)tick(++done,items.length);}};
+  await Promise.all(Array.from({length:Math.min(limit,items.length)},worker));
+  return out;
+}
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+
+// Provento, JCP e split reajustam a série inteira para trás. Se a janela
+// resposta divergir do que está gravado, anexar seria misturar duas escalas —
+// a série daquele papel tem de ser refeita por completo.
+function reajustou(rec,rows){
+  let vistos=0,fora=0;
+  for(const r of rows){
+    const gi=DATE_IDX.get(r.date);if(gi===undefined)continue;
+    const k=gi-rec.o;if(k<0||k>=rec.c.length)continue;
+    const antigo=rec.c[k];if(antigo==null)continue;
+    vistos++;if(Math.abs(antigo-r.close_adj)/r.close_adj>0.002)fora++;
+  }
+  return vistos>=5&&fora/vistos>0.3;
+}
+
+async function refresh(){
+  const btn=$('updBtn'),lab=$('updLabel'),st=$('updStatus');
+  const say=(t,w)=>{st.textContent=t;st.classList.toggle('warn',!!w)};
+  btn.disabled=true;btn.classList.add('busy');btn.classList.remove('fail');
+  lab.textContent='Atualizando…';say('consultando a Economatica…');
+  try{
+    const to=todayISO(), from=DB.dates[Math.max(0,DB.dates.length-OVERLAP)];
+    const tks=Object.keys(DB.series);
+    const ancora=await callHist(ANCHOR,from,to);
+    const novos=ancora.map(r=>r.date).filter(d=>d>DB.asof).sort();
+
+    const res=await pool(tks,6,t=>callHist(t,from,to),(d,n)=>say('lendo ativos… '+d+'/'+n));
+    const linhas={},falhas=[];
+    tks.forEach((t,k)=>{const r=res[k];if(r&&r.__err)falhas.push(t);else linhas[t]=r});
+    if(!Object.keys(linhas).length){
+      const primeira=res.find(r=>r&&r.__err);
+      throw (primeira&&primeira.__err)||{code:'upstream_error',message:'nenhum ativo respondeu'};
+    }
+    const reajustados=tks.filter(t=>linhas[t]&&reajustou(DB.series[t],linhas[t]));
+
+    if(!novos.length&&!reajustados.length){
+      btn.classList.remove('busy');lab.textContent='Atualizar dados';btn.disabled=false;
+      say('já está atualizado — último pregão '+fmtDate(DB.asof)+(falhas.length?' · '+falhas.length+' ativo(s) sem resposta':''),!!falhas.length);
+      return;
+    }
+    if(novos.length){
+      DB.dates=DB.dates.concat(novos);
+      DB.asof=DB.dates[DB.dates.length-1];
+      DATE_IDX=new Map(DB.dates.map((d,i)=>[d,i]));
+      for(const t of tks){
+        const rows=linhas[t];if(!rows)continue;
+        const porData=new Map(rows.map(r=>[r.date,+r.close_adj.toFixed(4)]));
+        const c=DB.series[t].c;
+        for(const d of novos){const v=porData.get(d);c.push(v!=null?v:c[c.length-1])}
+      }
+    }
+    if(reajustados.length){
+      say('reajuste por provento em '+reajustados.length+' ativo(s), refazendo a série…');
+      const cheias=await pool(reajustados,4,t=>callHist(t,DB.dates[0],to));
+      reajustados.forEach((t,k)=>{
+        const rows=cheias[k];if(!rows||rows.__err)return;
+        const hits=[];
+        for(const r of rows){const gi=DATE_IDX.get(r.date);if(gi!==undefined)hits.push([gi,+r.close_adj.toFixed(4)])}
+        if(hits.length<60)return;
+        const o=hits[0][0],fim=hits[hits.length-1][0];
+        const c=Array(fim-o+1).fill(null);
+        for(const [gi,v] of hits)c[gi-o]=v;
+        for(let j=1;j<c.length;j++)if(c[j]===null)c[j]=c[j-1];
+        DB.series[t]={o,c};
+      });
+    }
+    buildIndex();recomputeAll();
+    $('asof').textContent=fmtDate(DB.asof);
+    btn.classList.remove('busy');lab.textContent='Atualizar dados';btn.disabled=false;
+    const partes=[];
+    if(novos.length)partes.push(novos.length+' pregão(ões) novo(s)');
+    if(reajustados.length)partes.push(reajustados.length+' série(s) reajustada(s) por provento');
+    if(falhas.length)partes.push(falhas.length+' sem resposta');
+    say('atualizado até '+fmtDate(DB.asof)+' · '+partes.join(' · '),!!falhas.length);
+  }catch(e){
+    btn.classList.remove('busy');btn.classList.add('fail');
+    lab.textContent='Tentar de novo';btn.disabled=false;
+    say(errCopy(e),true);
+    if(e&&(e.code==='not_granted'||e.code==='capability_disabled'||e.code==='capability_removed')){
+      btn.disabled=true;btn.classList.remove('fail');lab.textContent='Atualizar dados';
+    }
+  }
 }
 
 /* ================= boot ================= */
