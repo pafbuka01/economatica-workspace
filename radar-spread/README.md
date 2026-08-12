@@ -145,3 +145,60 @@ vazia — um conector com credencial vencida também aparece sem ferramentas, e 
 
 `mock.js` + `test.mjs` exercitam todos esses ramos com a forma de resposta observada e
 valores sintéticos (`node test.mjs`, precisa de playwright e do Chromium do ambiente).
+
+## Terminal de crédito privado (`terminal.html`)
+
+Substitui a dashboard de tabela única por uma ferramenta de quatro módulos, publicada como
+Artifact com a capability `mcp` sobre o conector **Economatica Notícias**. Layout de três
+zonas: barra de comando com busca global, rail com watchlist e cobertura, workspace com
+abas por papel e por emissor.
+
+| Módulo | O que faz | Ferramentas |
+|---|---|---|
+| Triagem | Universo por classe, filtros e ordenação | `debentures_screen`, `securitizations_screen` |
+| Papel | Série de 12m, gate de marcação, crédito | `debentures_quote_history`, `credit_overview` |
+| Comparar | Até 6 séries sobrepostas, absoluto ou vs contratual | `debentures_quote_history` |
+| Emissor | Fundamento trimestral, notícia e fato relevante CVM | `equities_*`, `news_search` |
+
+### Universo
+
+| Classe | Papéis |
+|---|---|
+| Debêntures | 1.311 (604 DI+, 673 IPCA+, 28 pré, 6 outros) |
+| CRI | 5.980 |
+| CRA | 1.439 |
+
+Debêntures são varridas por inteiro (27 chamadas). CRI/CRA vêm por lotes de 300 com
+"carregar mais", porque 7.419 papéis são ~150 chamadas e não cabem numa tacada de browser.
+
+### CRI e CRA não têm série histórica
+
+Verificado: existe `debentures_quote_history`, **não existe equivalente para securitizações**.
+As tools são apenas `securitizations_screen/get/search`, e `min_ytm` devolve zero em 7.419
+papéis. O terminal mostra o aviso no lugar do gráfico em vez de deixar um painel vazio.
+
+O que CRI/CRA entregam: `index_correction`, `ytm_max_12m_pct` (existe no `fields` do screen
+mesmo não sendo filtrável), retorno 12m, prêmio vs CDI, drawdown, rating + agência,
+subordinação, lastro, segmento e regime fiduciário.
+
+### Parser de indexador tolerante
+
+`index_correction` não tem formato único entre as bases: `"DI + 1,0500%"` nas debêntures,
+mas `"IPCA + 3,5 %"` e `"3,80 a.a + IPCA"` nas securitizações. O parser detecta o índice por
+palavra-chave e pega o primeiro número, em vez de assumir posição fixa. Percentual do DI
+(`"DI x 108%"`) devolve spread nulo — não é spread aditivo e somá-lo seria erro.
+
+### Armadilha de CSS que custou um bug
+
+`button:hover:not(:disabled)` tem especificidade 0-2-1 e vence `.navb[aria-current=true]`
+(0-2-0): o item ativo do menu perdia o fundo escuro no hover e ficava texto claro sobre
+fundo claro. Os três estados ativos (`.navb`, `.tab`, `.seg button`) repetem o seletor com
+`:hover` para chegar a 0-3-0. Vale para qualquer estado ativo que conviva com um seletor
+genérico de `button`.
+
+### Testes
+
+`node t2.mjs` sobe o terminal com `mock2.js`, que injeta `window.claude.mcp` com a forma de
+resposta observada nas oito ferramentas e exercita: boot, troca de classe, abertura de papel,
+comparador com três séries, emissor completo, e os ramos `noconn` / `reauth` / `policy` /
+`flaky` / `noseries`, mais dark mode e viewport de 390px.
