@@ -202,3 +202,16 @@ genérico de `button`.
 resposta observada nas oito ferramentas e exercita: boot, troca de classe, abertura de papel,
 comparador com três séries, emissor completo, e os ramos `noconn` / `reauth` / `policy` /
 `flaky` / `noseries`, mais dark mode e viewport de 390px.
+
+### Cobertura de teste
+
+`t2.mjs` cobre boot, varredura, troca de classe, papel, comparador, emissor e os ramos de
+erro. `t3.mjs` cobre persistência de watchlist entre recargas, busca global por teclado,
+papel de CRI/CRA sem série e papel sem marcação. `t4.mjs` cobre a interação que sobrou:
+fechar aba sem deixar view órfã, inverter ordenação, filtro de setor, "mostrar mais",
+"carregar mais 300" nos CRI/CRA, o teto de 6 papéis no comparador, a troca entre taxa
+absoluta e vs contratual, abrir/remover pela watchlist e Escape na busca.
+
+24 casos no total. O que nenhum deles cobre é a chamada real ao conector: o harness injeta
+`window.claude.mcp` com a forma de resposta observada, então o que está testado é o código
+do terminal, não o roteamento até a base. Isso só se verifica abrindo a página publicada.
