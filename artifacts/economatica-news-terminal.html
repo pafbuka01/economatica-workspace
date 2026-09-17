@@ -335,7 +335,9 @@
 'use strict';
 /* ================= Constantes ================= */
 const FALLBACK_SERVER='Economatica Notícias';
-const TOOL={search:'news_search',get:'news_get',related:'news_related',trending:'news_trending',
+/* news_get e news_related estão fora da política da organização: o detalhe e as
+   relacionadas saem dos modos id / related_to do próprio news_search. */
+const TOOL={search:'news_search',trending:'news_trending',
             overview:'news_sentiment_overview',trend:'news_sentiment_trend'};
 const CATEGORIES=[['earnings','Resultados'],['corporate_action','Ação societária'],['regulatory','Regulatório'],
                   ['macro','Macro'],['insider_trade','Insider'],['other','Outros']];
@@ -785,8 +787,8 @@ async function openDetail(id,fromEl){
   renderDrawerLoading(); openDrawer(); $('d-close').focus();
   const my=state.stack.length;
   const [g,r]=await Promise.allSettled([
-    mcall(TOOL.get,{id},{staleTime:300000,gcTime:600000}),
-    mcall(TOOL.related,{id,size:6},{staleTime:300000,gcTime:600000}),
+    mcall(TOOL.search,{id},{staleTime:300000,gcTime:600000}),
+    mcall(TOOL.search,{related_to:id,size:6},{staleTime:300000,gcTime:600000}),
   ]);
   if(state.stack.length!==my||state.stack[my-1]!==id) return;
   if(g.status==='rejected'){
@@ -794,8 +796,15 @@ async function openDetail(id,fromEl){
     $('d-body').innerHTML='<div class="state-card"><h3>'+esc(c.t)+'</h3><p>'+esc(c.p)+'</p></div>';
     $('d-open').style.display='none'; updateBackBtn(); return;
   }
-  const item=g.value.payload&&typeof g.value.payload==='object'?g.value.payload:null;
-  const related=r.status==='fulfilled'&&r.value.payload&&Array.isArray(r.value.payload.hits)?r.value.payload.hits:(r.status==='rejected'?null:[]);
+  let item=g.value.payload&&typeof g.value.payload==='object'?g.value.payload:null;
+  if(item&&!item._id&&Array.isArray(item.hits)) item=item.hits[0]||null; // tolera envelope
+  if(!item){
+    $('d-body').innerHTML='<div class="state-card"><h3>DOCUMENTO VAZIO</h3>'
+      +'<p>A base não devolveu conteúdo para esta notícia.</p></div>';
+    $('d-open').style.display='none'; updateBackBtn(); return;
+  }
+  const rawRel=r.status==='fulfilled'&&r.value.payload&&Array.isArray(r.value.payload.hits)?r.value.payload.hits:(r.status==='rejected'?null:[]);
+  const related=rawRel&&rawRel.filter(h=>h&&String(h._id)!==id); // related_to pode devolver a própria base
   state.drawerItem=item;
   renderDrawer(item,related,r.status==='rejected'?r.reason:null);
 }
