@@ -46,7 +46,9 @@
     // formato inconsistente de propósito: as duas variantes aparecem na base real
     const ic = ipca ? (i%2 ? `IPCA + ${taxa.toFixed(1).replace(".",",")} %`
                            : `${taxa.toFixed(2).replace(".",",")} a.a + IPCA`)
-                    : `PREFIXADO + ${taxa.toFixed(2).replace(".",",")}%`;
+                    : (i%3===0 ? `100% CDI + ${taxa.toFixed(4).replace(".",",")}%`
+                    : (i%3===1 ? `100% CDI + ${(taxa/10).toFixed(2).replace(".",",")}% a.a.`
+                               : `PREFIXADO + ${taxa.toFixed(2).replace(".",",")}%`));
     const r = {security_id:`${cra?"CRA":"CRI"}${String(i).padStart(6,"0")}`,
       code:`${cra?"CRA":"CRI"}${String(i).padStart(6,"0")}`,
       asset_class: cra?"cra":"cri",
@@ -84,9 +86,9 @@
   window.claude={mcp:{
     async listTools(){
       if(MODE==="noconn") return {servers:[]};
-      if(MODE==="reauth") return {servers:[{server:"Economatica Notícias",
+      if(MODE==="reauth") return {servers:[{server:"Economatica",
         authStatus:"needs_reauth",tools:[]}]};
-      return {servers:[{server:"Economatica Notícias",authStatus:"connected",
+      return {servers:[{server:"Economatica",authStatus:"connected",
         tools:["debentures_screen","debentures_quote_history","securitizations_screen",
                "securitizations_get","credit_overview","equities_screen",
                "equities_fundamentals_history","news_search"].map(n=>({name:n,description:""}))}]};

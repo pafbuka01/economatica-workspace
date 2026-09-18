@@ -215,3 +215,39 @@ absoluta e vs contratual, abrir/remover pela watchlist e Escape na busca.
 24 casos no total. O que nenhum deles cobre é a chamada real ao conector: o harness injeta
 `window.claude.mcp` com a forma de resposta observada, então o que está testado é o código
 do terminal, não o roteamento até a base. Isso só se verifica abrindo a página publicada.
+
+## Reconexão de set/2026 — o conector foi renomeado
+
+O terminal parou de buscar dados porque o conector mudou de nome: **"Economatica Notícias"
+virou "Economatica"**. O `SERVER` no código e o manifest apontavam para o nome antigo, que
+não resolve mais, e a página caía no estado degradado `server_not_connected`.
+
+Vale como lição de manutenção: o manifest da capability `mcp` endereça o conector pelo
+**display name**, não por um id estável. Renomear o conector no claude.ai quebra todo
+artefato publicado que o declara. Quando o terminal parar de carregar, a primeira coisa a
+conferir é o nome em claude.ai → Configurações → Conectores contra o `SERVER` do código.
+
+As sete ferramentas continuam existindo com os mesmos nomes e a mesma forma de resposta;
+só o servidor mudou.
+
+### Bug achado junto: `100% CDI` quebrava o parser
+
+O cadastro de securitizações passou a trazer indexador no formato `"100% CDI + 15,4102%"` e
+`"100% CDI + 0,4% a.a."`. Duas falhas se somavam:
+
+1. `/\bDI\b/` **não casa dentro de "CDI"** — o C encosta no D e mata a fronteira de palavra,
+   então o índice vinha nulo.
+2. O spread pegava o **primeiro** número da string, que nesse formato é o `100` do percentual
+   do índice, não o spread. O papel apareceria com "taxa contratual de 100%".
+
+O parser agora detecta `\bC?DI\b` e lê o número **após o `+`**, caindo para o primeiro número
+só quando não há termo somado (`"3,80 a.a + IPCA"`). Percentual puro do índice (`"100% CDI"`,
+`"DI x 108%"`) devolve spread nulo, porque não é spread aditivo. Nove formatos cobertos por
+teste unitário do parser.
+
+### Universo em set/2026
+
+| Classe | ago/2026 | set/2026 |
+|---|---|---|
+| Debêntures | 1.311 | 1.316 |
+| CRI + CRA | 7.419 | 7.484 |

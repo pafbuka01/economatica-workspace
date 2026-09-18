@@ -277,7 +277,7 @@ input[type=text],input[type=number],select{padding:5px 8px;border-radius:5px;
 </div>
 
 <script>
-const SERVER = "Economatica Notícias";
+const SERVER = "Economatica";
 const $ = id => document.getElementById(id);
 const el = (t,c,h) => {const e=document.createElement(t); if(c)e.className=c;
   if(h!=null)e.innerHTML=h; return e};
@@ -368,18 +368,28 @@ const errHTML = e => {const [t,m]=errInfo(e);
 function parseIdx(s){
   if(!s) return {kind:null, spread:null, raw:s};
   const up = String(s).toUpperCase();
-  const kind = /\bDI\b/.test(up) ? "DI"
+  // CDI precisa de alternativa própria: /\bDI\b/ NÃO casa dentro de "CDI",
+  // porque o C encosta no D e mata a fronteira de palavra.
+  const kind = /\bC?DI\b/.test(up) ? "DI"
              : /IPCA/.test(up) ? "IPCA"
              : /IGP/.test(up) ? "IGPM"
              : /PRE/.test(up) ? "PRE" : null;
-  const nums = up.match(/(\d+(?:[.,]\d+)?)\s*%?/g) || [];
-  let spread = null;
-  for(const n of nums){
-    const v = parseFloat(n.replace(/[^\d.,]/g,"").replace(/\.(?=\d{3}\b)/g,"").replace(",","."));
-    if(!Number.isNaN(v)){ spread = v; break }
+  const num = t => {
+    const v = parseFloat(String(t).replace(/[^\d.,]/g,"")
+      .replace(/\.(?=\d{3}\b)/g,"").replace(",","."));
+    return Number.isNaN(v) ? null : v;
+  };
+  // O spread é o termo SOMADO. Pegar o primeiro número da string erra em
+  // "100% CDI + 15,4102%", onde o 100 é o percentual do índice, não o spread.
+  const plus = up.match(/\+\s*([\d.,]+)\s*%?/);
+  let spread = plus ? num(plus[1]) : null;
+  if(spread == null){
+    // sem número após o "+": "3,80 a.a + IPCA" traz o spread ANTES do índice
+    const first = up.match(/([\d.,]+)/);
+    spread = first ? num(first[1]) : null;
+    // "108% do CDI" e "DI x 108%" são percentual do índice, não spread aditivo
+    if(/[\d.,]+\s*%\s*(?:DO\s+)?C?DI\b/.test(up) || /[X*]\s*\d/.test(up)) spread = null;
   }
-  // percentual do DI ("DI x 108%") não é spread aditivo
-  if(/[X*]\s*\d/.test(up) && kind==="DI") spread = null;
   return {kind, spread, raw:s};
 }
 const abriuBps = r => (r._kind && r._spread!=null && r._pico!=null)
