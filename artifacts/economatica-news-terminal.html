@@ -334,7 +334,9 @@
 <script>
 'use strict';
 /* ================= Constantes ================= */
-const FALLBACK_SERVER='Economatica Notícias';
+/* O runtime vincula conectores só pelo NOME DE EXIBIÇÃO: tem de bater com o
+   nome do conector no claude.ai e com o manifesto publicado. */
+const FALLBACK_SERVER='Economatica';
 /* news_get e news_related estão fora da política da organização: o detalhe e as
    relacionadas saem dos modos id / related_to do próprio news_search. */
 const TOOL={search:'news_search',trending:'news_trending',
@@ -446,8 +448,8 @@ async function mcall(tool,input,cacheOpts,_retried){
 function errCopy(e){
   const c=e&&e.code, m=e&&e.message?String(e.message):'';
   switch(c){
-    case 'needs_reauth': return {t:'RECONEXÃO NECESSÁRIA',p:'A sessão do conector Economatica Notícias expirou. Reconecte-o em claude.ai → Configurações → Conectores e recarregue esta página.'};
-    case 'server_not_connected': return {t:'CONECTOR AUSENTE',p:'Nenhum conector "Economatica Notícias" está disponível para você. Adicione-o em claude.ai → Configurações → Conectores e recarregue.'};
+    case 'needs_reauth': return {t:'RECONEXÃO NECESSÁRIA',p:'A sessão do conector "'+state.server+'" expirou. Reconecte-o em claude.ai → Configurações → Conectores e recarregue esta página.'};
+    case 'server_not_connected': return {t:'CONECTOR AUSENTE',p:'Nenhum conector com o nome exato "'+state.server+'" está disponível para você. Adicione-o (ou confira se o nome não mudou após reconectar) em claude.ai → Configurações → Conectores e recarregue.'};
     case 'selection_required': return {t:'ESCOLHA O CONECTOR',p:'Há mais de um conector com este nome. Escolha um quando o claude.ai perguntar, ou recarregue a página para decidir de novo.'};
     case 'blocked_by_policy': return {t:'BLOQUEADO POR POLÍTICA',p:'A política da sua organização bloqueia esta ferramenta para o seu usuário.'};
     case 'approval_required': return {t:'APROVAÇÃO EXIGIDA',p:'Sua organização exige aprovação por chamada para esta ferramenta, o que ainda não é suportado em páginas publicadas.'};
@@ -636,7 +638,7 @@ function cardHTML(it,idx){
 function renderFeed(){
   const feed=$('feed');
   if(!state.mcpOk){ feed.innerHTML=stateCard('FORA DO CLAUDE.AI',
-    'Este terminal usa o conector Economatica Notícias do claude.ai. Abra a página como Artifact no claude.ai para carregar o feed.',[]);
+    'Este terminal usa o conector '+FALLBACK_SERVER+' do claude.ai. Abra a página como Artifact no claude.ai para carregar o feed.',[]);
     $('feedfoot').textContent=''; return; }
   if(state.feedErr){
     const c=errCopy(state.feedErr);
